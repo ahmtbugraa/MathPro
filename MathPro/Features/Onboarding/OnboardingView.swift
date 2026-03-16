@@ -1,126 +1,495 @@
 import SwiftUI
 
-struct OnboardingPage {
-    let icon: String
-    let iconColor: Color
-    let title: String
-    let subtitle: String
-}
-
+// MARK: - Main Onboarding Container
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
-    @State private var currentPage = 0
+    @State private var currentStep = 0
 
-    private let pages: [OnboardingPage] = [
-        OnboardingPage(
-            icon: "camera.viewfinder",
-            iconColor: AppTheme.Colors.primary,
-            title: "Fotoğrafla & Çöz",
-            subtitle: "Matematik problemini çek, saniyeler içinde adım adım çözümünü gör."
-        ),
-        OnboardingPage(
-            icon: "list.number",
-            iconColor: .purple,
-            title: "Adım Adım Açıklama",
-            subtitle: "Her adım detaylı açıklanır. Cevabı değil, nasıl yapıldığını öğren."
-        ),
-        OnboardingPage(
-            icon: "brain.head.profile",
-            iconColor: .orange,
-            title: "AI Destekli Tutor",
-            subtitle: "Claude AI ile güçlendirilmiş — cebir, geometri, kalkülüs ve daha fazlası."
-        )
-    ]
+    private let totalInfoSteps = 5
 
     var body: some View {
         ZStack {
             AppTheme.Colors.background.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // Skip button
-                HStack {
-                    Spacer()
-                    if currentPage < pages.count - 1 {
-                        Button("Atla") {
-                            hasSeenOnboarding = true
-                        }
-                        .font(AppTheme.Fonts.callout)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .padding(AppTheme.Spacing.md)
-                    }
+            if currentStep < totalInfoSteps {
+                infoPageView
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing),
+                        removal: .move(edge: .leading)
+                    ))
+                    .id(currentStep)
+            } else {
+                OnboardingPaywallView {
+                    hasSeenOnboarding = true
                 }
-
-                Spacer()
-
-                // Page content
-                TabView(selection: $currentPage) {
-                    ForEach(pages.indices, id: \.self) { i in
-                        pageView(pages[i]).tag(i)
-                    }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.easeInOut, value: currentPage)
-
-                Spacer()
-
-                // Dots
-                HStack(spacing: AppTheme.Spacing.sm) {
-                    ForEach(pages.indices, id: \.self) { i in
-                        Circle()
-                            .fill(i == currentPage ? AppTheme.Colors.primary : AppTheme.Colors.divider)
-                            .frame(width: i == currentPage ? 20 : 8, height: 8)
-                            .clipShape(Capsule())
-                            .animation(.spring(response: 0.3), value: currentPage)
-                    }
-                }
-                .padding(.bottom, AppTheme.Spacing.lg)
-
-                // CTA
-                Button {
-                    if currentPage < pages.count - 1 {
-                        withAnimation { currentPage += 1 }
-                    } else {
-                        hasSeenOnboarding = true
-                    }
-                } label: {
-                    Text(currentPage < pages.count - 1 ? "Devam" : "Başla")
-                }
-                .primaryButton()
-                .padding(.horizontal, AppTheme.Spacing.xl)
-                .padding(.bottom, AppTheme.Spacing.xxl)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing),
+                    removal: .move(edge: .leading)
+                ))
             }
         }
+        .animation(.easeInOut(duration: 0.35), value: currentStep)
+        .preferredColorScheme(.dark)
     }
 
-    private func pageView(_ page: OnboardingPage) -> some View {
-        VStack(spacing: AppTheme.Spacing.xl) {
-            ZStack {
-                Circle()
-                    .fill(page.iconColor.opacity(0.12))
-                    .frame(width: 140, height: 140)
-                Image(systemName: page.icon)
-                    .font(.system(size: 60))
-                    .foregroundStyle(page.iconColor)
+    @ViewBuilder
+    private var infoPageView: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Spacer()
+                Button("Atla") { hasSeenOnboarding = true }
+                    .font(AppTheme.Fonts.callout)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .padding(AppTheme.Spacing.md)
             }
+
+            Group {
+                switch currentStep {
+                case 0: WelcomePage()
+                case 1: CameraPage()
+                case 2: StepSolutionPage()
+                case 3: ComparisonPage()
+                default: SocialProofPage()
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             VStack(spacing: AppTheme.Spacing.md) {
-                Text(page.title)
-                    .font(AppTheme.Fonts.largeTitle)
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-                    .multilineTextAlignment(.center)
-
-                Text(page.subtitle)
-                    .font(AppTheme.Fonts.body)
-                    .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .multilineTextAlignment(.center)
+                dotsView
+                Button { withAnimation { currentStep += 1 } } label: { Text("Devam") }
+                    .primaryButton()
                     .padding(.horizontal, AppTheme.Spacing.xl)
             }
+            .padding(.bottom, AppTheme.Spacing.xxl)
         }
-        .padding(AppTheme.Spacing.xl)
+    }
+
+    private var dotsView: some View {
+        HStack(spacing: 6) {
+            ForEach(0..<(totalInfoSteps + 1), id: \.self) { i in
+                Capsule()
+                    .fill(i == currentStep ? AppTheme.Colors.primary : AppTheme.Colors.divider)
+                    .frame(width: i == currentStep ? 24 : 8, height: 8)
+                    .animation(.spring(response: 0.3), value: currentStep)
+            }
+        }
     }
 }
 
-#Preview {
-    OnboardingView()
-        .preferredColorScheme(.dark)
+// MARK: - Page 1: Welcome
+struct WelcomePage: View {
+    @State private var animate = false
+    private let symbols = ["∫", "∑", "π", "√", "∞", "±", "x²", "sin", "cos", "log", "∂", "≠"]
+    private let positions: [(CGFloat, CGFloat)] = [
+        (60,80),(160,140),(280,60),(340,200),(80,300),(220,180),
+        (300,350),(50,420),(180,480),(320,380),(120,250),(260,500)
+    ]
+    private let rotations: [Double] = [-15,10,-5,20,-12,8,-18,15,-8,22,-3,12]
+
+    var body: some View {
+        ZStack {
+            ForEach(0..<12, id: \.self) { i in
+                Text(symbols[i])
+                    .font(.system(size: 22, weight: .light, design: .monospaced))
+                    .foregroundStyle(AppTheme.Colors.primary.opacity(0.10))
+                    .position(x: positions[i].0, y: positions[i].1)
+                    .rotationEffect(.degrees(rotations[i]))
+                    .scaleEffect(animate ? 1.07 : 0.95)
+                    .animation(.easeInOut(duration: 3.0 + Double(i) * 0.15).repeatForever(autoreverses: true).delay(Double(i) * 0.18), value: animate)
+            }
+
+            VStack(spacing: AppTheme.Spacing.xl) {
+                Spacer()
+                ZStack {
+                    Circle().fill(AppTheme.Colors.primarySoft).frame(width: 100, height: 100)
+                    Image(systemName: "function")
+                        .font(.system(size: 44, weight: .semibold))
+                        .foregroundStyle(AppTheme.Colors.primary)
+                }
+                VStack(spacing: AppTheme.Spacing.md) {
+                    Text("MathPro'ya\nHoş Geldin!")
+                        .font(AppTheme.Fonts.largeTitle)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
+                        .multilineTextAlignment(.center)
+                    Text("Matematik problemlerini fotoğrafla.\nSaniyeler içinde adım adım çözümünü gör.")
+                        .font(AppTheme.Fonts.body)
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
+                }
+                Spacer()
+            }
+            .padding(.horizontal, AppTheme.Spacing.xl)
+        }
+        .onAppear { animate = true }
+    }
 }
+
+// MARK: - Page 2: Camera
+struct CameraPage: View {
+    @State private var scanLineOffset: CGFloat = -36
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+            Text("Fotoğrafla & Anında Çöz")
+                .font(AppTheme.Fonts.title)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+                .multilineTextAlignment(.center)
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 28)
+                    .fill(AppTheme.Colors.surface)
+                    .frame(width: 220, height: 280)
+                    .overlay(RoundedRectangle(cornerRadius: 28).stroke(AppTheme.Colors.divider, lineWidth: 1.5))
+
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(Color.white.opacity(0.94))
+                        .frame(width: 170, height: 80)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("2x² + 5x - 3 = 0")
+                            .font(.system(size: 14, weight: .medium, design: .monospaced))
+                            .foregroundStyle(.black)
+                        Text("x = ?")
+                            .font(.system(size: 12, design: .monospaced))
+                            .foregroundStyle(.gray)
+                    }
+                    Rectangle()
+                        .fill(AppTheme.Colors.primary.opacity(0.65))
+                        .frame(width: 170, height: 2)
+                        .offset(y: scanLineOffset)
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(scanFrame)
+            }
+            .frame(height: 280)
+
+            Text("Kameranı probleme tut — çerçeveleme otomatik.")
+                .font(AppTheme.Fonts.callout)
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+            Spacer()
+        }
+        .onAppear {
+            withAnimation(.linear(duration: 1.4).repeatForever(autoreverses: true)) {
+                scanLineOffset = 36
+            }
+        }
+    }
+
+    private var scanFrame: some View {
+        GeometryReader { g in
+            let w = g.size.width, h = g.size.height, s: CGFloat = 12, t: CGFloat = 2
+            ZStack {
+                Path { p in p.move(to: .init(x: 0, y: s)); p.addLine(to: .init(x: 0, y: 0)); p.addLine(to: .init(x: s, y: 0)) }.stroke(AppTheme.Colors.primary, lineWidth: t)
+                Path { p in p.move(to: .init(x: w-s, y: 0)); p.addLine(to: .init(x: w, y: 0)); p.addLine(to: .init(x: w, y: s)) }.stroke(AppTheme.Colors.primary, lineWidth: t)
+                Path { p in p.move(to: .init(x: 0, y: h-s)); p.addLine(to: .init(x: 0, y: h)); p.addLine(to: .init(x: s, y: h)) }.stroke(AppTheme.Colors.primary, lineWidth: t)
+                Path { p in p.move(to: .init(x: w-s, y: h)); p.addLine(to: .init(x: w, y: h)); p.addLine(to: .init(x: w, y: h-s)) }.stroke(AppTheme.Colors.primary, lineWidth: t)
+            }
+        }
+    }
+}
+
+// MARK: - Page 3: Step Solution
+struct StepSolutionPage: View {
+    @State private var visibleSteps = 0
+    private let steps = [
+        ("1", "Diskriminantı bul", "Δ = 25 + 24 = 49"),
+        ("2", "Karekök al", "√49 = 7"),
+        ("3", "Sonuçlar", "x = ½  veya  x = -3"),
+    ]
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+            Text("Adım Adım Öğren")
+                .font(AppTheme.Fonts.title)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+            HStack {
+                Image(systemName: "checkmark.seal.fill").foregroundStyle(AppTheme.Colors.primary)
+                Text("x₁ = ½   •   x₂ = -3")
+                    .font(AppTheme.Fonts.headline)
+                    .foregroundStyle(AppTheme.Colors.primary)
+            }
+            .padding(AppTheme.Spacing.md)
+            .frame(maxWidth: .infinity)
+            .background(AppTheme.Colors.primarySoft)
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+            .padding(.horizontal, AppTheme.Spacing.xl)
+
+            VStack(spacing: AppTheme.Spacing.sm) {
+                ForEach(0..<steps.count, id: \.self) { i in
+                    if i < visibleSteps {
+                        HStack(spacing: AppTheme.Spacing.md) {
+                            ZStack {
+                                Circle().fill(AppTheme.Colors.primarySoft).frame(width: 28, height: 28)
+                                Text(steps[i].0).font(AppTheme.Fonts.caption).fontWeight(.bold).foregroundStyle(AppTheme.Colors.primary)
+                            }
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(steps[i].1).font(AppTheme.Fonts.callout).fontWeight(.semibold).foregroundStyle(AppTheme.Colors.textPrimary)
+                                Text(steps[i].2).font(.system(size: 13, design: .monospaced)).foregroundStyle(AppTheme.Colors.textSecondary)
+                            }
+                            Spacer()
+                        }
+                        .padding(AppTheme.Spacing.sm)
+                        .cardStyle()
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                    }
+                }
+            }
+            .padding(.horizontal, AppTheme.Spacing.xl)
+            .animation(.spring(response: 0.4), value: visibleSteps)
+
+            Text("Her adım neden yapıldığıyla açıklanır.")
+                .font(AppTheme.Fonts.callout)
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+            Spacer()
+        }
+        .onAppear {
+            for i in 1...3 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.45) { visibleSteps = i }
+            }
+        }
+    }
+}
+
+// MARK: - Page 4: Comparison
+struct ComparisonPage: View {
+    @State private var highlight = false
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+            Text("Neden MathPro?")
+                .font(AppTheme.Fonts.title)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+            HStack(alignment: .top, spacing: AppTheme.Spacing.md) {
+                compCard(title: "Geleneksel", highlighted: false, items: [
+                    ("xmark", "Saatlerce çalışmak"),
+                    ("xmark", "Hata nerede bilinmiyor"),
+                    ("xmark", "Ders kitabında kaybolmak"),
+                    ("xmark", "Sınav stresinde paniklemek"),
+                ])
+                .opacity(highlight ? 0.5 : 1)
+
+                compCard(title: "MathPro AI", highlighted: true, items: [
+                    ("checkmark", "Saniyede çözüm"),
+                    ("checkmark", "Her adım açıklanır"),
+                    ("checkmark", "Fotoğrafla başla"),
+                    ("checkmark", "Gerçekten öğren"),
+                ])
+                .scaleEffect(highlight ? 1.04 : 1.0)
+            }
+            .padding(.horizontal, AppTheme.Spacing.md)
+            Spacer()
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.5).delay(0.3)) { highlight = true }
+        }
+    }
+
+    private func compCard(title: String, highlighted: Bool, items: [(String, String)]) -> some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+            HStack {
+                if highlighted { Image(systemName: "checkmark.circle.fill").foregroundStyle(AppTheme.Colors.primary) }
+                Text(title)
+                    .font(AppTheme.Fonts.callout).fontWeight(.bold)
+                    .foregroundStyle(highlighted ? AppTheme.Colors.primary : AppTheme.Colors.textSecondary)
+            }
+            .padding(.bottom, 2)
+            ForEach(items, id: \.1) { icon, text in
+                HStack(alignment: .top, spacing: 7) {
+                    Image(systemName: icon)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(highlighted ? AppTheme.Colors.primary : AppTheme.Colors.error)
+                        .padding(.top, 2)
+                    Text(text).font(.system(size: 12)).foregroundStyle(AppTheme.Colors.textSecondary)
+                }
+            }
+        }
+        .padding(AppTheme.Spacing.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(highlighted ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
+        .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+        .overlay(RoundedRectangle(cornerRadius: AppTheme.Radius.md)
+            .stroke(highlighted ? AppTheme.Colors.primary.opacity(0.4) : AppTheme.Colors.divider, lineWidth: 1.5))
+    }
+}
+
+// MARK: - Page 5: Social Proof
+struct SocialProofPage: View {
+    @State private var show = false
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+            VStack(spacing: AppTheme.Spacing.xs) {
+                Text("10.000+")
+                    .font(.system(size: 64, weight: .bold, design: .rounded))
+                    .foregroundStyle(AppTheme.Colors.primary)
+                    .opacity(show ? 1 : 0)
+                    .offset(y: show ? 0 : 20)
+                HStack(spacing: 4) {
+                    ForEach(0..<5, id: \.self) { _ in Image(systemName: "star.fill").font(.caption).foregroundStyle(.yellow) }
+                }
+                Text("öğrenci zaten MathPro kullanıyor")
+                    .font(AppTheme.Fonts.callout)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+            }
+
+            VStack(spacing: AppTheme.Spacing.sm) {
+                HStack(spacing: AppTheme.Spacing.sm) {
+                    subTag("Cebir", .purple); subTag("Geometri", .orange); subTag("Kalkülüs", .indigo)
+                }
+                HStack(spacing: AppTheme.Spacing.sm) {
+                    subTag("Trigonometri", .red); subTag("İstatistik", .teal); subTag("Aritmetik", .blue)
+                }
+            }
+
+            HStack(spacing: AppTheme.Spacing.sm) {
+                Image(systemName: "cpu").foregroundStyle(AppTheme.Colors.textTertiary)
+                Text("Claude AI ile güçlendirildi")
+                    .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textTertiary)
+            }
+            .padding(.horizontal, AppTheme.Spacing.md).padding(.vertical, AppTheme.Spacing.sm)
+            .background(AppTheme.Colors.surface).clipShape(Capsule())
+
+            Spacer()
+        }
+        .onAppear { withAnimation(.spring(response: 0.5).delay(0.2)) { show = true } }
+    }
+
+    private func subTag(_ label: String, _ color: Color) -> some View {
+        Text(label).font(.system(size: 13, weight: .medium)).foregroundStyle(color)
+            .padding(.horizontal, 14).padding(.vertical, 7)
+            .background(color.opacity(0.12)).clipShape(Capsule())
+    }
+}
+
+// MARK: - Onboarding Paywall (Son adım)
+struct OnboardingPaywallView: View {
+    let onComplete: () -> Void
+    @State private var selectedPlan: Bool = true  // true = trial, false = annual
+    @State private var isProcessing = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: AppTheme.Spacing.lg) {
+                    // Rating
+                    VStack(spacing: 6) {
+                        HStack(spacing: 3) {
+                            ForEach(0..<5, id: \.self) { _ in Image(systemName: "star.fill").font(.callout).foregroundStyle(.yellow) }
+                        }
+                        Text("4.8 / App Store").font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
+                    }
+                    .padding(AppTheme.Spacing.md)
+                    .background(AppTheme.Colors.surface)
+                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+
+                    Text("Sınırsız Erişim Elde Et")
+                        .font(AppTheme.Fonts.largeTitle)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
+                        .multilineTextAlignment(.center)
+
+                    VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+                        featureRow("🔥", "Sınırsız matematik çözümü")
+                        featureRow("📋", "Adım adım detaylı açıklama")
+                        featureRow("🤖", "AI ile soru sor, anlayarak öğren")
+                        featureRow("📚", "Tüm geçmişin kaydedilir")
+                    }
+                    .padding(AppTheme.Spacing.md)
+                    .cardStyle()
+
+                    // Plans
+                    VStack(spacing: AppTheme.Spacing.sm) {
+                        planRow(isTrial: true)
+                        planRow(isTrial: false)
+                    }
+                }
+                .padding(AppTheme.Spacing.lg)
+                .padding(.top, AppTheme.Spacing.lg)
+            }
+
+            // CTA
+            VStack(spacing: AppTheme.Spacing.sm) {
+                Button {
+                    isProcessing = true
+                    Task {
+                        try? await Task.sleep(for: .seconds(1.0))
+                        await MainActor.run { isProcessing = false; onComplete() }
+                    }
+                } label: {
+                    if isProcessing { ProgressView().tint(.black) }
+                    else { Text("Ücretsiz Dene") }
+                }
+                .primaryButton()
+                .disabled(isProcessing)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+
+                HStack(spacing: 5) {
+                    Image(systemName: "checkmark.shield.fill").font(.caption).foregroundStyle(AppTheme.Colors.primary)
+                    Text("Şimdi ödeme yok. İstediğin zaman iptal et.")
+                        .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
+                }
+
+                HStack(spacing: AppTheme.Spacing.sm) {
+                    Button("Geri Yükle") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
+                    Button("Gizlilik") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
+                    Button("Şartlar") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                }
+            }
+            .padding(.bottom, AppTheme.Spacing.xxl)
+            .background(AppTheme.Colors.background)
+        }
+    }
+
+    private func featureRow(_ emoji: String, _ text: String) -> some View {
+        HStack(spacing: AppTheme.Spacing.md) {
+            Text(emoji).font(.title3)
+            Text(text).font(AppTheme.Fonts.callout).foregroundStyle(AppTheme.Colors.textPrimary)
+        }
+    }
+
+    private func planRow(isTrial: Bool) -> some View {
+        let isSelected = selectedPlan == isTrial
+        return Button { withAnimation(.spring(response: 0.25)) { selectedPlan = isTrial } } label: {
+            HStack(spacing: AppTheme.Spacing.md) {
+                ZStack {
+                    Circle().stroke(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.divider, lineWidth: 2).frame(width: 22, height: 22)
+                    if isSelected { Circle().fill(AppTheme.Colors.primary).frame(width: 12, height: 12) }
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack {
+                        Text(isTrial ? "3 Gün Bedava" : "Yıllık Plan")
+                            .font(AppTheme.Fonts.headline).foregroundStyle(AppTheme.Colors.textPrimary)
+                        if !isTrial {
+                            Text("EN POPÜLER").font(.system(size: 9, weight: .black)).foregroundStyle(.black)
+                                .padding(.horizontal, 7).padding(.vertical, 3)
+                                .background(AppTheme.Colors.primary).clipShape(Capsule())
+                        }
+                    }
+                    Text(isTrial ? "sonra ₺149,00/hafta" : "₺549,00/yıl • ₺10,53/hafta")
+                        .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
+                }
+                Spacer()
+                Text(isTrial ? "ÜCRETSİZ" : "₺549")
+                    .font(isTrial ? AppTheme.Fonts.headline : AppTheme.Fonts.callout)
+                    .foregroundStyle(isTrial ? AppTheme.Colors.primary : AppTheme.Colors.textPrimary)
+            }
+            .padding(AppTheme.Spacing.md)
+            .background(isSelected ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
+            .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+            .overlay(RoundedRectangle(cornerRadius: AppTheme.Radius.md)
+                .stroke(isSelected ? AppTheme.Colors.primary : Color.clear, lineWidth: 1.5))
+        }
+    }
+}
+
+#Preview { OnboardingView() }
