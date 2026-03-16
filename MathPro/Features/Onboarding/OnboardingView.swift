@@ -352,7 +352,7 @@ struct SocialProofPage: View {
 
             HStack(spacing: AppTheme.Spacing.sm) {
                 Image(systemName: "cpu").foregroundStyle(AppTheme.Colors.textTertiary)
-                Text("Powered by Claude AI")
+                Text("Powered by Qwen AI")
                     .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textTertiary)
             }
             .padding(.horizontal, AppTheme.Spacing.md).padding(.vertical, AppTheme.Spacing.sm)

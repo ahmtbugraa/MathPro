@@ -143,7 +143,7 @@ struct SettingsView: View {
                     HStack {
                         Image(systemName: "key.fill")
                             .foregroundStyle(AppTheme.Colors.primary)
-                        Text("Anthropic API Key")
+                        Text("Qwen API Key")
                             .font(AppTheme.Fonts.callout)
                             .foregroundStyle(AppTheme.Colors.textPrimary)
                         Spacer()
@@ -180,7 +180,7 @@ struct SettingsView: View {
             .cardStyle()
             .animation(.spring(response: 0.3), value: showAPIKeyField)
 
-            Text("Get your Claude API key from anthropic.com")
+            Text("Get your Qwen API key from qwen.ai")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
         }

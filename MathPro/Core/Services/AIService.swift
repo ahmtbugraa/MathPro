@@ -11,21 +11,25 @@ enum AIError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidImage:           return "Görsel işlenemedi."
-        case .networkError(let msg):  return "Ağ hatası: \(msg)"
-        case .invalidResponse:        return "Sunucudan geçersiz yanıt."
-        case .parseError(let msg):    return "Yanıt ayrıştırılamadı: \(msg)"
-        case .apiError(let msg):      return "API hatası: \(msg)"
+        case .invalidImage:           return String(localized: "Image could not be processed.")
+        case .networkError(let msg):  return String(localized: "Network error:") + " \(msg)"
+        case .invalidResponse:        return String(localized: "Invalid response from server.")
+        case .parseError(let msg):    return String(localized: "Response could not be parsed:") + " \(msg)"
+        case .apiError(let msg):      return String(localized: "API error:") + " \(msg)"
         }
     }
 }
 
-// MARK: - Response DTOs
-private struct ClaudeResponse: Decodable {
-    let content: [ContentBlock]
-    struct ContentBlock: Decodable {
-        let type: String
-        let text: String?
+// MARK: - Qwen OpenAI-Compatible Response DTOs
+private struct QwenResponse: Decodable {
+    let choices: [Choice]
+
+    struct Choice: Decodable {
+        let message: Message
+    }
+
+    struct Message: Decodable {
+        let content: String
     }
 }
 
@@ -48,13 +52,13 @@ private struct SolutionDTO: Decodable {
 struct AIService {
     private let ocr = OCRService()
 
-    /// Görüntüdeki matematik problemini çözer ve adım adım çözüm döner.
+    /// Solves the math problem in the image and returns a step-by-step solution.
     nonisolated func solve(image: UIImage) async throws -> MathSolution {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw AIError.invalidImage
         }
 
-        // Paralel OCR (Claude'a ek bağlam sağlar)
+        // Parallel OCR (provides additional context to AI)
         let ocrText = (try? await ocr.recognizeText(in: image)) ?? ""
         let base64 = imageData.base64EncodedString()
 
@@ -76,45 +80,44 @@ struct AIService {
           ]
         }
         Be thorough with steps. Explain each step clearly for a student.
+        Use LaTeX notation for mathematical expressions where appropriate (e.g. \\frac{1}{2}, x^2, \\sqrt{3}).
         """
 
+        // Build user content with image (base64) + optional OCR text
         var userContent: [[String: Any]] = [
             [
-                "type": "image",
-                "source": [
-                    "type": "base64",
-                    "media_type": "image/jpeg",
-                    "data": base64
+                "type": "image_url",
+                "image_url": [
+                    "url": "data:image/jpeg;base64,\(base64)"
                 ]
             ]
         ]
 
+        let textMessage: String
         if !ocrText.isEmpty {
-            userContent.append([
-                "type": "text",
-                "text": "OCR extracted text (may contain errors): \(ocrText)\nPlease solve the math problem shown in the image."
-            ])
+            textMessage = "OCR extracted text (may contain errors): \(ocrText)\nPlease solve the math problem shown in the image. Respond ONLY with JSON."
         } else {
-            userContent.append([
-                "type": "text",
-                "text": "Please solve the math problem shown in the image."
-            ])
+            textMessage = "Please solve the math problem shown in the image. Respond ONLY with JSON."
         }
 
+        userContent.append([
+            "type": "text",
+            "text": textMessage
+        ])
+
         let body: [String: Any] = [
-            "model": Config.claudeModel,
-            "max_tokens": 2048,
-            "system": systemPrompt,
+            "model": Config.qwenModel,
+            "max_tokens": 4096,
             "messages": [
+                ["role": "system", "content": systemPrompt],
                 ["role": "user", "content": userContent]
             ]
         ]
 
-        var request = URLRequest(url: Config.claudeAPIURL)
+        var request = URLRequest(url: Config.qwenAPIURL)
         request.httpMethod = "POST"
-        request.setValue(Config.anthropicAPIKey, forHTTPHeaderField: "x-api-key")
-        request.setValue(Config.anthropicVersion, forHTTPHeaderField: "anthropic-version")
-        request.setValue("application/json", forHTTPHeaderField: "content-type")
+        request.setValue("Bearer \(Config.qwenAPIKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         request.timeoutInterval = 60
 
@@ -129,12 +132,12 @@ struct AIService {
             throw AIError.apiError("HTTP \(http.statusCode): \(msg)")
         }
 
-        let claudeResponse = try JSONDecoder().decode(ClaudeResponse.self, from: data)
-        guard let rawText = claudeResponse.content.first(where: { $0.type == "text" })?.text else {
+        let qwenResponse = try JSONDecoder().decode(QwenResponse.self, from: data)
+        guard let rawText = qwenResponse.choices.first?.message.content else {
             throw AIError.invalidResponse
         }
 
-        // JSON'u temizle (Claude bazen ```json ... ``` sarabilir)
+        // Clean JSON (model may wrap in ```json ... ```)
         let jsonString = cleanJSON(rawText)
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw AIError.parseError("JSON encoding failed")
@@ -164,9 +167,14 @@ struct AIService {
 
     private func cleanJSON(_ text: String) -> String {
         var result = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Remove thinking tags if present (Qwen thinking mode)
+        if let thinkEnd = result.range(of: "</think>") {
+            result = String(result[thinkEnd.upperBound...])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         if result.hasPrefix("```json") { result = String(result.dropFirst(7)) }
-        if result.hasPrefix("```")    { result = String(result.dropFirst(3)) }
-        if result.hasSuffix("```")    { result = String(result.dropLast(3)) }
+        if result.hasPrefix("```")     { result = String(result.dropFirst(3)) }
+        if result.hasSuffix("```")     { result = String(result.dropLast(3)) }
         return result.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

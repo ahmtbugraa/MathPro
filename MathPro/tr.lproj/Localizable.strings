@@ -47,10 +47,17 @@
 "Today Remaining" = "Bugün Kalan";
 "Plan" = "Plan";
 "API KEY" = "API ANAHTARI";
-"Anthropic API Key" = "Anthropic API Anahtarı";
+"Qwen API Key" = "Qwen API Anahtarı";
 "Not Set" = "Ayarlanmadı";
 "Save" = "Kaydet";
-"Get your Claude API key from anthropic.com" = "Claude API anahtarını anthropic.com'dan alabilirsin.";
+"Get your Qwen API key from qwen.ai" = "Qwen API anahtarını qwen.ai'dan alabilirsin.";
+
+/* AI Error Messages */
+"Image could not be processed." = "Görsel işlenemedi.";
+"Network error:" = "Ağ hatası:";
+"Invalid response from server." = "Sunucudan geçersiz yanıt.";
+"Response could not be parsed:" = "Yanıt ayrıştırılamadı:";
+"API error:" = "API hatası:";
 "APP" = "UYGULAMA";
 "Rate the App" = "Uygulamayı Değerlendir";
 "Share with Friends" = "Arkadaşlarla Paylaş";
@@ -97,7 +104,7 @@
 "Start with a photo" = "Fotoğrafla başla";
 "Truly learn" = "Gerçekten öğren";
 "students already use MathPro" = "öğrenci zaten MathPro kullanıyor";
-"Powered by Claude AI" = "Claude AI ile güçlendirildi";
+"Powered by Qwen AI" = "Qwen AI ile güçlendirildi";
 "Algebra" = "Cebir";
 "Geometry" = "Geometri";
 "Calculus" = "Kalkülüs";

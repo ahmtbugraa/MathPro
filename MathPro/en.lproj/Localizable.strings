@@ -47,10 +47,17 @@
 "Today Remaining" = "Today Remaining";
 "Plan" = "Plan";
 "API KEY" = "API KEY";
-"Anthropic API Key" = "Anthropic API Key";
+"Qwen API Key" = "Qwen API Key";
 "Not Set" = "Not Set";
 "Save" = "Save";
-"Get your Claude API key from anthropic.com" = "Get your Claude API key from anthropic.com";
+"Get your Qwen API key from qwen.ai" = "Get your Qwen API key from qwen.ai";
+
+/* AI Error Messages */
+"Image could not be processed." = "Image could not be processed.";
+"Network error:" = "Network error:";
+"Invalid response from server." = "Invalid response from server.";
+"Response could not be parsed:" = "Response could not be parsed:";
+"API error:" = "API error:";
 "APP" = "APP";
 "Rate the App" = "Rate the App";
 "Share with Friends" = "Share with Friends";
@@ -97,7 +104,7 @@
 "Start with a photo" = "Start with a photo";
 "Truly learn" = "Truly learn";
 "students already use MathPro" = "students already use MathPro";
-"Powered by Claude AI" = "Powered by Claude AI";
+"Powered by Qwen AI" = "Powered by Qwen AI";
 "Algebra" = "Algebra";
 "Geometry" = "Geometry";
 "Calculus" = "Calculus";

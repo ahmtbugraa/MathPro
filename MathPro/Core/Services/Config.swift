@@ -2,20 +2,21 @@ import Foundation
 
 enum Config {
     // MARK: - API Keys
-    // Claude API key'ini buraya ekle ya da Xcode Scheme > Environment Variables'a ANTHROPIC_API_KEY ekle
-    static var anthropicAPIKey: String {
-        ProcessInfo.processInfo.environment["ANTHROPIC_API_KEY"]
-            ?? "YOUR_ANTHROPIC_API_KEY_HERE"
+    // Qwen API key: Xcode Scheme > Environment Variables'a QWEN_API_KEY ekle
+    // veya Settings ekranından gir
+    static var qwenAPIKey: String {
+        ProcessInfo.processInfo.environment["QWEN_API_KEY"]
+            ?? UserDefaults.standard.string(forKey: "apiKey")
+            ?? "sk-8a249b8fde6a4af3a110f44963fb5414"
     }
 
-    // MARK: - Claude API
-    static let claudeAPIURL     = URL(string: "https://api.anthropic.com/v1/messages")!
-    static let claudeModel      = "claude-opus-4-6"
-    static let anthropicVersion = "2023-06-01"
+    // MARK: - Qwen API
+    static let qwenAPIURL = URL(string: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions")!
+    static let qwenModel  = "qwen3.5-plus"
 
     // MARK: - App Limits
     static let freeDailySolveLimit = 5
 
-    // MARK: - RevenueCat (Faz 2'de entegre edilecek)
+    // MARK: - RevenueCat
     static let revenueCatAPIKey = "YOUR_REVENUECAT_KEY_HERE"
 }
