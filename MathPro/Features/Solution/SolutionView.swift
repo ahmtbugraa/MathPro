@@ -25,7 +25,7 @@ struct SolutionView: View {
                 AppTheme.Colors.background.ignoresSafeArea()
 
                 if isLoading {
-                    loadingView
+                    SolvingLoadingView(image: image)
                 } else if let error = errorMessage {
                     errorView(error)
                 } else if let sol = solution {
@@ -59,32 +59,6 @@ struct SolutionView: View {
             Text(String(format: NSLocalizedString("daily_limit_message", comment: ""), Config.freeDailySolveLimit))
         }
         .preferredColorScheme(.dark)
-    }
-
-    // MARK: - Loading
-    private var loadingView: some View {
-        VStack(spacing: AppTheme.Spacing.lg) {
-            ZStack {
-                Circle()
-                    .stroke(AppTheme.Colors.primarySoft, lineWidth: 4)
-                    .frame(width: 72, height: 72)
-                Circle()
-                    .trim(from: 0, to: 0.75)
-                    .stroke(AppTheme.Colors.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
-                    .frame(width: 72, height: 72)
-                    .rotationEffect(.degrees(-90))
-                    .animation(.linear(duration: 1).repeatForever(autoreverses: false), value: isLoading)
-                Image(systemName: "function")
-                    .font(.title2)
-                    .foregroundStyle(AppTheme.Colors.primary)
-            }
-            Text("Calculating Solution...")
-                .font(AppTheme.Fonts.headline)
-                .foregroundStyle(AppTheme.Colors.textPrimary)
-            Text("Preparing step-by-step explanation")
-                .font(AppTheme.Fonts.callout)
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-        }
     }
 
     // MARK: - Error
@@ -229,5 +203,137 @@ struct SolutionView: View {
         modelContext.insert(record)
         isSaved = true
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+}
+
+// MARK: - Animated Loading View
+struct SolvingLoadingView: View {
+    let image: UIImage
+
+    @State private var rotation: Double = 0
+    @State private var currentStep = 0
+    @State private var progress: CGFloat = 0
+    @State private var pulseScale: CGFloat = 1.0
+    @State private var elapsedSeconds = 0
+
+    private let steps: [(icon: String, text: LocalizedStringKey)] = [
+        ("camera.viewfinder",   "Analyzing image..."),
+        ("text.viewfinder",     "Reading math problem..."),
+        ("brain.head.profile",  "Thinking step by step..."),
+        ("function",            "Calculating solution..."),
+        ("checkmark.circle",    "Preparing explanation...")
+    ]
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.xl) {
+            // Thumbnail of captured image
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(maxHeight: 120)
+                .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+                .overlay(
+                    RoundedRectangle(cornerRadius: AppTheme.Radius.md)
+                        .stroke(AppTheme.Colors.primary.opacity(0.3), lineWidth: 1)
+                )
+                .shadow(color: AppTheme.Colors.primary.opacity(0.2), radius: 12)
+                .scaleEffect(pulseScale)
+
+            // Animated spinner
+            ZStack {
+                // Background ring
+                Circle()
+                    .stroke(AppTheme.Colors.primarySoft, lineWidth: 5)
+                    .frame(width: 72, height: 72)
+
+                // Spinning arc
+                Circle()
+                    .trim(from: 0, to: 0.3)
+                    .stroke(AppTheme.Colors.primary, style: StrokeStyle(lineWidth: 5, lineCap: .round))
+                    .frame(width: 72, height: 72)
+                    .rotationEffect(.degrees(rotation))
+
+                // Center icon (changes per step)
+                Image(systemName: steps[currentStep].icon)
+                    .font(.title2)
+                    .foregroundStyle(AppTheme.Colors.primary)
+                    .contentTransition(.symbolEffect(.replace))
+            }
+
+            // Step text
+            VStack(spacing: AppTheme.Spacing.sm) {
+                Text(steps[currentStep].text)
+                    .font(AppTheme.Fonts.headline)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .contentTransition(.opacity)
+                    .animation(.easeInOut(duration: 0.3), value: currentStep)
+
+                // Progress bar
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(AppTheme.Colors.surface)
+                        .frame(width: 200, height: 6)
+
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(AppTheme.Colors.primary)
+                        .frame(width: 200 * progress, height: 6)
+                        .animation(.easeInOut(duration: 0.5), value: progress)
+                }
+
+                // Elapsed time
+                Text(verbatim: "\(elapsedSeconds)s")
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundStyle(AppTheme.Colors.textTertiary)
+            }
+
+            // Step indicators
+            HStack(spacing: AppTheme.Spacing.sm) {
+                ForEach(0..<steps.count, id: \.self) { i in
+                    Circle()
+                        .fill(i <= currentStep ? AppTheme.Colors.primary : AppTheme.Colors.divider)
+                        .frame(width: 8, height: 8)
+                        .scaleEffect(i == currentStep ? 1.3 : 1.0)
+                        .animation(.spring(response: 0.3), value: currentStep)
+                }
+            }
+        }
+        .padding(AppTheme.Spacing.xl)
+        .onAppear {
+            startAnimations()
+        }
+    }
+
+    private func startAnimations() {
+        // Continuous spinner rotation
+        withAnimation(.linear(duration: 1.0).repeatForever(autoreverses: false)) {
+            rotation = 360
+        }
+
+        // Gentle pulse on image
+        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
+            pulseScale = 0.96
+        }
+
+        // Step progression timer
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+            Task { @MainActor in
+                elapsedSeconds += 1
+
+                // Progress bar grows over time
+                let maxTime: CGFloat = 30
+                progress = min(CGFloat(elapsedSeconds) / maxTime, 0.95)
+
+                // Advance step every ~4 seconds
+                let newStep = min(elapsedSeconds / 4, steps.count - 1)
+                if newStep != currentStep {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        currentStep = newStep
+                    }
+                }
+
+                // Stop timer if view disappears (safety)
+                if elapsedSeconds > 120 { timer.invalidate() }
+            }
+        }
     }
 }

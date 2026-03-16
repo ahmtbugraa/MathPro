@@ -18,9 +18,12 @@
 "Canvas will be cleared" = "Canvas will be cleared";
 "Clear" = "Clear";
 
-/* Solution View */
-"Calculating Solution..." = "Calculating Solution...";
-"Preparing step-by-step explanation" = "Preparing step-by-step explanation";
+/* Solution View - Loading Steps */
+"Analyzing image..." = "Analyzing image...";
+"Reading math problem..." = "Reading math problem...";
+"Thinking step by step..." = "Thinking step by step...";
+"Calculating solution..." = "Calculating solution...";
+"Preparing explanation..." = "Preparing explanation...";
 "An error occurred" = "An error occurred";
 "Try Again" = "Try Again";
 "ANSWER" = "ANSWER";

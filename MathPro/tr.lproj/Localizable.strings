@@ -18,9 +18,12 @@
 "Canvas will be cleared" = "Canvas temizlenecek";
 "Clear" = "Temizle";
 
-/* Solution View */
-"Calculating Solution..." = "Çözüm Hesaplanıyor...";
-"Preparing step-by-step explanation" = "Adım adım açıklama hazırlanıyor";
+/* Solution View - Loading Steps */
+"Analyzing image..." = "Görsel analiz ediliyor...";
+"Reading math problem..." = "Matematik problemi okunuyor...";
+"Thinking step by step..." = "Adım adım düşünülüyor...";
+"Calculating solution..." = "Çözüm hesaplanıyor...";
+"Preparing explanation..." = "Açıklama hazırlanıyor...";
 "An error occurred" = "Bir hata oluştu";
 "Try Again" = "Tekrar Dene";
 "ANSWER" = "CEVAP";
