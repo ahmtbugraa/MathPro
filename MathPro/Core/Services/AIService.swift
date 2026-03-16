@@ -52,14 +52,20 @@ private struct SolutionDTO: Decodable {
 struct AIService {
     private let ocr = OCRService()
 
+    /// Maximum image dimension (width or height) before resizing.
+    private let maxImageDimension: CGFloat = 1024
+
     /// Solves the math problem in the image and returns a step-by-step solution.
     nonisolated func solve(image: UIImage) async throws -> MathSolution {
-        guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+        // Resize large images to reduce payload & speed up upload
+        let resized = resizeIfNeeded(image)
+
+        guard let imageData = resized.jpegData(compressionQuality: 0.6) else {
             throw AIError.invalidImage
         }
 
         // Parallel OCR (provides additional context to AI)
-        let ocrText = (try? await ocr.recognizeText(in: image)) ?? ""
+        let ocrText = (try? await ocr.recognizeText(in: resized)) ?? ""
         let base64 = imageData.base64EncodedString()
 
         let systemPrompt = """
@@ -81,6 +87,7 @@ struct AIService {
         }
         Be thorough with steps. Explain each step clearly for a student.
         Use LaTeX notation for mathematical expressions where appropriate (e.g. \\frac{1}{2}, x^2, \\sqrt{3}).
+        Respond ONLY with the JSON object, nothing else.
         """
 
         // Build user content with image (base64) + optional OCR text
@@ -95,9 +102,9 @@ struct AIService {
 
         let textMessage: String
         if !ocrText.isEmpty {
-            textMessage = "OCR extracted text (may contain errors): \(ocrText)\nPlease solve the math problem shown in the image. Respond ONLY with JSON."
+            textMessage = "OCR extracted text (may contain errors): \(ocrText)\nPlease solve the math problem shown in the image. Respond ONLY with valid JSON."
         } else {
-            textMessage = "Please solve the math problem shown in the image. Respond ONLY with JSON."
+            textMessage = "Please solve the math problem shown in the image. Respond ONLY with valid JSON."
         }
 
         userContent.append([
@@ -119,7 +126,7 @@ struct AIService {
         request.setValue("Bearer \(Config.qwenAPIKey)", forHTTPHeaderField: "Authorization")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        request.timeoutInterval = 60
+        request.timeoutInterval = 120  // 2 minutes — Qwen thinking mode needs time
 
         let (data, response) = try await URLSession.shared.data(for: request)
 
@@ -137,7 +144,7 @@ struct AIService {
             throw AIError.invalidResponse
         }
 
-        // Clean JSON (model may wrap in ```json ... ```)
+        // Clean JSON (model may wrap in ```json ... ``` or include thinking tags)
         let jsonString = cleanJSON(rawText)
         guard let jsonData = jsonString.data(using: .utf8) else {
             throw AIError.parseError("JSON encoding failed")
@@ -163,6 +170,29 @@ struct AIService {
             createdAt: Date(),
             confidence: dto.confidence ?? 0.9
         )
+    }
+
+    // MARK: - Helpers
+
+    /// Resizes image if any dimension exceeds maxImageDimension.
+    private func resizeIfNeeded(_ image: UIImage) -> UIImage {
+        let size = image.size
+        guard size.width > maxImageDimension || size.height > maxImageDimension else {
+            return image
+        }
+
+        let scale: CGFloat
+        if size.width > size.height {
+            scale = maxImageDimension / size.width
+        } else {
+            scale = maxImageDimension / size.height
+        }
+
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+        let renderer = UIGraphicsImageRenderer(size: newSize)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+        }
     }
 
     private func cleanJSON(_ text: String) -> String {
