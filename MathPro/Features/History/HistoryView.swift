@@ -1,0 +1,130 @@
+import SwiftUI
+import SwiftData
+
+struct HistoryView: View {
+    @Query(sort: \SolveRecord.createdAt, order: .reverse)
+    private var records: [SolveRecord]
+
+    @Environment(\.modelContext) private var modelContext
+    @State private var selectedRecord: SolveRecord?
+    @State private var searchText = ""
+
+    private var filtered: [SolveRecord] {
+        guard !searchText.isEmpty else { return records }
+        return records.filter {
+            $0.problemText.localizedCaseInsensitiveContains(searchText) ||
+            $0.subject.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                AppTheme.Colors.background.ignoresSafeArea()
+
+                if records.isEmpty {
+                    emptyState
+                } else {
+                    recordList
+                }
+            }
+            .navigationTitle("Geçmiş")
+            .searchable(text: $searchText, prompt: "Konu veya problem ara...")
+        }
+        .preferredColorScheme(.dark)
+    }
+
+    // MARK: - Empty State
+    private var emptyState: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Image(systemName: "clock.arrow.circlepath")
+                .font(.system(size: 56))
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+
+            Text("Henüz çözüm yok")
+                .font(AppTheme.Fonts.title2)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+            Text("Matematik problemi çekince çözümler burada görünecek.")
+                .font(AppTheme.Fonts.callout)
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+        }
+    }
+
+    // MARK: - Record List
+    private var recordList: some View {
+        ScrollView {
+            LazyVStack(spacing: AppTheme.Spacing.sm) {
+                ForEach(filtered) { record in
+                    HistoryRowView(record: record)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                            Button(role: .destructive) {
+                                modelContext.delete(record)
+                            } label: {
+                                Label("Sil", systemImage: "trash")
+                            }
+                        }
+                }
+            }
+            .padding(AppTheme.Spacing.md)
+        }
+    }
+}
+
+// MARK: - Row
+struct HistoryRowView: View {
+    let record: SolveRecord
+
+    var body: some View {
+        HStack(spacing: AppTheme.Spacing.md) {
+            // Thumbnail
+            if let data = record.imageData, let img = UIImage(data: data) {
+                Image(uiImage: img)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 56, height: 56)
+                    .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.sm))
+            } else {
+                ZStack {
+                    RoundedRectangle(cornerRadius: AppTheme.Radius.sm)
+                        .fill(record.mathSubject.color.opacity(0.15))
+                        .frame(width: 56, height: 56)
+                    Image(systemName: record.mathSubject.icon)
+                        .font(.title3)
+                        .foregroundStyle(record.mathSubject.color)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
+                Text(record.problemText.isEmpty ? "Problem" : record.problemText)
+                    .font(AppTheme.Fonts.headline)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .lineLimit(1)
+
+                Text(record.answer)
+                    .font(AppTheme.Fonts.callout)
+                    .foregroundStyle(AppTheme.Colors.primary)
+                    .lineLimit(1)
+
+                Text(record.createdAt.formatted(date: .abbreviated, time: .shortened))
+                    .font(AppTheme.Fonts.caption)
+                    .foregroundStyle(AppTheme.Colors.textTertiary)
+            }
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+        }
+        .padding(AppTheme.Spacing.md)
+        .cardStyle()
+    }
+}
+
+#Preview {
+    HistoryView()
+        .modelContainer(for: SolveRecord.self, inMemory: true)
+}
