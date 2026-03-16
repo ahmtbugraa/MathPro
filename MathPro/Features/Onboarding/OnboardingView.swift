@@ -37,7 +37,7 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             HStack {
                 Spacer()
-                Button("Atla") { hasSeenOnboarding = true }
+                Button("Skip") { hasSeenOnboarding = true }
                     .font(AppTheme.Fonts.callout)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                     .padding(AppTheme.Spacing.md)
@@ -56,7 +56,7 @@ struct OnboardingView: View {
 
             VStack(spacing: AppTheme.Spacing.md) {
                 dotsView
-                Button { withAnimation { currentStep += 1 } } label: { Text("Devam") }
+                Button { withAnimation { currentStep += 1 } } label: { Text("Continue") }
                     .primaryButton()
                     .padding(.horizontal, AppTheme.Spacing.xl)
             }
@@ -107,11 +107,11 @@ struct WelcomePage: View {
                         .foregroundStyle(AppTheme.Colors.primary)
                 }
                 VStack(spacing: AppTheme.Spacing.md) {
-                    Text("MathPro'ya\nHoş Geldin!")
+                    Text("welcome_title")
                         .font(AppTheme.Fonts.largeTitle)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
                         .multilineTextAlignment(.center)
-                    Text("Matematik problemlerini fotoğrafla.\nSaniyeler içinde adım adım çözümünü gör.")
+                    Text("welcome_subtitle")
                         .font(AppTheme.Fonts.body)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                         .multilineTextAlignment(.center)
@@ -132,7 +132,7 @@ struct CameraPage: View {
     var body: some View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
-            Text("Fotoğrafla & Anında Çöz")
+            Text("Photograph & Solve Instantly")
                 .font(AppTheme.Fonts.title)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
                 .multilineTextAlignment(.center)
@@ -165,7 +165,7 @@ struct CameraPage: View {
             }
             .frame(height: 280)
 
-            Text("Kameranı probleme tut — çerçeveleme otomatik.")
+            Text("Point your camera at the problem — framing is automatic.")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
@@ -196,15 +196,15 @@ struct CameraPage: View {
 struct StepSolutionPage: View {
     @State private var visibleSteps = 0
     private let steps = [
-        ("1", "Diskriminantı bul", "Δ = 25 + 24 = 49"),
-        ("2", "Karekök al", "√49 = 7"),
-        ("3", "Sonuçlar", "x = ½  veya  x = -3"),
+        ("1", "Find the discriminant", "Δ = 25 + 24 = 49"),
+        ("2", "Take the square root", "√49 = 7"),
+        ("3", "Results", "x = ½  or  x = -3"),
     ]
 
     var body: some View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
-            Text("Adım Adım Öğren")
+            Text("Learn Step by Step")
                 .font(AppTheme.Fonts.title)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -243,7 +243,7 @@ struct StepSolutionPage: View {
             .padding(.horizontal, AppTheme.Spacing.xl)
             .animation(.spring(response: 0.4), value: visibleSteps)
 
-            Text("Her adım neden yapıldığıyla açıklanır.")
+            Text("Each step is explained with the reason it was performed.")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
             Spacer()
@@ -263,24 +263,24 @@ struct ComparisonPage: View {
     var body: some View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
-            Text("Neden MathPro?")
+            Text("Why MathPro?")
                 .font(AppTheme.Fonts.title)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
             HStack(alignment: .top, spacing: AppTheme.Spacing.md) {
-                compCard(title: "Geleneksel", highlighted: false, items: [
-                    ("xmark", "Saatlerce çalışmak"),
-                    ("xmark", "Hata nerede bilinmiyor"),
-                    ("xmark", "Ders kitabında kaybolmak"),
-                    ("xmark", "Sınav stresinde paniklemek"),
+                compCard(title: "Traditional", highlighted: false, items: [
+                    ("xmark", "Hours of manual work"),
+                    ("xmark", "Don't know where the error is"),
+                    ("xmark", "Getting lost in textbooks"),
+                    ("xmark", "Panicking during exam stress"),
                 ])
                 .opacity(highlight ? 0.5 : 1)
 
                 compCard(title: "MathPro AI", highlighted: true, items: [
-                    ("checkmark", "Saniyede çözüm"),
-                    ("checkmark", "Her adım açıklanır"),
-                    ("checkmark", "Fotoğrafla başla"),
-                    ("checkmark", "Gerçekten öğren"),
+                    ("checkmark", "Solution in seconds"),
+                    ("checkmark", "Every step explained"),
+                    ("checkmark", "Start with a photo"),
+                    ("checkmark", "Truly learn"),
                 ])
                 .scaleEffect(highlight ? 1.04 : 1.0)
             }
@@ -328,7 +328,7 @@ struct SocialProofPage: View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
             VStack(spacing: AppTheme.Spacing.xs) {
-                Text("10.000+")
+                Text("10,000+")
                     .font(.system(size: 64, weight: .bold, design: .rounded))
                     .foregroundStyle(AppTheme.Colors.primary)
                     .opacity(show ? 1 : 0)
@@ -336,23 +336,23 @@ struct SocialProofPage: View {
                 HStack(spacing: 4) {
                     ForEach(0..<5, id: \.self) { _ in Image(systemName: "star.fill").font(.caption).foregroundStyle(.yellow) }
                 }
-                Text("öğrenci zaten MathPro kullanıyor")
+                Text("students already use MathPro")
                     .font(AppTheme.Fonts.callout)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
 
             VStack(spacing: AppTheme.Spacing.sm) {
                 HStack(spacing: AppTheme.Spacing.sm) {
-                    subTag("Cebir", .purple); subTag("Geometri", .orange); subTag("Kalkülüs", .indigo)
+                    subTag("Algebra", .purple); subTag("Geometry", .orange); subTag("Calculus", .indigo)
                 }
                 HStack(spacing: AppTheme.Spacing.sm) {
-                    subTag("Trigonometri", .red); subTag("İstatistik", .teal); subTag("Aritmetik", .blue)
+                    subTag("Trigonometry", .red); subTag("Statistics", .teal); subTag("Arithmetic", .blue)
                 }
             }
 
             HStack(spacing: AppTheme.Spacing.sm) {
                 Image(systemName: "cpu").foregroundStyle(AppTheme.Colors.textTertiary)
-                Text("Claude AI ile güçlendirildi")
+                Text("Powered by Claude AI")
                     .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textTertiary)
             }
             .padding(.horizontal, AppTheme.Spacing.md).padding(.vertical, AppTheme.Spacing.sm)
@@ -363,14 +363,14 @@ struct SocialProofPage: View {
         .onAppear { withAnimation(.spring(response: 0.5).delay(0.2)) { show = true } }
     }
 
-    private func subTag(_ label: String, _ color: Color) -> some View {
+    private func subTag(_ label: LocalizedStringKey, _ color: Color) -> some View {
         Text(label).font(.system(size: 13, weight: .medium)).foregroundStyle(color)
             .padding(.horizontal, 14).padding(.vertical, 7)
             .background(color.opacity(0.12)).clipShape(Capsule())
     }
 }
 
-// MARK: - Onboarding Paywall (Son adım)
+// MARK: - Onboarding Paywall (Last step)
 struct OnboardingPaywallView: View {
     let onComplete: () -> Void
     @State private var selectedPlan: Bool = true  // true = trial, false = annual
@@ -391,16 +391,16 @@ struct OnboardingPaywallView: View {
                     .background(AppTheme.Colors.surface)
                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
 
-                    Text("Sınırsız Erişim Elde Et")
+                    Text("Get Unlimited Access")
                         .font(AppTheme.Fonts.largeTitle)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
                         .multilineTextAlignment(.center)
 
                     VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                        featureRow("🔥", "Sınırsız matematik çözümü")
-                        featureRow("📋", "Adım adım detaylı açıklama")
-                        featureRow("🤖", "AI ile soru sor, anlayarak öğren")
-                        featureRow("📚", "Tüm geçmişin kaydedilir")
+                        featureRow("🔥", "Unlimited math solutions")
+                        featureRow("📋", "AI-powered step-by-step explanation")
+                        featureRow("🤖", "Ask AI, learn by understanding")
+                        featureRow("📚", "All history saved")
                     }
                     .padding(AppTheme.Spacing.md)
                     .cardStyle()
@@ -425,7 +425,7 @@ struct OnboardingPaywallView: View {
                     }
                 } label: {
                     if isProcessing { ProgressView().tint(.black) }
-                    else { Text("Ücretsiz Dene") }
+                    else { Text("Try for Free") }
                 }
                 .primaryButton()
                 .disabled(isProcessing)
@@ -433,16 +433,16 @@ struct OnboardingPaywallView: View {
 
                 HStack(spacing: 5) {
                     Image(systemName: "checkmark.shield.fill").font(.caption).foregroundStyle(AppTheme.Colors.primary)
-                    Text("Şimdi ödeme yok. İstediğin zaman iptal et.")
+                    Text("No payment now. Cancel anytime.")
                         .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
                 }
 
                 HStack(spacing: AppTheme.Spacing.sm) {
-                    Button("Geri Yükle") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button("Restore") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                     Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
-                    Button("Gizlilik") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button("Privacy") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                     Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
-                    Button("Şartlar") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button("Terms") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                 }
             }
             .padding(.bottom, AppTheme.Spacing.xxl)
@@ -450,7 +450,7 @@ struct OnboardingPaywallView: View {
         }
     }
 
-    private func featureRow(_ emoji: String, _ text: String) -> some View {
+    private func featureRow(_ emoji: String, _ text: LocalizedStringKey) -> some View {
         HStack(spacing: AppTheme.Spacing.md) {
             Text(emoji).font(.title3)
             Text(text).font(AppTheme.Fonts.callout).foregroundStyle(AppTheme.Colors.textPrimary)
@@ -467,19 +467,19 @@ struct OnboardingPaywallView: View {
                 }
                 VStack(alignment: .leading, spacing: 3) {
                     HStack {
-                        Text(isTrial ? "3 Gün Bedava" : "Yıllık Plan")
+                        Text(isTrial ? "3 Days Free" : "Annual Plan")
                             .font(AppTheme.Fonts.headline).foregroundStyle(AppTheme.Colors.textPrimary)
                         if !isTrial {
-                            Text("EN POPÜLER").font(.system(size: 9, weight: .black)).foregroundStyle(.black)
+                            Text("MOST POPULAR").font(.system(size: 9, weight: .black)).foregroundStyle(.black)
                                 .padding(.horizontal, 7).padding(.vertical, 3)
                                 .background(AppTheme.Colors.primary).clipShape(Capsule())
                         }
                     }
-                    Text(isTrial ? "sonra ₺149,00/hafta" : "₺549,00/yıl • ₺10,53/hafta")
+                    Text(isTrial ? "then ₺149.00/week" : "₺549.00/year • ₺10.53/week")
                         .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
                 }
                 Spacer()
-                Text(isTrial ? "ÜCRETSİZ" : "₺549")
+                Text(isTrial ? "FREE" : "₺549")
                     .font(isTrial ? AppTheme.Fonts.headline : AppTheme.Fonts.callout)
                     .foregroundStyle(isTrial ? AppTheme.Colors.primary : AppTheme.Colors.textPrimary)
             }

@@ -27,7 +27,7 @@ struct SettingsView: View {
                         // Stats
                         statsCard
 
-                        // API Key (geliştirici modu)
+                        // API Key
                         apiSection
 
                         // About
@@ -39,7 +39,7 @@ struct SettingsView: View {
                     .padding(AppTheme.Spacing.md)
                 }
             }
-            .navigationTitle("Ayarlar")
+            .navigationTitle("Settings")
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
         .preferredColorScheme(.dark)
@@ -59,14 +59,14 @@ struct SettingsView: View {
                     Text("MathPro Premium")
                         .font(AppTheme.Fonts.headline)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
-                    Text("Sınırsız çözüm, adım animasyonları")
+                    Text("Unlimited solves, step animations")
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
 
                 Spacer()
 
-                Text("Yükselt")
+                Text("Upgrade")
                     .font(AppTheme.Fonts.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(.black)
@@ -93,21 +93,21 @@ struct SettingsView: View {
     // MARK: - Stats
     private var statsCard: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-            Text("İSTATİSTİKLER")
+            Text("STATISTICS")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
             HStack {
-                statItem(value: "\(records.count)", label: "Toplam Çözüm")
+                statItem(value: "\(records.count)", label: String(localized: "Total Solves"))
                 Divider().frame(height: 40).background(AppTheme.Colors.divider)
                 statItem(
-                    value: "\(Config.freeDailySolveLimit - dailySolveCount)",
-                    label: "Bugün Kalan"
+                    value: "\(max(0, Config.freeDailySolveLimit - dailySolveCount))",
+                    label: String(localized: "Today Remaining")
                 )
                 Divider().frame(height: 40).background(AppTheme.Colors.divider)
                 statItem(
-                    value: isPremium ? "∞" : "Pro",
-                    label: isPremium ? "Plan" : "Plan"
+                    value: isPremium ? "∞" : "Free",
+                    label: String(localized: "Plan")
                 )
             }
             .frame(maxWidth: .infinity)
@@ -131,7 +131,7 @@ struct SettingsView: View {
     // MARK: - API Key Section
     private var apiSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("API ANAHTARI")
+            Text("API KEY")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
@@ -147,7 +147,7 @@ struct SettingsView: View {
                             .font(AppTheme.Fonts.callout)
                             .foregroundStyle(AppTheme.Colors.textPrimary)
                         Spacer()
-                        Text(customAPIKey.isEmpty ? "Ayarlanmadı" : "••••••••")
+                        Text(customAPIKey.isEmpty ? String(localized: "Not Set") : "••••••••")
                             .font(AppTheme.Fonts.caption)
                             .foregroundStyle(AppTheme.Colors.textSecondary)
                         Image(systemName: showAPIKeyField ? "chevron.up" : "chevron.down")
@@ -166,7 +166,7 @@ struct SettingsView: View {
                             .background(AppTheme.Colors.surfaceHigh)
                             .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.sm))
 
-                        Button("Kaydet") {
+                        Button("Save") {
                             customAPIKey = apiKeyInput
                             showAPIKeyField = false
                         }
@@ -180,7 +180,7 @@ struct SettingsView: View {
             .cardStyle()
             .animation(.spring(response: 0.3), value: showAPIKeyField)
 
-            Text("Claude API key'ini anthropic.com'dan alabilirsin.")
+            Text("Get your Claude API key from anthropic.com")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
         }
@@ -189,16 +189,16 @@ struct SettingsView: View {
     // MARK: - About
     private var aboutSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("UYGULAMA")
+            Text("APP")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
             VStack(spacing: 0) {
-                settingsRow(icon: "star.fill", color: .yellow, title: "Uygulamayı Değerlendir") {}
+                settingsRow(icon: "star.fill",           color: .yellow,                   title: "Rate the App") {}
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
-                settingsRow(icon: "square.and.arrow.up", color: .blue, title: "Arkadaşlarla Paylaş") {}
+                settingsRow(icon: "square.and.arrow.up", color: .blue,                     title: "Share with Friends") {}
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
-                settingsRow(icon: "envelope.fill", color: AppTheme.Colors.primary, title: "Geri Bildirim Gönder") {}
+                settingsRow(icon: "envelope.fill",       color: AppTheme.Colors.primary,   title: "Send Feedback") {}
             }
             .cardStyle()
         }
@@ -207,7 +207,7 @@ struct SettingsView: View {
     // MARK: - Danger Zone
     private var dangerSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("VERİ")
+            Text("DATA")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
@@ -217,26 +217,26 @@ struct SettingsView: View {
                 HStack {
                     Image(systemName: "trash.fill")
                         .foregroundStyle(AppTheme.Colors.error)
-                    Text("Tüm Geçmişi Temizle")
+                    Text("Clear All History")
                         .font(AppTheme.Fonts.callout)
                         .foregroundStyle(AppTheme.Colors.error)
                     Spacer()
-                    Text("\(records.count) kayıt")
+                    Text(String(format: NSLocalizedString("%d records", comment: ""), records.count))
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textTertiary)
                 }
                 .padding(AppTheme.Spacing.md)
                 .cardStyle()
             }
-            .confirmationDialog("Tüm geçmiş silinecek", isPresented: $showClearConfirm, titleVisibility: .visible) {
-                Button("Sil", role: .destructive) {
+            .confirmationDialog("All history will be deleted", isPresented: $showClearConfirm, titleVisibility: .visible) {
+                Button("Delete", role: .destructive) {
                     records.forEach { modelContext.delete($0) }
                 }
             }
         }
     }
 
-    private func settingsRow(icon: String, color: Color, title: String, action: @escaping () -> Void) -> some View {
+    private func settingsRow(icon: String, color: Color, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: AppTheme.Spacing.md) {
                 ZStack {

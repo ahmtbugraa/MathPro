@@ -56,8 +56,8 @@ struct CameraView: View {
     // MARK: - Mode Switcher
     private var modeSwitcher: some View {
         HStack(spacing: 0) {
-            modeButton("Kamera", icon: "camera.fill", mode: .camera)
-            modeButton("Çizim", icon: "pencil.tip", mode: .pencil)
+            modeButton("Camera", icon: "camera.fill", mode: .camera)
+            modeButton("Drawing", icon: "pencil.tip", mode: .pencil)
         }
         .padding(4)
         .background(Color.white.opacity(0.08))
@@ -66,7 +66,7 @@ struct CameraView: View {
         .padding(.horizontal, AppTheme.Spacing.xl)
     }
 
-    private func modeButton(_ label: String, icon: String, mode: InputMode) -> some View {
+    private func modeButton(_ label: LocalizedStringKey, icon: String, mode: InputMode) -> some View {
         Button {
             withAnimation(.spring(response: 0.3)) { inputMode = mode }
         } label: {
@@ -120,7 +120,7 @@ struct CameraView: View {
                     .stroke(AppTheme.Colors.primary, lineWidth: 2.5)
                     .frame(width: w, height: h)
                     .position(x: geo.size.width / 2, y: geo.size.height / 2)
-                Text("Matematik problemini çerçeveye al")
+                Text("Frame the math problem")
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                     .position(x: geo.size.width / 2, y: y + h + 16)
@@ -185,15 +185,15 @@ struct CameraView: View {
             Image(systemName: "camera.fill")
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.Colors.primary)
-            Text("Kamera İzni Gerekli")
+            Text("Camera Permission Required")
                 .font(AppTheme.Fonts.title2)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
-            Text(vm.cameraError ?? "Matematik problemlerini fotoğraflamak için kamera erişimine ihtiyaç var.")
+            Text(vm.cameraError ?? String(localized: "Camera access is required to photograph math problems."))
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, AppTheme.Spacing.xl)
-            Button("Ayarları Aç") {
+            Button("Open Settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }

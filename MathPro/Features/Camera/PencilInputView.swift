@@ -1,7 +1,7 @@
 import SwiftUI
 import PencilKit
 
-/// Apple Pencil veya parmakla matematik problemi çizimi için canvas.
+/// Apple Pencil or finger canvas for drawing math problems.
 struct PencilInputView: View {
     var onSolve: (UIImage) -> Void
 
@@ -17,7 +17,7 @@ struct PencilInputView: View {
             VStack(spacing: 0) {
                 // Top bar
                 HStack {
-                    Text("Problemini Çiz")
+                    Text("Draw Your Problem")
                         .font(AppTheme.Fonts.headline)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
 
@@ -69,7 +69,7 @@ struct PencilInputView: View {
 
                 // Hint
                 if isEmpty {
-                    Text("Apple Pencil veya parmağınla matematik problemini yaz")
+                    Text("Write your math problem with Apple Pencil or finger")
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textTertiary)
                         .multilineTextAlignment(.center)
@@ -82,7 +82,7 @@ struct PencilInputView: View {
                 } label: {
                     HStack(spacing: AppTheme.Spacing.sm) {
                         Image(systemName: "sparkles")
-                        Text("Çözümü Göster")
+                        Text("Show Solution")
                     }
                 }
                 .primaryButton()
@@ -93,8 +93,8 @@ struct PencilInputView: View {
                 .padding(.bottom, AppTheme.Spacing.xxl)
             }
         }
-        .confirmationDialog("Canvas temizlenecek", isPresented: $showClearConfirm) {
-            Button("Temizle", role: .destructive) {
+        .confirmationDialog("Canvas will be cleared", isPresented: $showClearConfirm) {
+            Button("Clear", role: .destructive) {
                 canvasView.drawing = PKDrawing()
                 isEmpty = true
             }
@@ -106,7 +106,7 @@ struct PencilInputView: View {
             from: canvasView.bounds,
             scale: UIScreen.main.scale
         )
-        // Beyaz arka plan üzerine çiz (AI için daha iyi)
+        // Draw on white background (better for AI)
         let renderer = UIGraphicsImageRenderer(size: image.size)
         let final = renderer.image { ctx in
             UIColor.white.setFill()
@@ -126,11 +126,11 @@ struct CanvasRepresentable: UIViewRepresentable {
     func makeUIView(context: Context) -> PKCanvasView {
         canvasView.backgroundColor = .clear
         canvasView.isOpaque = false
-        canvasView.drawingPolicy = .anyInput  // Hem Pencil hem parmak
+        canvasView.drawingPolicy = .anyInput  // Both Pencil and finger
         canvasView.tool = PKInkingTool(.pen, color: .black, width: 3)
         canvasView.delegate = context.coordinator
 
-        // Tool picker göster
+        // Show tool picker
         toolPicker.addObserver(canvasView)
         toolPicker.setVisible(true, forFirstResponder: canvasView)
 

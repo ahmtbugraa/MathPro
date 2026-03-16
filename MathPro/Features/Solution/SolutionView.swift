@@ -52,11 +52,11 @@ struct SolutionView: View {
         }
         .task { await checkLimitAndSolve() }
         .sheet(isPresented: $showPaywall) { PaywallView() }
-        .alert("Günlük Limit Doldu", isPresented: $showLimitAlert) {
-            Button("Premium'a Geç") { showPaywall = true }
-            Button("Tamam", role: .cancel) { dismiss() }
+        .alert("Daily Limit Reached", isPresented: $showLimitAlert) {
+            Button("Go Premium") { showPaywall = true }
+            Button("OK", role: .cancel) { dismiss() }
         } message: {
-            Text("Bugün \(Config.freeDailySolveLimit) ücretsiz çözüm hakkını kullandın. Sınırsız çözüm için Premium'a geç.")
+            Text(String(format: NSLocalizedString("daily_limit_message", comment: ""), Config.freeDailySolveLimit))
         }
         .preferredColorScheme(.dark)
     }
@@ -78,10 +78,10 @@ struct SolutionView: View {
                     .font(.title2)
                     .foregroundStyle(AppTheme.Colors.primary)
             }
-            Text("Çözüm Hesaplanıyor...")
+            Text("Calculating Solution...")
                 .font(AppTheme.Fonts.headline)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
-            Text("Adım adım açıklama hazırlanıyor")
+            Text("Preparing step-by-step explanation")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
@@ -93,7 +93,7 @@ struct SolutionView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 52))
                 .foregroundStyle(AppTheme.Colors.error)
-            Text("Bir hata oluştu")
+            Text("An error occurred")
                 .font(AppTheme.Fonts.title2)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
             Text(msg)
@@ -101,7 +101,7 @@ struct SolutionView: View {
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, AppTheme.Spacing.xl)
-            Button("Tekrar Dene") { Task { await checkLimitAndSolve() } }
+            Button("Try Again") { Task { await checkLimitAndSolve() } }
                 .primaryButton()
                 .padding(.horizontal, AppTheme.Spacing.xl)
         }
@@ -131,9 +131,8 @@ struct SolutionView: View {
                             .background(sol.subject.color.opacity(0.15))
                             .clipShape(Capsule())
                         Spacer()
-                        // Kalan hak göstergesi (premium değilse)
                         if !usage.isPremium {
-                            Text("\(usage.remaining) hak kaldı")
+                            (Text(verbatim: "\(usage.remaining) ") + Text("solves remaining"))
                                 .font(AppTheme.Fonts.caption)
                                 .foregroundStyle(usage.remaining <= 1 ? AppTheme.Colors.error : AppTheme.Colors.textTertiary)
                         }
@@ -147,11 +146,10 @@ struct SolutionView: View {
 
                 // Answer — KaTeX render
                 VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                    Text("CEVAP")
+                    Text("ANSWER")
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textTertiary)
 
-                    // KaTeX ile render — düz metin fallback
                     if sol.answer.contains("\\") || sol.answer.contains("^") || sol.answer.contains("_") {
                         DisplayMathView(latex: sol.answer)
                     } else {
@@ -172,7 +170,7 @@ struct SolutionView: View {
                 // Steps
                 if !sol.steps.isEmpty {
                     VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                        Text("ADIM ADIM ÇÖZÜM")
+                        Text("STEP-BY-STEP SOLUTION")
                             .font(AppTheme.Fonts.caption)
                             .foregroundStyle(AppTheme.Colors.textTertiary)
                             .padding(.bottom, AppTheme.Spacing.xs)
@@ -208,7 +206,6 @@ struct SolutionView: View {
             solution = try await aiService.solve(image: image)
             usage.recordSolve()
             autoSave()
-            // Review prompt
             if usage.shouldShowReview {
                 try? await Task.sleep(for: .seconds(1.5))
                 await requestReview()

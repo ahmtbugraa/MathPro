@@ -28,8 +28,8 @@ struct HistoryView: View {
                     recordList
                 }
             }
-            .navigationTitle("Geçmiş")
-            .searchable(text: $searchText, prompt: "Konu veya problem ara...")
+            .navigationTitle("History")
+            .searchable(text: $searchText, prompt: "Search by topic or problem...")
         }
         .preferredColorScheme(.dark)
     }
@@ -41,11 +41,11 @@ struct HistoryView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
-            Text("Henüz çözüm yok")
+            Text("No solutions yet")
                 .font(AppTheme.Fonts.title2)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
-            Text("Matematik problemi çekince çözümler burada görünecek.")
+            Text("Solutions will appear here after solving math problems.")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
                 .multilineTextAlignment(.center)
@@ -63,7 +63,7 @@ struct HistoryView: View {
                             Button(role: .destructive) {
                                 modelContext.delete(record)
                             } label: {
-                                Label("Sil", systemImage: "trash")
+                                Label("Delete", systemImage: "trash")
                             }
                         }
                 }
@@ -98,7 +98,7 @@ struct HistoryRowView: View {
             }
 
             VStack(alignment: .leading, spacing: AppTheme.Spacing.xs) {
-                Text(record.problemText.isEmpty ? "Problem" : record.problemText)
+                Text(record.problemText.isEmpty ? String(localized: "Problem") : record.problemText)
                     .font(AppTheme.Fonts.headline)
                     .foregroundStyle(AppTheme.Colors.textPrimary)
                     .lineLimit(1)

@@ -8,37 +8,33 @@ struct PaywallView: View {
     @State private var isProcessing = false
 
     enum Plan: String, CaseIterable {
-        case weekly  = "Haftalık"
-        case annual  = "Yıllık"
-        case lifetime = "Ömür Boyu"
+        case weekly  = "Weekly"
+        case annual  = "Annual"
 
         var price: String {
             switch self {
-            case .weekly:   return "₺99"
-            case .annual:   return "₺499"
-            case .lifetime: return "₺999"
+            case .weekly: return "₺99"
+            case .annual: return "₺499"
             }
         }
 
         var period: String {
             switch self {
-            case .weekly:   return "/ hafta"
-            case .annual:   return "/ yıl"
-            case .lifetime: return "tek seferlik"
+            case .weekly: return "/ week"
+            case .annual: return "/ year"
             }
         }
 
         var badge: String? {
             switch self {
-            case .annual:   return "EN POPÜLER"
-            case .lifetime: return "EN İYİ DEĞER"
-            default:        return nil
+            case .annual: return "MOST POPULAR"
+            default:      return nil
             }
         }
 
         var monthlyEquivalent: String? {
             switch self {
-            case .annual: return "≈ ₺42/ay"
+            case .annual: return "≈ ₺42/month"
             default: return nil
             }
         }
@@ -95,7 +91,7 @@ struct PaywallView: View {
                 .font(AppTheme.Fonts.largeTitle)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
-            Text("Sınırsız çözüm. Adım adım öğren.")
+            Text("Unlimited solves. Learn step by step.")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
@@ -105,11 +101,11 @@ struct PaywallView: View {
     // MARK: - Features
     private var featuresSection: some View {
         VStack(spacing: AppTheme.Spacing.sm) {
-            featureRow(icon: "infinity", text: "Sınırsız günlük çözüm")
-            featureRow(icon: "list.number",    text: "Adım adım detaylı açıklama")
-            featureRow(icon: "clock.arrow.circlepath", text: "Sınırsız geçmiş")
-            featureRow(icon: "ipad.and.iphone", text: "Tüm cihazlarda çalışır")
-            featureRow(icon: "bolt.fill",       text: "Öncelikli AI yanıt süresi")
+            featureRow(icon: "infinity",                   text: "Unlimited daily solves")
+            featureRow(icon: "list.number",                text: "Detailed step-by-step explanation")
+            featureRow(icon: "clock.arrow.circlepath",     text: "Unlimited history")
+            featureRow(icon: "ipad.and.iphone",            text: "Works on all devices")
+            featureRow(icon: "bolt.fill",                  text: "Priority AI response time")
         }
         .padding(AppTheme.Spacing.md)
         .cardStyle()
@@ -165,11 +161,11 @@ struct PaywallView: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
-                        Text(plan.rawValue)
+                        Text(LocalizedStringKey(plan.rawValue))
                             .font(AppTheme.Fonts.headline)
                             .foregroundStyle(AppTheme.Colors.textPrimary)
                         if let badge = plan.badge {
-                            Text(badge)
+                            Text(LocalizedStringKey(badge))
                                 .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(.black)
                                 .padding(.horizontal, 6)
@@ -191,7 +187,7 @@ struct PaywallView: View {
                     Text(plan.price)
                         .font(AppTheme.Fonts.title2)
                         .foregroundStyle(AppTheme.Colors.textPrimary)
-                    Text(plan.period)
+                    Text(LocalizedStringKey(plan.period))
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
@@ -222,13 +218,13 @@ struct PaywallView: View {
                 if isProcessing {
                     ProgressView().tint(.black)
                 } else {
-                    Text("Şimdi Başla — \(selectedPlan.price)")
+                    Text("Start Now — \(selectedPlan.price)")
                 }
             }
             .primaryButton()
             .disabled(isProcessing)
 
-            Text("3 gün ücretsiz dene, istediğin zaman iptal et")
+            Text("Try 3 days free, cancel anytime")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
         }
@@ -238,15 +234,15 @@ struct PaywallView: View {
     private var legalSection: some View {
         VStack(spacing: AppTheme.Spacing.xs) {
             HStack(spacing: AppTheme.Spacing.md) {
-                Button("Satın Alımı Geri Yükle") {}
+                Button("Restore Purchase") {}
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                 Text("•").foregroundStyle(AppTheme.Colors.textTertiary)
-                Button("Gizlilik Politikası") {}
+                Button("Privacy Policy") {}
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                 Text("•").foregroundStyle(AppTheme.Colors.textTertiary)
-                Button("Kullanım Şartları") {}
+                Button("Terms of Use") {}
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
@@ -255,13 +251,11 @@ struct PaywallView: View {
     }
 
     private func purchase() {
-        // Faz 2: RevenueCat entegrasyonu
         isProcessing = true
         Task {
             try? await Task.sleep(for: .seconds(1.5))
             await MainActor.run {
                 isProcessing = false
-                // isPremium = true  // RevenueCat onayladıktan sonra
                 dismiss()
             }
         }

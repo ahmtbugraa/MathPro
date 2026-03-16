@@ -88,37 +88,33 @@ final class SubscriptionService {
 
 // MARK: - Plans
 enum SubscriptionPlan: CaseIterable {
-    case weeklyTrial, annual, lifetime
+    case weeklyTrial, annual
 
     var packageId: String {
         switch self {
         case .weeklyTrial: return "$rc_weekly"
         case .annual:      return "$rc_annual"
-        case .lifetime:    return "$rc_lifetime"
         }
     }
 
     var displayTitle: String {
         switch self {
-        case .weeklyTrial: return "3 Gün Bedava"
-        case .annual:      return "Yıllık Plan"
-        case .lifetime:    return "Ömür Boyu"
+        case .weeklyTrial: return "3 Days Free"
+        case .annual:      return "Annual Plan"
         }
     }
 
     var displayPrice: String {
         switch self {
-        case .weeklyTrial: return "ÜCRETSİZ"
+        case .weeklyTrial: return "FREE"
         case .annual:      return "₺549"
-        case .lifetime:    return "₺999"
         }
     }
 
     var subtitle: String {
         switch self {
-        case .weeklyTrial: return "sonra ₺149,00/hafta"
-        case .annual:      return "₺549,00/yıl • ₺10,53/hafta"
-        case .lifetime:    return "tek seferlik ödeme"
+        case .weeklyTrial: return "then ₺149.00/week"
+        case .annual:      return "₺549.00/year • ₺10.53/week"
         }
     }
 }

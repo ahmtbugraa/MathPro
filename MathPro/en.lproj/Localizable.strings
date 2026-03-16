@@ -1,0 +1,121 @@
+/* Tab Bar */
+"Solve" = "Solve";
+"History" = "History";
+"Settings" = "Settings";
+
+/* Camera View */
+"Camera" = "Camera";
+"Drawing" = "Drawing";
+"Frame the math problem" = "Frame the math problem";
+"Camera Permission Required" = "Camera Permission Required";
+"Camera access is required to photograph math problems." = "Camera access is required to photograph math problems.";
+"Open Settings" = "Open Settings";
+
+/* Pencil Input View */
+"Draw Your Problem" = "Draw Your Problem";
+"Write your math problem with Apple Pencil or finger" = "Write your math problem with Apple Pencil or finger";
+"Show Solution" = "Show Solution";
+"Canvas will be cleared" = "Canvas will be cleared";
+"Clear" = "Clear";
+
+/* Solution View */
+"Calculating Solution..." = "Calculating Solution...";
+"Preparing step-by-step explanation" = "Preparing step-by-step explanation";
+"An error occurred" = "An error occurred";
+"Try Again" = "Try Again";
+"ANSWER" = "ANSWER";
+"STEP-BY-STEP SOLUTION" = "STEP-BY-STEP SOLUTION";
+"solves remaining" = "solves remaining";
+"Daily Limit Reached" = "Daily Limit Reached";
+"daily_limit_message" = "You've used your %d free daily solves. Go Premium for unlimited solutions.";
+"Go Premium" = "Go Premium";
+"OK" = "OK";
+
+/* History View */
+"No solutions yet" = "No solutions yet";
+"Solutions will appear here after solving math problems." = "Solutions will appear here after solving math problems.";
+"Search by topic or problem..." = "Search by topic or problem...";
+"Delete" = "Delete";
+"Problem" = "Problem";
+
+/* Settings View */
+"MathPro Premium" = "MathPro Premium";
+"Unlimited solves, step animations" = "Unlimited solves, step animations";
+"Upgrade" = "Upgrade";
+"STATISTICS" = "STATISTICS";
+"Total Solves" = "Total Solves";
+"Today Remaining" = "Today Remaining";
+"Plan" = "Plan";
+"API KEY" = "API KEY";
+"Anthropic API Key" = "Anthropic API Key";
+"Not Set" = "Not Set";
+"Save" = "Save";
+"Get your Claude API key from anthropic.com" = "Get your Claude API key from anthropic.com";
+"APP" = "APP";
+"Rate the App" = "Rate the App";
+"Share with Friends" = "Share with Friends";
+"Send Feedback" = "Send Feedback";
+"DATA" = "DATA";
+"Clear All History" = "Clear All History";
+"%d records" = "%d records";
+"All history will be deleted" = "All history will be deleted";
+
+/* Paywall View */
+"Unlimited solves. Learn step by step." = "Unlimited solves. Learn step by step.";
+"Unlimited daily solves" = "Unlimited daily solves";
+"Detailed step-by-step explanation" = "Detailed step-by-step explanation";
+"Unlimited history" = "Unlimited history";
+"Works on all devices" = "Works on all devices";
+"Priority AI response time" = "Priority AI response time";
+"Weekly" = "Weekly";
+"Annual" = "Annual";
+"MOST POPULAR" = "MOST POPULAR";
+"/ week" = "/ week";
+"/ year" = "/ year";
+"Try 3 days free, cancel anytime" = "Try 3 days free, cancel anytime";
+"Restore Purchase" = "Restore Purchase";
+"Privacy Policy" = "Privacy Policy";
+"Terms of Use" = "Terms of Use";
+
+/* Onboarding View */
+"Skip" = "Skip";
+"Continue" = "Continue";
+"welcome_title" = "Welcome to\nMathPro!";
+"welcome_subtitle" = "Photograph math problems.\nSee step-by-step solutions in seconds.";
+"Photograph & Solve Instantly" = "Photograph & Solve Instantly";
+"Point your camera at the problem — framing is automatic." = "Point your camera at the problem — framing is automatic.";
+"Learn Step by Step" = "Learn Step by Step";
+"Each step is explained with the reason it was performed." = "Each step is explained with the reason it was performed.";
+"Why MathPro?" = "Why MathPro?";
+"Traditional" = "Traditional";
+"Hours of manual work" = "Hours of manual work";
+"Don't know where the error is" = "Don't know where the error is";
+"Getting lost in textbooks" = "Getting lost in textbooks";
+"Panicking during exam stress" = "Panicking during exam stress";
+"Solution in seconds" = "Solution in seconds";
+"Every step explained" = "Every step explained";
+"Start with a photo" = "Start with a photo";
+"Truly learn" = "Truly learn";
+"students already use MathPro" = "students already use MathPro";
+"Powered by Claude AI" = "Powered by Claude AI";
+"Algebra" = "Algebra";
+"Geometry" = "Geometry";
+"Calculus" = "Calculus";
+"Trigonometry" = "Trigonometry";
+"Statistics" = "Statistics";
+"Arithmetic" = "Arithmetic";
+"Get Unlimited Access" = "Get Unlimited Access";
+"Unlimited math solutions" = "Unlimited math solutions";
+"AI-powered step-by-step explanation" = "AI-powered step-by-step explanation";
+"Ask AI, learn by understanding" = "Ask AI, learn by understanding";
+"All history saved" = "All history saved";
+"3 Days Free" = "3 Days Free";
+"Annual Plan" = "Annual Plan";
+"then ₺149.00/week" = "then ₺149.00/week";
+"₺549.00/year • ₺10.53/week" = "₺549.00/year • ₺10.53/week";
+"FREE" = "FREE";
+"Try for Free" = "Try for Free";
+"No payment now. Cancel anytime." = "No payment now. Cancel anytime.";
+"Restore" = "Restore";
+"Privacy" = "Privacy";
+"Terms" = "Terms";

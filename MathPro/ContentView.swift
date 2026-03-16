@@ -46,9 +46,9 @@ struct ContentView: View {
 
     private var customTabBar: some View {
         HStack(spacing: 0) {
-            tabItem(icon: "camera.fill",    label: "Çöz",     tab: .camera)
-            tabItem(icon: "clock.fill",     label: "Geçmiş",  tab: .history)
-            tabItem(icon: "gearshape.fill", label: "Ayarlar", tab: .settings)
+            tabItem(icon: "camera.fill",    label: "Solve",    tab: .camera)
+            tabItem(icon: "clock.fill",     label: "History",  tab: .history)
+            tabItem(icon: "gearshape.fill", label: "Settings", tab: .settings)
         }
         .padding(.top, AppTheme.Spacing.sm)
         .padding(.bottom, AppTheme.Spacing.xl)
