@@ -1,16 +1,19 @@
 import SwiftUI
 import SwiftData
+import StoreKit
 
 struct SettingsView: View {
     @AppStorage("dailySolveCount") private var dailySolveCount = 0
     @AppStorage("isPremium")       private var isPremium = false
     @AppStorage("apiKey")          private var customAPIKey = ""
+    @AppStorage("educationLevel")  private var educationLevel: String = EducationLevel.high.rawValue
 
     @Environment(\.modelContext) private var modelContext
     @Query private var records: [SolveRecord]
 
     @State private var showClearConfirm = false
     @State private var showPaywall = false
+    @State private var showRestoreSuccess = false
     @State private var apiKeyInput = ""
     @State private var showAPIKeyField = false
 
@@ -27,6 +30,12 @@ struct SettingsView: View {
                         // Stats
                         statsCard
 
+                        // Education Level
+                        educationSection
+
+                        // Subscription
+                        subscriptionSection
+
                         // API Key
                         apiSection
 
@@ -42,6 +51,11 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
+        .alert(String(localized: "Restored!"), isPresented: $showRestoreSuccess) {
+            Button("OK") {}
+        } message: {
+            Text(String(localized: "Your subscription has been restored."))
+        }
         .preferredColorScheme(.dark)
     }
 
@@ -128,6 +142,54 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity)
     }
 
+    // MARK: - Education Level
+    private var educationSection: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+            Text("education_level_section")
+                .font(AppTheme.Fonts.caption)
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+
+            VStack(spacing: 0) {
+                ForEach(Array(EducationLevel.allCases.enumerated()), id: \.element.id) { idx, level in
+                    let isSelected = educationLevel == level.rawValue
+                    Button {
+                        withAnimation(.spring(response: 0.25)) {
+                            educationLevel = level.rawValue
+                            EducationLevel.save(level)
+                        }
+                    } label: {
+                        HStack(spacing: AppTheme.Spacing.md) {
+                            Text(level.emoji)
+                                .font(.title3)
+
+                            Text(level.localizedName)
+                                .font(AppTheme.Fonts.callout)
+                                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+                            Spacer()
+
+                            if isSelected {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundStyle(AppTheme.Colors.primary)
+                            }
+                        }
+                        .padding(AppTheme.Spacing.md)
+                        .background(isSelected ? AppTheme.Colors.primarySoft : Color.clear)
+                    }
+
+                    if idx < EducationLevel.allCases.count - 1 {
+                        Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
+                    }
+                }
+            }
+            .cardStyle()
+
+            Text("education_level_hint")
+                .font(AppTheme.Fonts.caption)
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+        }
+    }
+
     // MARK: - API Key Section
     private var apiSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
@@ -186,6 +248,31 @@ struct SettingsView: View {
         }
     }
 
+    // MARK: - Subscription Management
+    private var subscriptionSection: some View {
+        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
+            Text("SUBSCRIPTION")
+                .font(AppTheme.Fonts.caption)
+                .foregroundStyle(AppTheme.Colors.textTertiary)
+
+            VStack(spacing: 0) {
+                settingsRow(icon: "arrow.clockwise", color: AppTheme.Colors.primary, title: "Restore Purchase") {
+                    Task {
+                        let restored = await SubscriptionService.shared.restore()
+                        if restored { showRestoreSuccess = true }
+                    }
+                }
+                Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
+                settingsRow(icon: "gear", color: .gray, title: "Manage Subscription") {
+                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
+                        UIApplication.shared.open(url)
+                    }
+                }
+            }
+            .cardStyle()
+        }
+    }
+
     // MARK: - About
     private var aboutSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
@@ -194,11 +281,27 @@ struct SettingsView: View {
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
             VStack(spacing: 0) {
-                settingsRow(icon: "star.fill",           color: .yellow,                   title: "Rate the App") {}
+                settingsRow(icon: "star.fill",           color: .yellow,                   title: "Rate the App") {
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        SKStoreReviewController.requestReview(in: scene)
+                    }
+                }
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
-                settingsRow(icon: "square.and.arrow.up", color: .blue,                     title: "Share with Friends") {}
+                settingsRow(icon: "square.and.arrow.up", color: .blue,                     title: "Share with Friends") {
+                    let text = String(localized: "share_watermark")
+                    let url = URL(string: "https://apps.apple.com/app/mathpro/id6651818007")!
+                    let av = UIActivityViewController(activityItems: [text, url], applicationActivities: nil)
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                       let root = scene.windows.first?.rootViewController {
+                        root.present(av, animated: true)
+                    }
+                }
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
-                settingsRow(icon: "envelope.fill",       color: AppTheme.Colors.primary,   title: "Send Feedback") {}
+                settingsRow(icon: "envelope.fill",       color: AppTheme.Colors.primary,   title: "Send Feedback") {
+                    if let url = URL(string: "mailto:ahmetbugrakacdi@gmail.com?subject=MathPro%20Feedback") {
+                        UIApplication.shared.open(url)
+                    }
+                }
             }
             .cardStyle()
         }

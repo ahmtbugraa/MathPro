@@ -10,6 +10,10 @@ import SwiftData
 
 @main
 struct MathProApp: App {
+    init() {
+        SubscriptionService.shared.configure()
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()

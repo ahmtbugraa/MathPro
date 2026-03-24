@@ -1,92 +1,134 @@
 import SwiftUI
 
+// MARK: - Timeline Step View (Notebook Style)
 struct StepCardView: View {
     let step: SolutionStep
-    @State private var isExpanded = false
+    let isLast: Bool
+
+    init(step: SolutionStep, isLast: Bool = false) {
+        self.step = step
+        self.isLast = isLast
+    }
+
+    @State private var appeared = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Header row
-            Button {
-                withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
-                    isExpanded.toggle()
-                }
-            } label: {
-                HStack(spacing: AppTheme.Spacing.md) {
-                    // Step number badge
-                    ZStack {
-                        Circle()
-                            .fill(AppTheme.Colors.primarySoft)
-                            .frame(width: 32, height: 32)
-                        Text("\(step.stepNumber)")
-                            .font(AppTheme.Fonts.caption)
-                            .fontWeight(.bold)
-                            .foregroundStyle(AppTheme.Colors.primary)
-                    }
+        HStack(alignment: .top, spacing: 0) {
+            // Timeline column
+            timelineColumn
 
-                    Text(step.title)
-                        .font(AppTheme.Fonts.headline)
-                        .foregroundStyle(AppTheme.Colors.textPrimary)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-
-                    Spacer()
-
-                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                }
-                .padding(AppTheme.Spacing.md)
-            }
-
-            // Expanded detail
-            if isExpanded {
-                VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                    Divider()
-                        .background(AppTheme.Colors.divider)
-
-                    if let expr = step.expression, !expr.isEmpty {
-                        Text(expr)
-                            .font(AppTheme.Fonts.math)
-                            .foregroundStyle(AppTheme.Colors.primary)
-                            .padding(.horizontal, AppTheme.Spacing.md)
-                            .padding(.top, AppTheme.Spacing.sm)
-                    }
-
-                    Text(step.explanation)
-                        .font(AppTheme.Fonts.callout)
-                        .foregroundStyle(AppTheme.Colors.textSecondary)
-                        .padding(.horizontal, AppTheme.Spacing.md)
-                        .padding(.bottom, AppTheme.Spacing.md)
-                }
-                .transition(.opacity.combined(with: .move(edge: .top)))
-            }
+            // Content column
+            contentColumn
         }
-        .cardStyle()
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared ? 0 : 12)
         .onAppear {
-            // İlk adımı otomatik aç
-            if step.stepNumber == 1 { isExpanded = true }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(Double(step.stepNumber - 1) * 0.1)) {
+                appeared = true
+            }
         }
+    }
+
+    // MARK: - Timeline Column
+    private var timelineColumn: some View {
+        VStack(spacing: 0) {
+            // Step number circle
+            ZStack {
+                Circle()
+                    .fill(AppTheme.Colors.primary)
+                    .frame(width: 32, height: 32)
+
+                Text("\(step.stepNumber)")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(.black)
+            }
+
+            // Connecting line
+            if !isLast {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            colors: [AppTheme.Colors.primary.opacity(0.6), AppTheme.Colors.primary.opacity(0.15)],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                    )
+                    .frame(width: 2)
+                    .frame(maxHeight: .infinity)
+            }
+        }
+        .frame(width: 32)
+        .padding(.trailing, 14)
+    }
+
+    // MARK: - Content Column
+    private var contentColumn: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            // Title
+            Text(step.title)
+                .font(.system(size: 16, weight: .semibold, design: .rounded))
+                .foregroundStyle(AppTheme.Colors.textPrimary)
+
+            // Explanation
+            Text(step.explanation)
+                .font(.system(size: 14.5, weight: .regular))
+                .foregroundStyle(AppTheme.Colors.textSecondary)
+                .lineSpacing(3)
+                .fixedSize(horizontal: false, vertical: true)
+
+            // Math expression (KaTeX rendered)
+            if let expr = step.expression, !expr.isEmpty {
+                DisplayMathView(latex: expr, fontSize: 18)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 4)
+                    .padding(.horizontal, 12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(AppTheme.Colors.primary.opacity(0.06))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(AppTheme.Colors.primary.opacity(0.15), lineWidth: 1)
+                            )
+                    )
+            }
+        }
+        .padding(.bottom, isLast ? 0 : 24)
     }
 }
 
 #Preview {
-    VStack(spacing: 12) {
-        StepCardView(step: SolutionStep(
-            stepNumber: 1,
-            title: "Denklemi yeniden yaz",
-            explanation: "2x + 3 = 7 denklemini çözmek için önce sabit terimi sola alıyoruz.",
-            expression: "2x + 3 = 7"
-        ))
-        StepCardView(step: SolutionStep(
-            stepNumber: 2,
-            title: "Sabiti taşı",
-            explanation: "Her iki taraftan 3 çıkarıyoruz.",
-            expression: "2x = 7 - 3 = 4"
-        ))
+    ScrollView {
+        VStack(alignment: .leading, spacing: 0) {
+            StepCardView(
+                step: SolutionStep(
+                    stepNumber: 1,
+                    title: "Denklemi yeniden yaz",
+                    explanation: "2x + 3 = 7 denklemini cozmek icin once sabit terimi sola aliyoruz.",
+                    expression: "2x + 3 = 7"
+                ),
+                isLast: false
+            )
+            StepCardView(
+                step: SolutionStep(
+                    stepNumber: 2,
+                    title: "Sabiti tasi",
+                    explanation: "Her iki taraftan 3 cikariyoruz.",
+                    expression: "2x = 7 - 3 = 4"
+                ),
+                isLast: false
+            )
+            StepCardView(
+                step: SolutionStep(
+                    stepNumber: 3,
+                    title: "x'i bul",
+                    explanation: "Her iki tarafi 2'ye boluyoruz.",
+                    expression: "x = \\frac{4}{2} = 2"
+                ),
+                isLast: true
+            )
+        }
+        .padding(20)
     }
-    .padding()
     .background(AppTheme.Colors.background)
     .preferredColorScheme(.dark)
 }

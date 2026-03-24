@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		RC0000012F700000AAAAAAAA /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = RC0000022F700000AAAAAAAA /* RevenueCat */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		087DB24B2F682D6600A4D3B5 /* MathPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MathPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				RC0000012F700000AAAAAAAA /* RevenueCat in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = MathPro;
 			packageProductDependencies = (
+				RC0000022F700000AAAAAAAA /* RevenueCat */,
 			);
 			productName = MathPro;
 			productReference = 087DB24B2F682D6600A4D3B5 /* MathPro.app */;
@@ -95,6 +101,9 @@
 			);
 			mainGroup = 087DB2422F682D6600A4D3B5;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				RC0000032F700000AAAAAAAA /* XCRemoteSwiftPackageReference "purchases-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 087DB24C2F682D6600A4D3B5 /* Products */;
 			projectDirPath = "";
@@ -186,6 +195,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -243,6 +253,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -337,6 +348,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		RC0000032F700000AAAAAAAA /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		RC0000022F700000AAAAAAAA /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = RC0000032F700000AAAAAAAA /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 087DB2432F682D6600A4D3B5 /* Project object */;
 }

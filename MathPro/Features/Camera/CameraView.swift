@@ -1,94 +1,122 @@
 import SwiftUI
 import PhotosUI
 
-struct CameraView: View {
-    enum InputMode { case camera, pencil }
+// MARK: - Photo Transferable (handles all image formats including HEIC)
+struct ImageTransferable: Transferable {
+    let uiImage: UIImage
 
+    static var transferRepresentation: some TransferRepresentation {
+        DataRepresentation(importedContentType: .image) { data in
+            guard let image = UIImage(data: data) else {
+                throw TransferError.importFailed
+            }
+            return ImageTransferable(uiImage: image)
+        }
+    }
+
+    enum TransferError: Error {
+        case importFailed
+    }
+}
+
+struct CameraView: View {
     @State private var vm = CameraViewModel()
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
+    @State private var imageToCrop: UIImage?
+    @State private var showCrop = false
     @State private var showSolution = false
     @State private var isCapturing  = false
-    @State private var inputMode: InputMode = .camera
+    @State private var shouldSolveAfterCrop = false
+    @State private var showHistory = false
+    @State private var showSettings = false
 
     var body: some View {
         ZStack {
             Color.black.ignoresSafeArea()
 
-            VStack(spacing: 0) {
-                // Mode switcher
-                modeSwitcher
-
-                // Content
-                if inputMode == .camera {
-                    if vm.isAuthorized {
-                        cameraContent
-                    } else {
-                        permissionDeniedView
-                    }
-                } else {
-                    PencilInputView { image in
-                        capturedImage = image
-                        showSolution  = true
-                    }
-                }
+            if vm.isAuthorized {
+                cameraContent
+            } else {
+                permissionDeniedView
             }
         }
         .task { await vm.setup() }
         .onDisappear { vm.stopSession() }
-        .sheet(isPresented: $showSolution) {
+        .fullScreenCover(isPresented: $showCrop) {
+            if let img = imageToCrop {
+                ImageCropView(
+                    image: img,
+                    onCropped: { croppedImage in
+                        capturedImage = croppedImage
+                        shouldSolveAfterCrop = true
+                        showCrop = false
+                    },
+                    onCancel: {
+                        imageToCrop = nil
+                        shouldSolveAfterCrop = false
+                        showCrop = false
+                    }
+                )
+            } else {
+                // Safety fallback — dismiss immediately
+                Color.clear.onAppear {
+                    DispatchQueue.main.async {
+                        showCrop = false
+                    }
+                }
+            }
+        }
+        .onChange(of: showCrop) { oldVal, newVal in
+            if oldVal == true && newVal == false && shouldSolveAfterCrop {
+                shouldSolveAfterCrop = false
+                Task {
+                    try? await Task.sleep(for: .milliseconds(400))
+                    showSolution = true
+                }
+            }
+        }
+        .sheet(isPresented: $showSolution, onDismiss: {
+            imageToCrop = nil
+        }) {
             if let image = capturedImage {
                 SolutionView(image: image)
             }
         }
+        .sheet(isPresented: $showHistory) {
+            HistoryView()
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
         .onChange(of: selectedPhotoItem) { _, item in
+            guard let item else { return }
             Task {
-                if let item,
-                   let data  = try? await item.loadTransferable(type: Data.self),
-                   let image = UIImage(data: data) {
-                    capturedImage = image
-                    showSolution  = true
+                // Try loading as UIImage transferable first (handles HEIC, RAW, etc.)
+                if let image = try? await item.loadTransferable(type: ImageTransferable.self) {
+                    imageToCrop = image.uiImage
+                    showCrop = true
+                } else if let data = try? await item.loadTransferable(type: Data.self),
+                          let image = UIImage(data: data) {
+                    // Fallback: load as raw data
+                    imageToCrop = image
+                    showCrop = true
                 }
+                selectedPhotoItem = nil
             }
         }
     }
 
-    // MARK: - Mode Switcher
-    private var modeSwitcher: some View {
-        HStack(spacing: 0) {
-            modeButton("Camera", icon: "camera.fill", mode: .camera)
-            modeButton("Drawing", icon: "pencil.tip", mode: .pencil)
-        }
-        .padding(4)
-        .background(Color.white.opacity(0.08))
-        .clipShape(Capsule())
-        .padding(.top, AppTheme.Spacing.sm)
-        .padding(.horizontal, AppTheme.Spacing.xl)
-    }
-
-    private func modeButton(_ label: LocalizedStringKey, icon: String, mode: InputMode) -> some View {
-        Button {
-            withAnimation(.spring(response: 0.3)) { inputMode = mode }
-        } label: {
-            HStack(spacing: 6) {
-                Image(systemName: icon).font(.caption).fontWeight(.semibold)
-                Text(label).font(.system(size: 13, weight: .semibold))
-            }
-            .foregroundStyle(inputMode == mode ? .black : AppTheme.Colors.textSecondary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .background(inputMode == mode ? AppTheme.Colors.primary : Color.clear)
-            .clipShape(Capsule())
-        }
-    }
-
-    // MARK: - Camera Content
+    // MARK: - Camera Content (Full Screen)
     private var cameraContent: some View {
         ZStack {
             CameraPreviewView(session: vm.session)
                 .ignoresSafeArea()
+
             scanFrame
-            VStack {
+
+            // Top bar with history, mode switcher, settings, flash
+            VStack(spacing: 0) {
                 topBar
                 Spacer()
                 bottomBar
@@ -101,7 +129,6 @@ struct CameraView: View {
         GeometryReader { geo in
             let w = geo.size.width * 0.82
             let h = w * 0.55
-            let x = (geo.size.width  - w) / 2
             let y = (geo.size.height - h) / 2
 
             ZStack {
@@ -123,60 +150,121 @@ struct CameraView: View {
                 Text("Frame the math problem")
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .position(x: geo.size.width / 2, y: y + h + 16)
+                    .position(x: geo.size.width / 2, y: y + h + 20)
             }
         }
     }
 
     // MARK: - Top Bar
     private var topBar: some View {
-        HStack {
-            Spacer()
-            Button { vm.toggleFlash() } label: {
-                Image(systemName: vm.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
-                    .font(.title2)
-                    .foregroundStyle(vm.isFlashOn ? AppTheme.Colors.primary : .white)
-                    .padding(AppTheme.Spacing.md)
+        VStack(spacing: 12) {
+            HStack {
+                // History button
+                Button { showHistory = true } label: {
+                    Image(systemName: "clock.arrow.circlepath")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 42, height: 42)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                }
+
+                Spacer()
+
+                // Flash button
+                Button { vm.toggleFlash() } label: {
+                    Image(systemName: vm.isFlashOn ? "bolt.fill" : "bolt.slash.fill")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(vm.isFlashOn ? AppTheme.Colors.primary : .white)
+                        .frame(width: 42, height: 42)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                }
+
+                // Settings button
+                Button { showSettings = true } label: {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(.white)
+                        .frame(width: 42, height: 42)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                }
             }
+            .padding(.horizontal, AppTheme.Spacing.md)
         }
-        .padding(.horizontal, AppTheme.Spacing.md)
-        .padding(.top, AppTheme.Spacing.xs)
+        .padding(.top, 8)
     }
 
     // MARK: - Bottom Bar
     private var bottomBar: some View {
-        HStack(alignment: .center, spacing: AppTheme.Spacing.xl) {
-            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Image(systemName: "photo.on.rectangle")
-                    .font(.title2)
-                    .foregroundStyle(.white)
+        VStack(spacing: 16) {
+            HStack(alignment: .center) {
+                // Gallery picker
+                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                    VStack(spacing: 4) {
+                        Image(systemName: "photo.on.rectangle")
+                            .font(.system(size: 22, weight: .medium))
+                            .foregroundStyle(.white)
+                            .frame(width: 52, height: 52)
+                            .background(.ultraThinMaterial)
+                            .clipShape(Circle())
+                        Text("Gallery")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(.white.opacity(0.6))
+                    }
+                }
+
+                Spacer()
+
+                // Capture button (center, larger)
+                Button {
+                    guard !isCapturing else { return }
+                    isCapturing = true
+                    vm.capturePhoto { image in
+                        isCapturing = false
+                        guard let image else { return }
+                        imageToCrop = image
+                        showCrop = true
+                    }
+                } label: {
+                    ZStack {
+                        Circle()
+                            .fill(AppTheme.Colors.primary)
+                            .frame(width: 72, height: 72)
+                        Circle()
+                            .stroke(.white.opacity(0.5), lineWidth: 3)
+                            .frame(width: 82, height: 82)
+                        if isCapturing {
+                            ProgressView().tint(.white)
+                        } else {
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 24, weight: .semibold))
+                                .foregroundStyle(.black)
+                        }
+                    }
+                }
+                .scaleEffect(isCapturing ? 0.92 : 1.0)
+                .animation(.spring(response: 0.2), value: isCapturing)
+
+                Spacer()
+
+                // Invisible spacer to keep capture button centered
+                Color.clear
                     .frame(width: 52, height: 52)
-                    .background(Color.white.opacity(0.15))
-                    .clipShape(Circle())
             }
-
-            Button {
-                guard !isCapturing else { return }
-                isCapturing = true
-                vm.capturePhoto { image in
-                    isCapturing = false
-                    guard let image else { return }
-                    capturedImage = image
-                    showSolution  = true
-                }
-            } label: {
-                ZStack {
-                    Circle().fill(AppTheme.Colors.primary).frame(width: 76, height: 76)
-                    Circle().stroke(.white, lineWidth: 3).frame(width: 86, height: 86)
-                    if isCapturing { ProgressView().tint(.white) }
-                }
-            }
-            .scaleEffect(isCapturing ? 0.92 : 1.0)
-            .animation(.spring(response: 0.2), value: isCapturing)
-
-            Color.clear.frame(width: 52, height: 52)
+            .padding(.horizontal, AppTheme.Spacing.lg)
         }
-        .padding(.bottom, AppTheme.Spacing.xxl)
+        .padding(.bottom, 24)
+        .padding(.top, 12)
+        .background(
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.6), .black.opacity(0.85)],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea(edges: .bottom)
+        )
     }
 
     // MARK: - Permission Denied

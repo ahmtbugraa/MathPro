@@ -14,6 +14,7 @@ struct MathRenderView: UIViewRepresentable {
     func makeUIView(context: Context) -> WKWebView {
         let config = WKWebViewConfiguration()
         config.allowsInlineMediaPlayback = false
+        config.userContentController.add(context.coordinator, name: "heightChange")
 
         let webView = WKWebView(frame: .zero, configuration: config)
         webView.isOpaque = false

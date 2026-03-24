@@ -31,6 +31,9 @@ struct HistoryView: View {
             .navigationTitle("History")
             .searchable(text: $searchText, prompt: "Search by topic or problem...")
         }
+        .sheet(item: $selectedRecord) { record in
+            HistoryDetailView(record: record)
+        }
         .preferredColorScheme(.dark)
     }
 
@@ -58,14 +61,19 @@ struct HistoryView: View {
         ScrollView {
             LazyVStack(spacing: AppTheme.Spacing.sm) {
                 ForEach(filtered) { record in
-                    HistoryRowView(record: record)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                modelContext.delete(record)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
+                    Button {
+                        selectedRecord = record
+                    } label: {
+                        HistoryRowView(record: record)
+                    }
+                    .buttonStyle(.plain)
+                    .contextMenu {
+                        Button(role: .destructive) {
+                            modelContext.delete(record)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
                         }
+                    }
                 }
             }
             .padding(AppTheme.Spacing.md)

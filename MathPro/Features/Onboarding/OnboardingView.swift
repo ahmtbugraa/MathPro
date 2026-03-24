@@ -1,11 +1,12 @@
 import SwiftUI
+import RevenueCat
 
 // MARK: - Main Onboarding Container
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var currentStep = 0
 
-    private let totalInfoSteps = 5
+    private let totalInfoSteps = 6
 
     var body: some View {
         ZStack {
@@ -47,8 +48,9 @@ struct OnboardingView: View {
                 switch currentStep {
                 case 0: WelcomePage()
                 case 1: CameraPage()
-                case 2: StepSolutionPage()
-                case 3: ComparisonPage()
+                case 2: EducationLevelPage()
+                case 3: StepSolutionPage()
+                case 4: ComparisonPage()
                 default: SocialProofPage()
                 }
             }
@@ -192,7 +194,84 @@ struct CameraPage: View {
     }
 }
 
-// MARK: - Page 3: Step Solution
+// MARK: - Page 3: Education Level Selection
+struct EducationLevelPage: View {
+    @AppStorage("educationLevel") private var selectedLevel: String = EducationLevel.high.rawValue
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+
+            // Title
+            VStack(spacing: AppTheme.Spacing.sm) {
+                Image(systemName: "person.crop.circle.badge.questionmark")
+                    .font(.system(size: 48))
+                    .foregroundStyle(AppTheme.Colors.primary)
+                    .symbolRenderingMode(.hierarchical)
+
+                Text("education_level_title")
+                    .font(AppTheme.Fonts.title)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .multilineTextAlignment(.center)
+
+                Text("education_level_subtitle")
+                    .font(AppTheme.Fonts.callout)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+            }
+
+            // Level Cards
+            VStack(spacing: AppTheme.Spacing.sm) {
+                ForEach(EducationLevel.allCases) { level in
+                    let isSelected = selectedLevel == level.rawValue
+                    Button {
+                        withAnimation(.spring(response: 0.3)) {
+                            selectedLevel = level.rawValue
+                            EducationLevel.save(level)
+                        }
+                    } label: {
+                        HStack(spacing: AppTheme.Spacing.md) {
+                            Text(level.emoji)
+                                .font(.system(size: 28))
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(level.localizedName)
+                                    .font(AppTheme.Fonts.headline)
+                                    .foregroundStyle(isSelected ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
+                            }
+
+                            Spacer()
+
+                            ZStack {
+                                Circle()
+                                    .stroke(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.divider, lineWidth: 2)
+                                    .frame(width: 24, height: 24)
+                                if isSelected {
+                                    Circle()
+                                        .fill(AppTheme.Colors.primary)
+                                        .frame(width: 14, height: 14)
+                                }
+                            }
+                        }
+                        .padding(AppTheme.Spacing.md)
+                        .background(isSelected ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
+                        .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: AppTheme.Radius.md)
+                                .stroke(isSelected ? AppTheme.Colors.primary.opacity(0.5) : AppTheme.Colors.divider, lineWidth: 1.5)
+                        )
+                    }
+                }
+            }
+            .padding(.horizontal, AppTheme.Spacing.xl)
+
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Page 4: Step Solution
 struct StepSolutionPage: View {
     @State private var visibleSteps = 0
     private let steps = [
@@ -373,8 +452,11 @@ struct SocialProofPage: View {
 // MARK: - Onboarding Paywall (Last step)
 struct OnboardingPaywallView: View {
     let onComplete: () -> Void
-    @State private var selectedPlan: Bool = true  // true = trial, false = annual
+    var subscriptionService = SubscriptionService.shared
+
+    @State private var selectedPlan: PaywallView.PlanType = .weekly
     @State private var isProcessing = false
+    @State private var showError = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -405,10 +487,40 @@ struct OnboardingPaywallView: View {
                     .padding(AppTheme.Spacing.md)
                     .cardStyle()
 
-                    // Plans
+                    // Plans from RevenueCat
                     VStack(spacing: AppTheme.Spacing.sm) {
-                        planRow(isTrial: true)
-                        planRow(isTrial: false)
+                        if let weekly = subscriptionService.weeklyPackage {
+                            planRow(
+                                type: .weekly,
+                                title: weekly.hasFreeTrial
+                                    ? (weekly.trialDurationText ?? String(localized: "Free Trial"))
+                                    : String(localized: "Weekly"),
+                                subtitle: weekly.hasFreeTrial
+                                    ? String(localized: "then") + " " + weekly.localizedPrice + String(localized: "/ week")
+                                    : weekly.localizedPrice + String(localized: "/ week"),
+                                price: weekly.hasFreeTrial ? String(localized: "FREE") : weekly.localizedPrice,
+                                badge: nil
+                            )
+                        }
+
+                        if let annual = subscriptionService.annualPackage {
+                            planRow(
+                                type: .annual,
+                                title: String(localized: "Annual Plan"),
+                                subtitle: annual.localizedPrice + String(localized: "/ year"),
+                                price: annual.localizedPrice,
+                                badge: String(localized: "MOST POPULAR")
+                            )
+                        }
+
+                        if subscriptionService.weeklyPackage == nil && subscriptionService.annualPackage == nil {
+                            ProgressView()
+                                .tint(AppTheme.Colors.primary)
+                                .padding(AppTheme.Spacing.md)
+                                .onAppear {
+                                    Task { await subscriptionService.fetchOfferings() }
+                                }
+                        }
                     }
                 }
                 .padding(AppTheme.Spacing.lg)
@@ -418,14 +530,13 @@ struct OnboardingPaywallView: View {
             // CTA
             VStack(spacing: AppTheme.Spacing.sm) {
                 Button {
-                    isProcessing = true
-                    Task {
-                        try? await Task.sleep(for: .seconds(1.0))
-                        await MainActor.run { isProcessing = false; onComplete() }
-                    }
+                    purchase()
                 } label: {
                     if isProcessing { ProgressView().tint(.black) }
-                    else { Text("Try for Free") }
+                    else {
+                        let hasFreeTrial = subscriptionService.weeklyPackage?.hasFreeTrial == true && selectedPlan == .weekly
+                        Text(hasFreeTrial ? String(localized: "Try for Free") : String(localized: "Subscribe Now"))
+                    }
                 }
                 .primaryButton()
                 .disabled(isProcessing)
@@ -438,15 +549,38 @@ struct OnboardingPaywallView: View {
                 }
 
                 HStack(spacing: AppTheme.Spacing.sm) {
-                    Button("Restore") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button(String(localized: "Restore")) { restorePurchase() }
+                        .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                     Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
-                    Button("Privacy") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button(String(localized: "Privacy")) {
+                        if let url = URL(string: "https://mathpro.app/privacy") { UIApplication.shared.open(url) }
+                    }
+                        .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                     Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
-                    Button("Terms") {}.font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
+                    Button(String(localized: "Terms")) {
+                        if let url = URL(string: "https://mathpro.app/terms") { UIApplication.shared.open(url) }
+                    }
+                        .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                 }
+
+                // Skip option
+                Button {
+                    onComplete()
+                } label: {
+                    Text(String(localized: "Continue with free plan"))
+                        .font(.system(size: 12))
+                        .foregroundStyle(AppTheme.Colors.textTertiary)
+                        .underline()
+                }
+                .padding(.top, AppTheme.Spacing.xs)
             }
             .padding(.bottom, AppTheme.Spacing.xxl)
             .background(AppTheme.Colors.background)
+        }
+        .alert(String(localized: "Error"), isPresented: $showError) {
+            Button("OK") {}
+        } message: {
+            Text(subscriptionService.errorMessage ?? String(localized: "An error occurred"))
         }
     }
 
@@ -457,9 +591,9 @@ struct OnboardingPaywallView: View {
         }
     }
 
-    private func planRow(isTrial: Bool) -> some View {
-        let isSelected = selectedPlan == isTrial
-        return Button { withAnimation(.spring(response: 0.25)) { selectedPlan = isTrial } } label: {
+    private func planRow(type: PaywallView.PlanType, title: String, subtitle: String, price: String, badge: String?) -> some View {
+        let isSelected = selectedPlan == type
+        return Button { withAnimation(.spring(response: 0.25)) { selectedPlan = type } } label: {
             HStack(spacing: AppTheme.Spacing.md) {
                 ZStack {
                     Circle().stroke(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.divider, lineWidth: 2).frame(width: 22, height: 22)
@@ -467,27 +601,58 @@ struct OnboardingPaywallView: View {
                 }
                 VStack(alignment: .leading, spacing: 3) {
                     HStack {
-                        Text(isTrial ? "3 Days Free" : "Annual Plan")
+                        Text(title)
                             .font(AppTheme.Fonts.headline).foregroundStyle(AppTheme.Colors.textPrimary)
-                        if !isTrial {
-                            Text("MOST POPULAR").font(.system(size: 9, weight: .black)).foregroundStyle(.black)
+                        if let badge {
+                            Text(badge).font(.system(size: 9, weight: .black)).foregroundStyle(.black)
                                 .padding(.horizontal, 7).padding(.vertical, 3)
                                 .background(AppTheme.Colors.primary).clipShape(Capsule())
                         }
                     }
-                    Text(isTrial ? "then ₺149.00/week" : "₺549.00/year • ₺10.53/week")
+                    Text(subtitle)
                         .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
                 }
                 Spacer()
-                Text(isTrial ? "FREE" : "₺549")
-                    .font(isTrial ? AppTheme.Fonts.headline : AppTheme.Fonts.callout)
-                    .foregroundStyle(isTrial ? AppTheme.Colors.primary : AppTheme.Colors.textPrimary)
+                Text(price)
+                    .font(AppTheme.Fonts.headline)
+                    .foregroundStyle(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.textPrimary)
             }
             .padding(AppTheme.Spacing.md)
             .background(isSelected ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
             .overlay(RoundedRectangle(cornerRadius: AppTheme.Radius.md)
                 .stroke(isSelected ? AppTheme.Colors.primary : Color.clear, lineWidth: 1.5))
+        }
+    }
+
+    private func purchase() {
+        let package: Package?
+        switch selectedPlan {
+        case .weekly:  package = subscriptionService.weeklyPackage
+        case .annual:  package = subscriptionService.annualPackage
+        }
+        guard let package else { return }
+
+        isProcessing = true
+        Task {
+            let success = await subscriptionService.purchase(package: package)
+            await MainActor.run {
+                isProcessing = false
+                if success { onComplete() }
+                else if subscriptionService.errorMessage != nil { showError = true }
+            }
+        }
+    }
+
+    private func restorePurchase() {
+        isProcessing = true
+        Task {
+            let restored = await subscriptionService.restore()
+            await MainActor.run {
+                isProcessing = false
+                if restored { onComplete() }
+                else if subscriptionService.errorMessage != nil { showError = true }
+            }
         }
     }
 }

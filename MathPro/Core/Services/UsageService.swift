@@ -1,21 +1,18 @@
 import Foundation
 import SwiftUI
 
-/// Günlük ücretsiz çözüm limitini yönetir.
-/// Premium kullanıcılar için sınırsız erişim sağlar.
+/// Manages daily solve limits and tracks API cost.
 @Observable
 final class UsageService {
     static let shared = UsageService()
 
     // MARK: - Persisted State
-    @ObservationIgnored
-    @AppStorage("dailySolveCount")  private var _dailyCount: Int = 0
-    @ObservationIgnored
-    @AppStorage("lastSolveDate")    private var _lastDate: String = ""
-    @ObservationIgnored
-    @AppStorage("totalSolveCount")  private var _totalCount: Int = 0
-    @ObservationIgnored
-    @AppStorage("isPremium")        private var _isPremium: Bool = false
+    @ObservationIgnored @AppStorage("dailySolveCount")    private var _dailyCount: Int = 0
+    @ObservationIgnored @AppStorage("lastSolveDate")      private var _lastDate: String = ""
+    @ObservationIgnored @AppStorage("totalSolveCount")    private var _totalCount: Int = 0
+    @ObservationIgnored @AppStorage("isPremium")          private var _isPremium: Bool = false
+    @ObservationIgnored @AppStorage("weeklyAPICost")      private var _weeklyCost: Double = 0
+    @ObservationIgnored @AppStorage("costWeekStart")      private var _costWeekStart: String = ""
 
     private init() {}
 
@@ -29,33 +26,54 @@ final class UsageService {
     }
 
     var remaining: Int {
-        guard !_isPremium else { return Int.max }
-        return max(0, Config.freeDailySolveLimit - dailyCount)
+        resetIfNewDay()
+        let limit = _isPremium ? Config.premiumDailySolveLimit : Config.freeDailySolveLimit
+        return max(0, limit - _dailyCount)
     }
 
     var canSolve: Bool {
-        _isPremium || remaining > 0
+        remaining > 0
     }
 
-    /// Çözüm başarıyla tamamlandıktan sonra çağır.
+    /// Record a successful solve.
     func recordSolve() {
         resetIfNewDay()
         _dailyCount += 1
         _totalCount += 1
+        trackCost(0.004)  // ~$0.004 per solve
     }
 
-    /// RevenueCat entitlements kontrolünden sonra çağır.
     func setpremium(_ value: Bool) {
         _isPremium = value
     }
 
-    /// Review prompt gösterilmeli mi?
     var shouldShowReview: Bool {
-        // Her 10 çözümde bir göster
         _totalCount > 0 && _totalCount % 10 == 0
     }
 
-    // MARK: - Private
+    /// Estimated weekly cost so far.
+    var weeklyCostEstimate: Double {
+        resetCostIfNewWeek()
+        return _weeklyCost
+    }
+
+    // MARK: - Cost Tracking
+
+    private func trackCost(_ amount: Double) {
+        resetCostIfNewWeek()
+        _weeklyCost += amount
+    }
+
+    private func resetCostIfNewWeek() {
+        let weekStart = Self.weekStartString()
+        if _costWeekStart != weekStart {
+            _costWeekStart = weekStart
+            _weeklyCost = 0
+        }
+    }
+
+    // MARK: - Day/Week Reset
+
     private func resetIfNewDay() {
         let today = Self.todayString()
         if _lastDate != today {
@@ -68,5 +86,13 @@ final class UsageService {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd"
         return f.string(from: Date())
+    }
+
+    private static func weekStartString() -> String {
+        let cal = Calendar.current
+        let start = cal.dateInterval(of: .weekOfYear, for: Date())?.start ?? Date()
+        let f = DateFormatter()
+        f.dateFormat = "yyyy-MM-dd"
+        return f.string(from: start)
     }
 }

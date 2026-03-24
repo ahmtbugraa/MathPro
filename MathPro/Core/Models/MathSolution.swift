@@ -76,7 +76,7 @@ enum MathSubject: String, Codable, CaseIterable {
 
 // MARK: - SwiftData Persistence Model
 @Model
-final class SolveRecord {
+final class SolveRecord: Identifiable {
     var id: UUID
     var problemText: String
     var subject: String
