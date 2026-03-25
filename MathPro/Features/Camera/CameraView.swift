@@ -30,6 +30,9 @@ struct CameraView: View {
     @State private var shouldSolveAfterCrop = false
     @State private var showHistory = false
     @State private var showSettings = false
+    @State private var showPaywall = false
+
+    private let usage = UsageService.shared
 
     var body: some View {
         ZStack {
@@ -89,8 +92,17 @@ struct CameraView: View {
         .sheet(isPresented: $showSettings) {
             SettingsView()
         }
+        .sheet(isPresented: $showPaywall) {
+            PaywallView()
+        }
         .onChange(of: selectedPhotoItem) { _, item in
             guard let item else { return }
+            // Check if user can solve before loading photo
+            guard usage.canSolve else {
+                selectedPhotoItem = nil
+                showPaywall = true
+                return
+            }
             Task {
                 // Try loading as UIImage transferable first (handles HEIC, RAW, etc.)
                 if let image = try? await item.loadTransferable(type: ImageTransferable.self) {
@@ -220,6 +232,11 @@ struct CameraView: View {
                 // Capture button (center, larger)
                 Button {
                     guard !isCapturing else { return }
+                    // Check if user can solve (premium or free trial not used)
+                    guard usage.canSolve else {
+                        showPaywall = true
+                        return
+                    }
                     isCapturing = true
                     vm.capturePhoto { image in
                         isCapturing = false

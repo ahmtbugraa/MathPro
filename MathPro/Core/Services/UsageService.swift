@@ -26,13 +26,22 @@ final class UsageService {
     }
 
     var remaining: Int {
-        resetIfNewDay()
-        let limit = _isPremium ? Config.premiumDailySolveLimit : Config.freeDailySolveLimit
-        return max(0, limit - _dailyCount)
+        if _isPremium {
+            resetIfNewDay()
+            return max(0, Config.premiumDailySolveLimit - _dailyCount)
+        } else {
+            // Free users: 1 total trial solve
+            return max(0, Config.freeTrialSolveLimit - _totalCount)
+        }
     }
 
     var canSolve: Bool {
-        remaining > 0
+        if _isPremium {
+            return remaining > 0
+        } else {
+            // Free: only if haven't used the 1 free trial
+            return _totalCount < Config.freeTrialSolveLimit
+        }
     }
 
     /// Record a successful solve.

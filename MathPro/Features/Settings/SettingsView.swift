@@ -3,9 +3,7 @@ import SwiftData
 import StoreKit
 
 struct SettingsView: View {
-    @AppStorage("dailySolveCount") private var dailySolveCount = 0
     @AppStorage("isPremium")       private var isPremium = false
-    @AppStorage("apiKey")          private var customAPIKey = ""
     @AppStorage("educationLevel")  private var educationLevel: String = EducationLevel.high.rawValue
 
     @Environment(\.modelContext) private var modelContext
@@ -13,9 +11,6 @@ struct SettingsView: View {
 
     @State private var showClearConfirm = false
     @State private var showPaywall = false
-    @State private var showRestoreSuccess = false
-    @State private var apiKeyInput = ""
-    @State private var showAPIKeyField = false
 
     var body: some View {
         NavigationStack {
@@ -33,12 +28,6 @@ struct SettingsView: View {
                         // Education Level
                         educationSection
 
-                        // Subscription
-                        subscriptionSection
-
-                        // API Key
-                        apiSection
-
                         // About
                         aboutSection
 
@@ -51,11 +40,6 @@ struct SettingsView: View {
             .navigationTitle("Settings")
         }
         .sheet(isPresented: $showPaywall) { PaywallView() }
-        .alert(String(localized: "Restored!"), isPresented: $showRestoreSuccess) {
-            Button("OK") {}
-        } message: {
-            Text(String(localized: "Your subscription has been restored."))
-        }
         .preferredColorScheme(.dark)
     }
 
@@ -115,12 +99,7 @@ struct SettingsView: View {
                 statItem(value: "\(records.count)", label: String(localized: "Total Solves"))
                 Divider().frame(height: 40).background(AppTheme.Colors.divider)
                 statItem(
-                    value: "\(max(0, Config.freeDailySolveLimit - dailySolveCount))",
-                    label: String(localized: "Today Remaining")
-                )
-                Divider().frame(height: 40).background(AppTheme.Colors.divider)
-                statItem(
-                    value: isPremium ? "∞" : "Free",
+                    value: isPremium ? "Premium" : "Free",
                     label: String(localized: "Plan")
                 )
             }
@@ -187,89 +166,6 @@ struct SettingsView: View {
             Text("education_level_hint")
                 .font(AppTheme.Fonts.caption)
                 .foregroundStyle(AppTheme.Colors.textTertiary)
-        }
-    }
-
-    // MARK: - API Key Section
-    private var apiSection: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("API KEY")
-                .font(AppTheme.Fonts.caption)
-                .foregroundStyle(AppTheme.Colors.textTertiary)
-
-            VStack(spacing: AppTheme.Spacing.sm) {
-                Button {
-                    showAPIKeyField.toggle()
-                    if showAPIKeyField { apiKeyInput = customAPIKey }
-                } label: {
-                    HStack {
-                        Image(systemName: "key.fill")
-                            .foregroundStyle(AppTheme.Colors.primary)
-                        Text("Qwen API Key")
-                            .font(AppTheme.Fonts.callout)
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
-                        Spacer()
-                        Text(customAPIKey.isEmpty ? String(localized: "Not Set") : "••••••••")
-                            .font(AppTheme.Fonts.caption)
-                            .foregroundStyle(AppTheme.Colors.textSecondary)
-                        Image(systemName: showAPIKeyField ? "chevron.up" : "chevron.down")
-                            .font(.caption)
-                            .foregroundStyle(AppTheme.Colors.textTertiary)
-                    }
-                    .padding(AppTheme.Spacing.md)
-                }
-
-                if showAPIKeyField {
-                    VStack(spacing: AppTheme.Spacing.sm) {
-                        SecureField("sk-ant-...", text: $apiKeyInput)
-                            .font(AppTheme.Fonts.callout)
-                            .foregroundStyle(AppTheme.Colors.textPrimary)
-                            .padding(AppTheme.Spacing.md)
-                            .background(AppTheme.Colors.surfaceHigh)
-                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.sm))
-
-                        Button("Save") {
-                            customAPIKey = apiKeyInput
-                            showAPIKeyField = false
-                        }
-                        .primaryButton()
-                    }
-                    .padding(.horizontal, AppTheme.Spacing.md)
-                    .padding(.bottom, AppTheme.Spacing.md)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                }
-            }
-            .cardStyle()
-            .animation(.spring(response: 0.3), value: showAPIKeyField)
-
-            Text("Get your Qwen API key from qwen.ai")
-                .font(AppTheme.Fonts.caption)
-                .foregroundStyle(AppTheme.Colors.textTertiary)
-        }
-    }
-
-    // MARK: - Subscription Management
-    private var subscriptionSection: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-            Text("SUBSCRIPTION")
-                .font(AppTheme.Fonts.caption)
-                .foregroundStyle(AppTheme.Colors.textTertiary)
-
-            VStack(spacing: 0) {
-                settingsRow(icon: "arrow.clockwise", color: AppTheme.Colors.primary, title: "Restore Purchase") {
-                    Task {
-                        let restored = await SubscriptionService.shared.restore()
-                        if restored { showRestoreSuccess = true }
-                    }
-                }
-                Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
-                settingsRow(icon: "gear", color: .gray, title: "Manage Subscription") {
-                    if let url = URL(string: "https://apps.apple.com/account/subscriptions") {
-                        UIApplication.shared.open(url)
-                    }
-                }
-            }
-            .cardStyle()
         }
     }
 

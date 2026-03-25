@@ -69,11 +69,11 @@ struct SolutionView: View {
                 ShareSheetView(image: shareImage)
             }
         }
-        .alert("Daily Limit Reached", isPresented: $showLimitAlert) {
-            Button("Go Premium") { showPaywall = true }
+        .alert(String(localized: "Upgrade Required"), isPresented: $showLimitAlert) {
+            Button(String(localized: "Go Premium")) { showPaywall = true }
             Button("OK", role: .cancel) { dismiss() }
         } message: {
-            Text(String(format: NSLocalizedString("daily_limit_message", comment: ""), Config.freeDailySolveLimit))
+            Text(String(localized: "Your free trial solve has been used. Upgrade to Premium for unlimited solving."))
         }
         .preferredColorScheme(.dark)
     }
@@ -189,18 +189,6 @@ struct SolutionView: View {
             }
 
             Spacer()
-
-            if !usage.isPremium {
-                VStack(spacing: 2) {
-                    Text(verbatim: "\(usage.remaining)")
-                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                        .foregroundStyle(usage.remaining <= 1 ? AppTheme.Colors.error : AppTheme.Colors.primary)
-                    Text("left")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundStyle(AppTheme.Colors.textTertiary)
-                }
-                .frame(width: 44)
-            }
         }
     }
 

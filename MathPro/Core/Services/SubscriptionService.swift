@@ -42,7 +42,9 @@ final class SubscriptionService: NSObject, PurchasesDelegate {
                 self.annualPackage = offerings.current?.annual
             }
         } catch {
+            #if DEBUG
             print("[SubscriptionService] Failed to fetch offerings: \(error)")
+            #endif
         }
     }
 
@@ -104,7 +106,9 @@ final class SubscriptionService: NSObject, PurchasesDelegate {
                 UsageService.shared.setpremium(premium)
             }
         } catch {
+            #if DEBUG
             print("[SubscriptionService] Failed to check entitlements: \(error)")
+            #endif
         }
     }
 

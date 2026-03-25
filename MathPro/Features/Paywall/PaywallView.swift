@@ -10,6 +10,8 @@ struct PaywallView: View {
     @State private var isProcessing = false
     @State private var showError = false
     @State private var showRestoreSuccess = false
+    @State private var showPrivacy = false
+    @State private var showTerms = false
 
     enum PlanType {
         case weekly, annual
@@ -44,6 +46,8 @@ struct PaywallView: View {
         } message: {
             Text(String(localized: "Your subscription has been restored."))
         }
+        .sheet(isPresented: $showPrivacy) { PrivacyPolicyView() }
+        .sheet(isPresented: $showTerms) { TermsOfUseView() }
     }
 
     // MARK: - Header
@@ -244,19 +248,11 @@ struct PaywallView: View {
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                 Text("•").foregroundStyle(AppTheme.Colors.textTertiary)
-                Button(String(localized: "Privacy Policy")) {
-                    if let url = URL(string: "https://mathpro.app/privacy") {
-                        UIApplication.shared.open(url)
-                    }
-                }
+                Button(String(localized: "Privacy Policy")) { showPrivacy = true }
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
                 Text("•").foregroundStyle(AppTheme.Colors.textTertiary)
-                Button(String(localized: "Terms of Use")) {
-                    if let url = URL(string: "https://mathpro.app/terms") {
-                        UIApplication.shared.open(url)
-                    }
-                }
+                Button(String(localized: "Terms of Use")) { showTerms = true }
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
             }
