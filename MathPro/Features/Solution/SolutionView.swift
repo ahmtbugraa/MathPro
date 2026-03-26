@@ -212,6 +212,7 @@ struct SolutionView: View {
             if sol.answer.contains("\\") || sol.answer.contains("^") || sol.answer.contains("_") {
                 DisplayMathView(latex: sol.answer, fontSize: 24)
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .fixedSize(horizontal: false, vertical: true)
             } else {
                 Text(sol.answer)
                     .font(.system(size: 28, weight: .bold, design: .rounded))

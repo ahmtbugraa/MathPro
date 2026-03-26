@@ -112,8 +112,7 @@ final class SubscriptionService: NSObject, ObservableObject, PurchasesDelegate {
 
     // MARK: - PurchasesDelegate
     nonisolated func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
-        let entitlement = "Premium"
-        let premium = customerInfo.entitlements[entitlement]?.isActive == true
+        let premium = customerInfo.entitlements["Premium"]?.isActive == true
         Task { @MainActor in
             SubscriptionService.shared.isPremium = premium
             UsageService.shared.setpremium(premium)

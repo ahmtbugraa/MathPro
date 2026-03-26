@@ -80,9 +80,9 @@ struct StepCardView: View {
 
             // Math expression (KaTeX rendered)
             if let expr = step.expression, !expr.isEmpty {
-                DisplayMathView(latex: expr, fontSize: 18)
+                DisplayMathView(latex: expr, fontSize: 17)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 6)
                     .padding(.horizontal, 12)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
@@ -92,6 +92,7 @@ struct StepCardView: View {
                                     .strokeBorder(AppTheme.Colors.primary.opacity(0.15), lineWidth: 1)
                             )
                     )
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(.bottom, isLast ? 0 : 24)

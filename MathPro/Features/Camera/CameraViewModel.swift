@@ -3,6 +3,7 @@ import Combine
 import UIKit
 import SwiftUI
 
+@MainActor
 final class CameraViewModel: NSObject, ObservableObject {
 
     // MARK: - State

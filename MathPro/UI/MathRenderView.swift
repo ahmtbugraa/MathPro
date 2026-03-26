@@ -2,7 +2,7 @@ import SwiftUI
 import WebKit
 
 /// KaTeX kullanarak LaTeX matematik ifadelerini render eder.
-/// İnternet yoksa düz metin olarak fallback yapar.
+/// Internet yoksa duz metin olarak fallback yapar.
 struct MathRenderView: UIViewRepresentable {
     let latex: String
     var fontSize: CGFloat = 18
@@ -21,12 +21,14 @@ struct MathRenderView: UIViewRepresentable {
         webView.backgroundColor = .clear
         webView.scrollView.isScrollEnabled = false
         webView.scrollView.bounces = false
+        webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.navigationDelegate = context.coordinator
         return webView
     }
 
     func updateUIView(_ webView: WKWebView, context: Context) {
-        webView.loadHTMLString(buildHTML(), baseURL: nil)
+        let html = buildHTML()
+        webView.loadHTMLString(html, baseURL: nil)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -43,24 +45,51 @@ struct MathRenderView: UIViewRepresentable {
         <!DOCTYPE html>
         <html>
         <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css"
+              onerror="document.getElementById('math').style.display='none';document.getElementById('fallback').style.display='block';reportHeight();">
+        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"
+                onerror="document.getElementById('math').style.display='none';document.getElementById('fallback').style.display='block';reportHeight();"></script>
         <style>
           * { box-sizing: border-box; margin: 0; padding: 0; }
           body {
             background: transparent;
-            padding: 6px 4px;
+            padding: 8px 4px;
             font-family: -apple-system, sans-serif;
+            overflow-x: auto;
+            overflow-y: hidden;
+            -webkit-overflow-scrolling: touch;
           }
-          #math { color: \(color); }
-          .katex { font-size: \(fontSize)px !important; }
-          .katex-display { margin: 0 !important; }
+          #math {
+            color: \(color);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+          .katex {
+            font-size: \(fontSize)px !important;
+            white-space: normal !important;
+          }
+          .katex-display {
+            margin: 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding-bottom: 4px;
+          }
+          .katex-display > .katex {
+            white-space: normal !important;
+            text-align: left !important;
+          }
+          .katex-html {
+            white-space: normal !important;
+          }
           #fallback {
-            color: \(textColor);
+            color: \(color);
             font-family: 'Courier New', monospace;
-            font-size: \(fontSize)px;
+            font-size: \(max(fontSize - 2, 14))px;
+            line-height: 1.5;
             display: none;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
           }
         </style>
         </head>
@@ -68,21 +97,32 @@ struct MathRenderView: UIViewRepresentable {
         <div id="math"></div>
         <div id="fallback">\(latex)</div>
         <script>
+        function reportHeight() {
+          var h = Math.max(document.body.scrollHeight, document.body.offsetHeight);
+          try { window.webkit.messageHandlers.heightChange.postMessage(h); } catch(e) {}
+        }
+
         try {
-          katex.render(`\(escaped)`, document.getElementById('math'), {
-            throwOnError: false,
-            displayMode: \(displayMode),
-            strict: false
-          });
+          if (typeof katex !== 'undefined') {
+            katex.render(`\(escaped)`, document.getElementById('math'), {
+              throwOnError: false,
+              displayMode: \(displayMode),
+              strict: false,
+              trust: true
+            });
+          } else {
+            document.getElementById('math').style.display = 'none';
+            document.getElementById('fallback').style.display = 'block';
+          }
         } catch(e) {
           document.getElementById('math').style.display = 'none';
           document.getElementById('fallback').style.display = 'block';
         }
-        // Report height
-        setTimeout(function() {
-          var h = document.body.scrollHeight;
-          window.webkit.messageHandlers.heightChange.postMessage(h);
-        }, 50);
+
+        // Report height with multiple retries to ensure accuracy
+        setTimeout(reportHeight, 100);
+        setTimeout(reportHeight, 300);
+        setTimeout(reportHeight, 600);
         </script>
         </body>
         </html>
@@ -99,21 +139,35 @@ struct MathRenderView: UIViewRepresentable {
 
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "heightChange", let h = message.body as? CGFloat {
-                DispatchQueue.main.async { self.contentHeight = max(h, 30) }
+                DispatchQueue.main.async {
+                    // Only grow, never shrink (prevents flicker)
+                    let newH = max(h, 30)
+                    if newH > self.contentHeight {
+                        self.contentHeight = newH
+                    }
+                }
             }
         }
 
         func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            webView.evaluateJavaScript("document.body.scrollHeight") { result, _ in
-                if let h = result as? CGFloat {
-                    DispatchQueue.main.async { self.contentHeight = max(h, 30) }
+            // Double-check height after page fully loads
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                webView.evaluateJavaScript("Math.max(document.body.scrollHeight, document.body.offsetHeight)") { result, _ in
+                    if let h = result as? CGFloat {
+                        DispatchQueue.main.async {
+                            let newH = max(h, 30)
+                            if newH > self.contentHeight {
+                                self.contentHeight = newH
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-// MARK: - Convenience wrapper (fixed height fallback)
+// MARK: - Convenience wrapper (inline math)
 struct InlineMathView: View {
     let latex: String
     var fontSize: CGFloat = 16
@@ -133,11 +187,12 @@ struct InlineMathView: View {
     }
 }
 
+// MARK: - Display math (block-level)
 struct DisplayMathView: View {
     let latex: String
     var fontSize: CGFloat = 20
 
-    @State private var height: CGFloat = 56
+    @State private var height: CGFloat = 44
 
     var body: some View {
         MathRenderView(
@@ -147,7 +202,8 @@ struct DisplayMathView: View {
             displayMode: true,
             contentHeight: $height
         )
-        .frame(height: height)
+        .frame(minHeight: height)
+        .fixedSize(horizontal: false, vertical: true)
     }
 }
 

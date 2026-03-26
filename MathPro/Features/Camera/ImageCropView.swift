@@ -460,7 +460,7 @@ struct ImageCropView: View {
 
 #Preview {
     ImageCropView(
-        image: UIImage(systemName: "doc.text.image")!,
+        image: UIImage(systemName: "doc.text.image") ?? UIImage(),
         onCropped: { _ in },
         onCancel: { }
     )

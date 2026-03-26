@@ -110,13 +110,13 @@ struct OnboardingView: View {
         }
         .animation(.easeInOut(duration: 0.35), value: currentStep)
         .preferredColorScheme(.dark)
-        .onChange(of: currentStep) { _ in
+        .onChange(of: currentStep, perform: { _ in
             canContinue = false
             let delay = pageDuration
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
                 withAnimation(.easeInOut(duration: 0.3)) { canContinue = true }
             }
-        }
+        })
         .onAppear {
             let delay = pageDuration
             DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -158,6 +158,8 @@ struct OnboardingView: View {
                 .opacity(canContinue ? 1.0 : 0.4)
                 .padding(.horizontal, AppTheme.Spacing.xl)
                 .allowsHitTesting(canContinue)
+                .accessibilityLabel("Continue")
+                .accessibilityHint(canContinue ? "Double tap to go to the next page" : "Please wait for the animation to finish")
             }
             .padding(.bottom, AppTheme.Spacing.xxl)
         }
@@ -334,12 +336,16 @@ struct EducationLevelPage: View {
                                     .stroke(isSelected ? AppTheme.Colors.primary.opacity(0.5) : AppTheme.Colors.divider, lineWidth: 1.5)
                             )
                         }
+                        .accessibilityLabel(level.localizedName)
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
                         .transition(.move(edge: .trailing).combined(with: .opacity))
                     }
                 }
             }
             .padding(.horizontal, AppTheme.Spacing.xl)
             .animation(.spring(response: 0.4), value: visibleCards)
+            .accessibilityElement(children: .contain)
+            .accessibilityLabel("Education level selection")
 
             Spacer()
         }
@@ -907,6 +913,7 @@ struct OnboardingPaywallView: View {
                 .primaryButton()
                 .disabled(isProcessing)
                 .padding(.horizontal, AppTheme.Spacing.xl)
+                .accessibilityLabel(isProcessing ? "Processing" : "Subscribe")
 
                 HStack(spacing: 5) {
                     Image(systemName: "checkmark.shield.fill").font(.caption).foregroundStyle(AppTheme.Colors.primary)

@@ -70,15 +70,15 @@ struct CameraView: View {
                 }
             }
         }
-        .onChange(of: showCrop) { [showCrop] newVal in
-            if showCrop == true && newVal == false && shouldSolveAfterCrop {
+        .onChange(of: showCrop, perform: { newVal in
+            if newVal == false && shouldSolveAfterCrop {
                 shouldSolveAfterCrop = false
                 Task {
-                    try? await Task.sleep(for: .milliseconds(400))
-                    showSolution = true
+                    try? await Task.sleep(nanoseconds: 400_000_000)
+                    await MainActor.run { showSolution = true }
                 }
             }
-        }
+        })
         .sheet(isPresented: $showSolution, onDismiss: {
             imageToCrop = nil
         }) {
@@ -95,7 +95,7 @@ struct CameraView: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView()
         }
-        .onChange(of: selectedPhotoItem) { item in
+        .onChange(of: selectedPhotoItem, perform: { item in
             guard let item else { return }
             // Check if user can solve before loading photo
             guard usage.canSolve else {
@@ -116,7 +116,7 @@ struct CameraView: View {
                 }
                 selectedPhotoItem = nil
             }
-        }
+        })
     }
 
     // MARK: - Camera Content (Full Screen)

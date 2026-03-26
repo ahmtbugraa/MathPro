@@ -1,6 +1,6 @@
 import Foundation
-import Combine
 import SwiftUI
+import Combine
 
 // MARK: - Domain Model
 struct MathSolution: Identifiable {
@@ -111,7 +111,8 @@ final class SolveStore: ObservableObject {
     @Published private(set) var records: [SolveRecord] = []
 
     private let fileURL: URL = {
-        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
         return docs.appendingPathComponent("solve_history.json")
     }()
 
