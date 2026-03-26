@@ -916,7 +916,7 @@ struct OnboardingPaywallView: View {
                 .accessibilityLabel(isProcessing ? "Processing" : "Subscribe")
 
                 // Apple-required subscription disclosure
-                Text("Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless canceled at least 24 hours before the end of the current period. Manage subscriptions in Apple ID Account Settings.")
+                Text(String(localized: "apple_subscription_disclosure"))
                     .font(.system(size: 10))
                     .foregroundStyle(AppTheme.Colors.textTertiary)
                     .multilineTextAlignment(.center)
