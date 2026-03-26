@@ -4,6 +4,9 @@ import RevenueCat
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
 
+    /// Optional callback for onboarding flow — when set, shows "Maybe later" instead of X close button
+    var onComplete: (() -> Void)? = nil
+
     @ObservedObject private var subscriptionService = SubscriptionService.shared
 
     @State private var selectedPlan: PlanType = .annual
@@ -58,7 +61,9 @@ struct PaywallView: View {
             Text(subscriptionService.errorMessage ?? String(localized: "An error occurred"))
         }
         .alert(String(localized: "Restored!"), isPresented: $showRestoreSuccess) {
-            Button("OK") { dismiss() }
+            Button("OK") {
+                if let onComplete { onComplete() } else { dismiss() }
+            }
         } message: {
             Text(String(localized: "Your subscription has been restored."))
         }
@@ -95,15 +100,18 @@ struct PaywallView: View {
     private var closeButton: some View {
         HStack {
             Spacer()
-            Button { dismiss() } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(AppTheme.Colors.textTertiary)
-                    .frame(width: 32, height: 32)
-                    .background(Color.white.opacity(0.08))
-                    .clipShape(Circle())
+            // Hide close X when in onboarding mode (onComplete is set)
+            if onComplete == nil {
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(AppTheme.Colors.textTertiary)
+                        .frame(width: 32, height: 32)
+                        .background(Color.white.opacity(0.08))
+                        .clipShape(Circle())
+                }
+                .accessibilityLabel("Close")
             }
-            .accessibilityLabel("Close")
         }
         .padding(.horizontal, 20)
         .padding(.top, 12)
@@ -532,6 +540,19 @@ struct PaywallView: View {
                     .font(.system(size: 11))
                     .foregroundStyle(AppTheme.Colors.textTertiary)
             }
+
+            // "Maybe later" — only in onboarding mode
+            if let onComplete {
+                Button {
+                    onComplete()
+                } label: {
+                    Text(String(localized: "Maybe later"))
+                        .font(.system(size: 13))
+                        .foregroundStyle(AppTheme.Colors.textTertiary)
+                        .underline()
+                }
+                .padding(.top, 4)
+            }
         }
         .padding(.bottom, 16)
     }
@@ -564,8 +585,9 @@ struct PaywallView: View {
             let success = await subscriptionService.purchase(package: package)
             await MainActor.run {
                 isProcessing = false
-                if success { dismiss() }
-                else if subscriptionService.errorMessage != nil { showError = true }
+                if success {
+                    if let onComplete { onComplete() } else { dismiss() }
+                } else if subscriptionService.errorMessage != nil { showError = true }
             }
         }
     }
