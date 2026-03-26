@@ -13,8 +13,7 @@ struct PaywallView: View {
     @State private var isProcessing = false
     @State private var showError = false
     @State private var showRestoreSuccess = false
-    @State private var showPrivacy = false
-    @State private var showTerms = false
+    @Environment(\.openURL) private var openURL
 
     // Animations
     @State private var headerAppeared = false
@@ -67,8 +66,6 @@ struct PaywallView: View {
         } message: {
             Text(String(localized: "Your subscription has been restored."))
         }
-        .sheet(isPresented: $showPrivacy) { PrivacyPolicyView() }
-        .sheet(isPresented: $showTerms) { TermsOfUseView() }
     }
 
     // MARK: - Background
@@ -327,7 +324,9 @@ struct PaywallView: View {
     private var annualPlanCard: some View {
         if let pkg = subscriptionService.annualPackage {
             let isSelected = selectedPlan == .annual
-            let priceText = pkg.localizedPrice + String(localized: "/ year")
+            let basePrice = pkg.localizedPrice + String(localized: "/ year")
+            let subtitle = pkg.introSubtitleText ?? basePrice
+            let badge = pkg.introBadgeText
 
             Button {
                 withAnimation(.spring(response: 0.3)) { selectedPlan = .annual }
@@ -349,10 +348,23 @@ struct PaywallView: View {
                     // Content
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(String(localized: "Annual Plan"))
-                                .font(.system(size: 17, weight: .bold, design: .rounded))
-                                .foregroundStyle(.white)
-                            Text(priceText)
+                            HStack(spacing: 8) {
+                                Text(String(localized: "Annual Plan"))
+                                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                                    .foregroundStyle(.white)
+
+                                // Dynamic intro badge
+                                if let badge {
+                                    Text(badge)
+                                        .font(.system(size: 10, weight: .bold))
+                                        .foregroundStyle(.black)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 3)
+                                        .background(AppTheme.Colors.primary)
+                                        .clipShape(Capsule())
+                                }
+                            }
+                            Text(subtitle)
                                 .font(.system(size: 13))
                                 .foregroundStyle(AppTheme.Colors.textSecondary)
                         }
@@ -378,7 +390,7 @@ struct PaywallView: View {
                         )
                 )
             }
-            .accessibilityLabel("Annual Plan, \(pkg.localizedPrice) per year")
+            .accessibilityLabel("Annual Plan, \(subtitle)")
             .accessibilityAddTraits(isSelected ? .isSelected : [])
         }
     }
@@ -387,23 +399,32 @@ struct PaywallView: View {
     private var weeklyPlanCard: some View {
         if let pkg = subscriptionService.weeklyPackage {
             let isSelected = selectedPlan == .weekly
-            let hasFreeTrial = pkg.hasFreeTrial
-            let titleText: String = hasFreeTrial
-                ? (pkg.trialDurationText ?? String(localized: "Free Trial"))
-                : String(localized: "Weekly")
-            let subtitleText: String = hasFreeTrial
-                ? String(localized: "then") + " " + pkg.localizedPrice + String(localized: "/ week")
-                : pkg.localizedPrice + String(localized: "/ week")
+            let basePrice = pkg.localizedPrice + String(localized: "/ week")
+            let subtitle = pkg.introSubtitleText ?? basePrice
+            let badge = pkg.introBadgeText
 
             Button {
                 withAnimation(.spring(response: 0.3)) { selectedPlan = .weekly }
             } label: {
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(titleText)
-                            .font(.system(size: 17, weight: .bold, design: .rounded))
-                            .foregroundStyle(.white)
-                        Text(subtitleText)
+                        HStack(spacing: 8) {
+                            Text(String(localized: "Weekly"))
+                                .font(.system(size: 17, weight: .bold, design: .rounded))
+                                .foregroundStyle(.white)
+
+                            // Dynamic intro badge
+                            if let badge {
+                                Text(badge)
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundStyle(.black)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 3)
+                                    .background(AppTheme.Colors.primary)
+                                    .clipShape(Capsule())
+                            }
+                        }
+                        Text(subtitle)
                             .font(.system(size: 13))
                             .foregroundStyle(AppTheme.Colors.textSecondary)
                     }
@@ -426,7 +447,7 @@ struct PaywallView: View {
                         )
                 )
             }
-            .accessibilityLabel("\(titleText), \(subtitleText)")
+            .accessibilityLabel("\(pkg.introSubtitleText ?? basePrice)")
             .accessibilityAddTraits(isSelected ? .isSelected : [])
         }
 
@@ -464,10 +485,10 @@ struct PaywallView: View {
         let pkg = selectedPlan == .weekly
             ? subscriptionService.weeklyPackage
             : subscriptionService.annualPackage
-        let hasFreeTrial = pkg?.hasFreeTrial == true && selectedPlan == .weekly
+        let btnText: String = pkg?.ctaButtonText ?? String(localized: "Subscribe Now")
 
         VStack(spacing: 12) {
-            // Subscribe button
+            // Subscribe button — dynamic text based on intro offer
             Button {
                 purchase()
             } label: {
@@ -475,9 +496,6 @@ struct PaywallView: View {
                     if isProcessing {
                         ProgressView().tint(.black)
                     } else {
-                        let btnText: String = hasFreeTrial
-                            ? String(localized: "Start Free Trial")
-                            : String(localized: "Subscribe Now")
                         Text(btnText)
                             .font(.system(size: 17, weight: .bold, design: .rounded))
                     }
@@ -498,14 +516,14 @@ struct PaywallView: View {
             .disabled(isProcessing)
             .scaleEffect(isProcessing ? 0.97 : 1.0)
             .animation(.easeInOut(duration: 0.15), value: isProcessing)
-            .accessibilityLabel("Subscribe")
+            .accessibilityLabel(btnText)
 
-            // Trial detail
-            if let pkg, hasFreeTrial, let trialText = pkg.trialDurationText {
-                let detail = trialText + ". " + String(localized: "Then") + " " + pkg.localizedPrice + pkg.localizedPeriod + "."
-                Text(detail)
+            // Dynamic intro offer detail text
+            if let pkg, let introText = pkg.introSubtitleText {
+                Text(introText)
                     .font(.system(size: 12))
                     .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.center)
             }
 
             // Apple-required disclosure
@@ -533,10 +551,10 @@ struct PaywallView: View {
 
             // Privacy & Terms
             HStack(spacing: 16) {
-                Button(String(localized: "Privacy Policy")) { showPrivacy = true }
+                Button(String(localized: "Privacy Policy")) { openURL(Config.privacyPolicyURL) }
                     .font(.system(size: 11))
                     .foregroundStyle(AppTheme.Colors.textTertiary)
-                Button(String(localized: "Terms of Use")) { showTerms = true }
+                Button(String(localized: "Terms of Use")) { openURL(Config.termsOfUseURL) }
                     .font(.system(size: 11))
                     .foregroundStyle(AppTheme.Colors.textTertiary)
             }

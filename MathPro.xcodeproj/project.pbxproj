@@ -272,9 +272,10 @@
 				DEVELOPMENT_TEAM = 6NB7PXWN9P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = MathPro;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Matematik problemlerini fotoğraflamak için kamera erişimine ihtiyaç var.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Galerinizden matematik problemi seçmek için.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is needed to photograph math problems.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Choose a math problem from your photo library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -307,9 +308,10 @@
 				DEVELOPMENT_TEAM = 6NB7PXWN9P;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = MathPro;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
-				INFOPLIST_KEY_NSCameraUsageDescription = "Matematik problemlerini fotoğraflamak için kamera erişimine ihtiyaç var.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Galerinizden matematik problemi seçmek için.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is needed to photograph math problems.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Choose a math problem from your photo library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -68,4 +68,8 @@ enum Config {
     // MARK: - RevenueCat
     static let revenueCatAPIKey = "appl_JOtHVgSjsJFWznkspIMVBcTxaNM"
     static let entitlementID = "Premium"
+
+    // MARK: - Legal URLs
+    static let privacyPolicyURL = URL(string: "https://teal-gull-96f.notion.site/MathPro-Privacy-Policy-32f3887142058088b5f3eae284b4515a")!
+    static let termsOfUseURL = URL(string: "https://teal-gull-96f.notion.site/MathPro-Terms-of-Use-32f38871420580daaf10e5412a61d0e9")!
 }

@@ -196,6 +196,14 @@ struct SettingsView: View {
                         UIApplication.shared.open(url)
                     }
                 }
+                Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
+                settingsRow(icon: "hand.raised.fill",    color: .gray,                     title: "Privacy Policy") {
+                    UIApplication.shared.open(Config.privacyPolicyURL)
+                }
+                Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
+                settingsRow(icon: "doc.text.fill",       color: .gray,                     title: "Terms of Use") {
+                    UIApplication.shared.open(Config.termsOfUseURL)
+                }
             }
             .cardStyle()
         }
