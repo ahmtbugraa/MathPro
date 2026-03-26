@@ -1,12 +1,91 @@
 import SwiftUI
 import RevenueCat
 
+// MARK: - Level-Based Example Data
+struct MathExample {
+    let equation: String
+    let hint: String
+    let answer: String
+    let steps: [(String, String, String)] // (number, title, detail)
+    let miniSteps: [(String, String)]     // (number, short text)
+}
+
+enum MathExamples {
+    static func forLevel(_ level: EducationLevel) -> MathExample {
+        switch level {
+        case .elementary:
+            return MathExample(
+                equation: "48 x 7 = ?",
+                hint: "",
+                answer: "336",
+                steps: [
+                    ("1", String(localized: "step_elem_1"), "40 x 7 = 280"),
+                    ("2", String(localized: "step_elem_2"), "8 x 7 = 56"),
+                    ("3", String(localized: "step_elem_3"), "280 + 56 = 336"),
+                ],
+                miniSteps: [("1", "280"), ("2", "56"), ("3", "336")]
+            )
+        case .middle:
+            return MathExample(
+                equation: "3x + 12 = 27",
+                hint: "x = ?",
+                answer: "x = 5",
+                steps: [
+                    ("1", String(localized: "step_mid_1"), "3x + 12 - 12 = 27 - 12"),
+                    ("2", String(localized: "step_mid_2"), "3x = 15"),
+                    ("3", String(localized: "step_mid_3"), "x = 15 / 3 = 5"),
+                ],
+                miniSteps: [("1", "3x = 15"), ("2", "/ 3"), ("3", "x = 5")]
+            )
+        case .high:
+            return MathExample(
+                equation: "2x\u{00B2} + 5x - 3 = 0",
+                hint: "x = ?",
+                answer: "x\u{2081} = \u{00BD}   x\u{2082} = -3",
+                steps: [
+                    ("1", String(localized: "step_high_1"), "\u{0394} = 25 + 24 = 49"),
+                    ("2", String(localized: "step_high_2"), "\u{221A}49 = 7"),
+                    ("3", String(localized: "step_high_3"), "x = \u{00BD}  or  x = -3"),
+                ],
+                miniSteps: [("1", "\u{0394} = 49"), ("2", "\u{221A}49 = 7"), ("3", "x = \u{00BD}, -3")]
+            )
+        case .university:
+            return MathExample(
+                equation: "\u{222B} 2x\u{00B7}e^(x\u{00B2}) dx",
+                hint: "",
+                answer: "e^(x\u{00B2}) + C",
+                steps: [
+                    ("1", String(localized: "step_uni_1"), "u = x\u{00B2},  du = 2x dx"),
+                    ("2", String(localized: "step_uni_2"), "\u{222B} e^u du"),
+                    ("3", String(localized: "step_uni_3"), "e^(x\u{00B2}) + C"),
+                ],
+                miniSteps: [("1", "u = x\u{00B2}"), ("2", "\u{222B}e^u"), ("3", "e^(x\u{00B2})+C")]
+            )
+        }
+    }
+}
+
 // MARK: - Main Onboarding Container
 struct OnboardingView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("educationLevel") private var selectedLevel: String = EducationLevel.high.rawValue
     @State private var currentStep = 0
+    @State private var canContinue = false
 
     private let totalInfoSteps = 6
+
+    // Animation duration per page (seconds) before Continue is enabled
+    private var pageDuration: Double {
+        switch currentStep {
+        case 0: return 1.5   // Welcome
+        case 1: return 0.5   // Education level (just selection)
+        case 2: return 2.0   // Camera (faster now)
+        case 3: return 2.0   // Step solution
+        case 4: return 2.5   // Comparison
+        case 5: return 2.5   // Social proof
+        default: return 1.5
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -31,21 +110,36 @@ struct OnboardingView: View {
         }
         .animation(.easeInOut(duration: 0.35), value: currentStep)
         .preferredColorScheme(.dark)
+        .onChange(of: currentStep) { _ in
+            canContinue = false
+            let delay = pageDuration
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation(.easeInOut(duration: 0.3)) { canContinue = true }
+            }
+        }
+        .onAppear {
+            let delay = pageDuration
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                withAnimation(.easeInOut(duration: 0.3)) { canContinue = true }
+            }
+        }
+    }
+
+    private var currentLevel: EducationLevel {
+        EducationLevel(rawValue: selectedLevel) ?? .high
     }
 
     @ViewBuilder
     private var infoPageView: some View {
         VStack(spacing: 0) {
-            // No skip button — user must go through all steps
-
             Spacer().frame(height: AppTheme.Spacing.xl)
 
             Group {
                 switch currentStep {
                 case 0: WelcomePage()
-                case 1: CameraPage()
-                case 2: EducationLevelPage()
-                case 3: StepSolutionPage()
+                case 1: EducationLevelPage()
+                case 2: CameraPage(example: MathExamples.forLevel(currentLevel))
+                case 3: StepSolutionPage(example: MathExamples.forLevel(currentLevel))
                 case 4: ComparisonPage()
                 default: SocialProofPage()
                 }
@@ -54,9 +148,16 @@ struct OnboardingView: View {
 
             VStack(spacing: AppTheme.Spacing.md) {
                 dotsView
-                Button { withAnimation { currentStep += 1 } } label: { Text("Continue") }
-                    .primaryButton()
-                    .padding(.horizontal, AppTheme.Spacing.xl)
+                Button {
+                    guard canContinue else { return }
+                    withAnimation { currentStep += 1 }
+                } label: {
+                    Text("Continue")
+                }
+                .primaryButton()
+                .opacity(canContinue ? 1.0 : 0.4)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+                .allowsHitTesting(canContinue)
             }
             .padding(.bottom, AppTheme.Spacing.xxl)
         }
@@ -82,7 +183,7 @@ struct WelcomePage: View {
     @State private var showSubtitle = false
     @State private var pulseGlow = false
 
-    private let symbols = ["∫", "∑", "π", "√", "∞", "±", "x²", "sin", "cos", "log", "∂", "≠"]
+    private let symbols = ["\u{222B}", "\u{2211}", "\u{03C0}", "\u{221A}", "\u{221E}", "\u{00B1}", "x\u{00B2}", "sin", "cos", "log", "\u{2202}", "\u{2260}"]
     private let positions: [(CGFloat, CGFloat)] = [
         (60,80),(160,140),(280,60),(340,200),(80,300),(220,180),
         (300,350),(50,420),(180,480),(320,380),(120,250),(260,500)
@@ -91,7 +192,6 @@ struct WelcomePage: View {
 
     var body: some View {
         ZStack {
-            // Floating math symbols background
             ForEach(0..<12, id: \.self) { i in
                 Text(symbols[i])
                     .font(.system(size: 22, weight: .light, design: .monospaced))
@@ -110,7 +210,6 @@ struct WelcomePage: View {
             VStack(spacing: AppTheme.Spacing.xl) {
                 Spacer()
 
-                // Icon with glow pulse
                 ZStack {
                     Circle()
                         .fill(AppTheme.Colors.primary.opacity(0.15))
@@ -161,8 +260,103 @@ struct WelcomePage: View {
     }
 }
 
-// MARK: - Page 2: Camera
+// MARK: - Page 2: Education Level Selection (moved up)
+struct EducationLevelPage: View {
+    @AppStorage("educationLevel") private var selectedLevel: String = EducationLevel.high.rawValue
+    @State private var showTitle = false
+    @State private var visibleCards = 0
+
+    var body: some View {
+        VStack(spacing: AppTheme.Spacing.lg) {
+            Spacer()
+
+            VStack(spacing: AppTheme.Spacing.sm) {
+                Image(systemName: "person.crop.circle.badge.questionmark")
+                    .font(.system(size: 48))
+                    .foregroundStyle(AppTheme.Colors.primary)
+                    .symbolRenderingMode(.hierarchical)
+                    .opacity(showTitle ? 1 : 0)
+                    .scaleEffect(showTitle ? 1 : 0.5)
+
+                Text("education_level_title")
+                    .font(AppTheme.Fonts.title)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .opacity(showTitle ? 1 : 0)
+                    .offset(y: showTitle ? 0 : 15)
+
+                Text("education_level_subtitle")
+                    .font(AppTheme.Fonts.callout)
+                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, AppTheme.Spacing.xl)
+                    .opacity(showTitle ? 1 : 0)
+            }
+
+            VStack(spacing: AppTheme.Spacing.sm) {
+                ForEach(Array(EducationLevel.allCases.enumerated()), id: \.element.id) { index, level in
+                    let isSelected = selectedLevel == level.rawValue
+                    if index < visibleCards {
+                        Button {
+                            withAnimation(.spring(response: 0.3)) {
+                                selectedLevel = level.rawValue
+                                EducationLevel.save(level)
+                            }
+                        } label: {
+                            HStack(spacing: AppTheme.Spacing.md) {
+                                Text(level.emoji)
+                                    .font(.system(size: 28))
+
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(level.localizedName)
+                                        .font(AppTheme.Fonts.headline)
+                                        .foregroundStyle(isSelected ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
+                                }
+
+                                Spacer()
+
+                                ZStack {
+                                    Circle()
+                                        .stroke(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.divider, lineWidth: 2)
+                                        .frame(width: 24, height: 24)
+                                    if isSelected {
+                                        Circle()
+                                            .fill(AppTheme.Colors.primary)
+                                            .frame(width: 14, height: 14)
+                                    }
+                                }
+                            }
+                            .padding(AppTheme.Spacing.md)
+                            .background(isSelected ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: AppTheme.Radius.md)
+                                    .stroke(isSelected ? AppTheme.Colors.primary.opacity(0.5) : AppTheme.Colors.divider, lineWidth: 1.5)
+                            )
+                        }
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                    }
+                }
+            }
+            .padding(.horizontal, AppTheme.Spacing.xl)
+            .animation(.spring(response: 0.4), value: visibleCards)
+
+            Spacer()
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.5)) { showTitle = true }
+            for i in 1...4 {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2 + Double(i) * 0.1) {
+                    withAnimation { visibleCards = i }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Page 3: Camera (dynamic example, faster animation)
 struct CameraPage: View {
+    let example: MathExample
     @State private var scanLineOffset: CGFloat = -36
     @State private var phase: Int = 0  // 0=scanning, 1=recognized, 2=solved
     @State private var showTitle = false
@@ -180,28 +374,27 @@ struct CameraPage: View {
                 .opacity(showTitle ? 1 : 0)
 
             ZStack {
-                // Phone frame
                 RoundedRectangle(cornerRadius: 28)
                     .fill(AppTheme.Colors.surface)
-                    .frame(width: 220, height: 240)
+                    .frame(width: 220, height: 220)
                     .overlay(RoundedRectangle(cornerRadius: 28).stroke(AppTheme.Colors.divider, lineWidth: 1.5))
 
                 ZStack {
-                    // Math problem card
                     RoundedRectangle(cornerRadius: 8)
                         .fill(Color.white.opacity(0.94))
-                        .frame(width: 170, height: 80)
+                        .frame(width: 170, height: 75)
 
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("2x² + 5x - 3 = 0")
+                        Text(example.equation)
                             .font(.system(size: 14, weight: .medium, design: .monospaced))
                             .foregroundStyle(.black)
-                        Text("x = ?")
-                            .font(.system(size: 12, design: .monospaced))
-                            .foregroundStyle(.gray)
+                        if !example.hint.isEmpty {
+                            Text(example.hint)
+                                .font(.system(size: 12, design: .monospaced))
+                                .foregroundStyle(.gray)
+                        }
                     }
 
-                    // Scan line — only visible during scanning phase
                     if phase == 0 {
                         Rectangle()
                             .fill(AppTheme.Colors.primary.opacity(0.65))
@@ -209,28 +402,25 @@ struct CameraPage: View {
                             .offset(y: scanLineOffset)
                     }
 
-                    // Checkmark overlay when recognized
                     if phase >= 1 {
                         RoundedRectangle(cornerRadius: 8)
                             .stroke(AppTheme.Colors.primary, lineWidth: 2.5)
-                            .frame(width: 170, height: 80)
+                            .frame(width: 170, height: 75)
                             .transition(.opacity)
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 8))
                 .overlay(scanFrame.opacity(phase == 0 ? 1 : 0))
             }
-            .frame(height: 240)
+            .frame(height: 220)
 
-            // Result card — appears after scanning
             if phase >= 2 {
                 VStack(spacing: AppTheme.Spacing.sm) {
-                    // Answer badge
                     HStack(spacing: 8) {
                         Image(systemName: "checkmark.circle.fill")
                             .foregroundStyle(AppTheme.Colors.primary)
                             .font(.system(size: 18))
-                        Text("x₁ = ½   x₂ = -3")
+                        Text(example.answer)
                             .font(.system(size: 15, weight: .semibold, design: .monospaced))
                             .foregroundStyle(AppTheme.Colors.primary)
                     }
@@ -239,18 +429,30 @@ struct CameraPage: View {
                     .background(AppTheme.Colors.primarySoft)
                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
 
-                    // Mini steps
                     HStack(spacing: AppTheme.Spacing.sm) {
-                        miniStep("1", "Δ = 49")
-                        miniStep("2", "√49 = 7")
-                        miniStep("3", "x = ½, -3")
+                        ForEach(example.miniSteps, id: \.0) { num, text in
+                            VStack(spacing: 3) {
+                                ZStack {
+                                    Circle().fill(AppTheme.Colors.primarySoft).frame(width: 22, height: 22)
+                                    Text(num).font(.system(size: 11, weight: .bold)).foregroundStyle(AppTheme.Colors.primary)
+                                }
+                                Text(text)
+                                    .font(.system(size: 10, design: .monospaced))
+                                    .foregroundStyle(AppTheme.Colors.textSecondary)
+                                    .lineLimit(1)
+                                    .minimumScaleFactor(0.7)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, AppTheme.Spacing.xs)
+                            .background(AppTheme.Colors.surface)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
                     }
                     .padding(.horizontal, AppTheme.Spacing.lg)
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
 
-            // Subtitle text
             Text(subtitleText)
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
@@ -267,44 +469,27 @@ struct CameraPage: View {
 
     private var subtitleText: String {
         switch phase {
-        case 0: return String(localized: "Point your camera at the problem — framing is automatic.")
+        case 0: return String(localized: "Point your camera at the problem \u{2014} framing is automatic.")
         case 1: return String(localized: "Problem recognized!")
         default: return String(localized: "Solution ready in seconds.")
         }
     }
 
-    private func miniStep(_ num: String, _ text: String) -> some View {
-        VStack(spacing: 3) {
-            ZStack {
-                Circle().fill(AppTheme.Colors.primarySoft).frame(width: 22, height: 22)
-                Text(num).font(.system(size: 11, weight: .bold)).foregroundStyle(AppTheme.Colors.primary)
-            }
-            Text(text)
-                .font(.system(size: 10, design: .monospaced))
-                .foregroundStyle(AppTheme.Colors.textSecondary)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, AppTheme.Spacing.xs)
-        .background(AppTheme.Colors.surface)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-    }
-
     private func startAnimation() {
-        // Phase 0: scanning
-        withAnimation(.easeOut(duration: 0.4)) { showTitle = true }
-        withAnimation(.easeOut(duration: 0.4).delay(0.3)) { showSubtitle = true }
-        withAnimation(.linear(duration: 1.2).repeatForever(autoreverses: true)) {
+        withAnimation(.easeOut(duration: 0.3)) { showTitle = true }
+        withAnimation(.easeOut(duration: 0.3).delay(0.2)) { showSubtitle = true }
+        withAnimation(.linear(duration: 0.8).repeatForever(autoreverses: true)) {
             scanLineOffset = 36
         }
 
-        // Phase 1: recognized (after 2.5s)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-            withAnimation(.spring(response: 0.4)) { phase = 1 }
+        // Phase 1: recognized (after 1.2s — faster)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+            withAnimation(.spring(response: 0.3)) { phase = 1 }
         }
 
-        // Phase 2: solved (after 4s)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) { phase = 2 }
+        // Phase 2: solved (after 2.0s — faster)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) { phase = 2 }
         }
     }
 
@@ -321,91 +506,11 @@ struct CameraPage: View {
     }
 }
 
-// MARK: - Page 3: Education Level Selection
-struct EducationLevelPage: View {
-    @AppStorage("educationLevel") private var selectedLevel: String = EducationLevel.high.rawValue
-
-    var body: some View {
-        VStack(spacing: AppTheme.Spacing.lg) {
-            Spacer()
-
-            // Title
-            VStack(spacing: AppTheme.Spacing.sm) {
-                Image(systemName: "person.crop.circle.badge.questionmark")
-                    .font(.system(size: 48))
-                    .foregroundStyle(AppTheme.Colors.primary)
-                    .symbolRenderingMode(.hierarchical)
-
-                Text("education_level_title")
-                    .font(AppTheme.Fonts.title)
-                    .foregroundStyle(AppTheme.Colors.textPrimary)
-                    .multilineTextAlignment(.center)
-
-                Text("education_level_subtitle")
-                    .font(AppTheme.Fonts.callout)
-                    .foregroundStyle(AppTheme.Colors.textSecondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, AppTheme.Spacing.xl)
-            }
-
-            // Level Cards
-            VStack(spacing: AppTheme.Spacing.sm) {
-                ForEach(EducationLevel.allCases) { level in
-                    let isSelected = selectedLevel == level.rawValue
-                    Button {
-                        withAnimation(.spring(response: 0.3)) {
-                            selectedLevel = level.rawValue
-                            EducationLevel.save(level)
-                        }
-                    } label: {
-                        HStack(spacing: AppTheme.Spacing.md) {
-                            Text(level.emoji)
-                                .font(.system(size: 28))
-
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(level.localizedName)
-                                    .font(AppTheme.Fonts.headline)
-                                    .foregroundStyle(isSelected ? AppTheme.Colors.textPrimary : AppTheme.Colors.textSecondary)
-                            }
-
-                            Spacer()
-
-                            ZStack {
-                                Circle()
-                                    .stroke(isSelected ? AppTheme.Colors.primary : AppTheme.Colors.divider, lineWidth: 2)
-                                    .frame(width: 24, height: 24)
-                                if isSelected {
-                                    Circle()
-                                        .fill(AppTheme.Colors.primary)
-                                        .frame(width: 14, height: 14)
-                                }
-                            }
-                        }
-                        .padding(AppTheme.Spacing.md)
-                        .background(isSelected ? AppTheme.Colors.primarySoft : AppTheme.Colors.surface)
-                        .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppTheme.Radius.md)
-                                .stroke(isSelected ? AppTheme.Colors.primary.opacity(0.5) : AppTheme.Colors.divider, lineWidth: 1.5)
-                        )
-                    }
-                }
-            }
-            .padding(.horizontal, AppTheme.Spacing.xl)
-
-            Spacer()
-        }
-    }
-}
-
-// MARK: - Page 4: Step Solution
+// MARK: - Page 4: Step Solution (dynamic example)
 struct StepSolutionPage: View {
+    let example: MathExample
     @State private var visibleSteps = 0
-    private let steps = [
-        ("1", "Find the discriminant", "Δ = 25 + 24 = 49"),
-        ("2", "Take the square root", "√49 = 7"),
-        ("3", "Results", "x = ½  or  x = -3"),
-    ]
+    @State private var showAnswer = false
 
     var body: some View {
         VStack(spacing: AppTheme.Spacing.lg) {
@@ -414,9 +519,10 @@ struct StepSolutionPage: View {
                 .font(AppTheme.Fonts.title)
                 .foregroundStyle(AppTheme.Colors.textPrimary)
 
+            // Answer badge
             HStack {
                 Image(systemName: "checkmark.seal.fill").foregroundStyle(AppTheme.Colors.primary)
-                Text("x₁ = ½   •   x₂ = -3")
+                Text(example.answer)
                     .font(AppTheme.Fonts.headline)
                     .foregroundStyle(AppTheme.Colors.primary)
             }
@@ -425,18 +531,21 @@ struct StepSolutionPage: View {
             .background(AppTheme.Colors.primarySoft)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
             .padding(.horizontal, AppTheme.Spacing.xl)
+            .opacity(showAnswer ? 1 : 0)
+            .scaleEffect(showAnswer ? 1 : 0.9)
 
+            // Steps
             VStack(spacing: AppTheme.Spacing.sm) {
-                ForEach(0..<steps.count, id: \.self) { i in
+                ForEach(0..<example.steps.count, id: \.self) { i in
                     if i < visibleSteps {
                         HStack(spacing: AppTheme.Spacing.md) {
                             ZStack {
                                 Circle().fill(AppTheme.Colors.primarySoft).frame(width: 28, height: 28)
-                                Text(steps[i].0).font(AppTheme.Fonts.caption).fontWeight(.bold).foregroundStyle(AppTheme.Colors.primary)
+                                Text(example.steps[i].0).font(AppTheme.Fonts.caption).fontWeight(.bold).foregroundStyle(AppTheme.Colors.primary)
                             }
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(steps[i].1).font(AppTheme.Fonts.callout).fontWeight(.semibold).foregroundStyle(AppTheme.Colors.textPrimary)
-                                Text(steps[i].2).font(.system(size: 13, design: .monospaced)).foregroundStyle(AppTheme.Colors.textSecondary)
+                                Text(example.steps[i].1).font(AppTheme.Fonts.callout).fontWeight(.semibold).foregroundStyle(AppTheme.Colors.textPrimary)
+                                Text(example.steps[i].2).font(.system(size: 13, design: .monospaced)).foregroundStyle(AppTheme.Colors.textSecondary)
                             }
                             Spacer()
                         }
@@ -452,17 +561,23 @@ struct StepSolutionPage: View {
             Text("Each step is explained with the reason it was performed.")
                 .font(AppTheme.Fonts.callout)
                 .foregroundStyle(AppTheme.Colors.textSecondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, AppTheme.Spacing.xl)
+
             Spacer()
         }
         .onAppear {
-            for i in 1...3 {
-                DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.45) { visibleSteps = i }
+            withAnimation(.spring(response: 0.4).delay(0.2)) { showAnswer = true }
+            for i in 1...example.steps.count {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4 + Double(i) * 0.45) {
+                    visibleSteps = i
+                }
             }
         }
     }
 }
 
-// MARK: - Page 4: Comparison
+// MARK: - Page 5: Comparison
 struct ComparisonPage: View {
     @State private var highlight = false
     @State private var visibleItems = 0
@@ -507,7 +622,7 @@ struct ComparisonPage: View {
                                         .font(.system(size: 12))
                                         .foregroundStyle(AppTheme.Colors.textSecondary)
                                         .lineLimit(1)
-                                        .minimumScaleFactor(0.8)
+                                        .minimumScaleFactor(0.75)
                                 }
                                 .transition(.opacity.combined(with: .offset(x: -10)))
                             }
@@ -518,7 +633,7 @@ struct ComparisonPage: View {
                 }
                 .padding(AppTheme.Spacing.md)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: 190)
+                .frame(height: 180)
                 .background(AppTheme.Colors.surface)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
                 .overlay(RoundedRectangle(cornerRadius: AppTheme.Radius.md)
@@ -548,7 +663,7 @@ struct ComparisonPage: View {
                                         .font(.system(size: 12))
                                         .foregroundStyle(AppTheme.Colors.textSecondary)
                                         .lineLimit(1)
-                                        .minimumScaleFactor(0.8)
+                                        .minimumScaleFactor(0.75)
                                 }
                                 .transition(.opacity.combined(with: .offset(x: -10)))
                             }
@@ -559,7 +674,7 @@ struct ComparisonPage: View {
                 }
                 .padding(AppTheme.Spacing.md)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .frame(height: 190)
+                .frame(height: 180)
                 .background(AppTheme.Colors.primarySoft)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
                 .overlay(RoundedRectangle(cornerRadius: AppTheme.Radius.md)
@@ -582,7 +697,7 @@ struct ComparisonPage: View {
     }
 }
 
-// MARK: - Page 5: Social Proof
+// MARK: - Page 6: Social Proof
 struct SocialProofPage: View {
     @State private var showNumber = false
     @State private var showStars = false
@@ -599,7 +714,6 @@ struct SocialProofPage: View {
         VStack(spacing: AppTheme.Spacing.lg) {
             Spacer()
 
-            // Big number
             VStack(spacing: AppTheme.Spacing.xs) {
                 Text("10,000+")
                     .font(.system(size: 56, weight: .bold, design: .rounded))
@@ -624,12 +738,10 @@ struct SocialProofPage: View {
                     .opacity(showNumber ? 1 : 0)
             }
 
-            // Mini review cards
             VStack(spacing: AppTheme.Spacing.sm) {
                 ForEach(0..<reviews.count, id: \.self) { i in
                     if i < visibleReviews {
                         HStack(spacing: AppTheme.Spacing.md) {
-                            // Avatar
                             ZStack {
                                 Circle()
                                     .fill(AppTheme.Colors.primarySoft)
@@ -669,7 +781,6 @@ struct SocialProofPage: View {
             .padding(.horizontal, AppTheme.Spacing.xl)
             .animation(.spring(response: 0.4), value: visibleReviews)
 
-            // Subject tags
             VStack(spacing: AppTheme.Spacing.sm) {
                 HStack(spacing: AppTheme.Spacing.sm) {
                     subTag("Algebra", .purple); subTag("Geometry", .orange); subTag("Calculus", .indigo)
@@ -705,7 +816,7 @@ struct SocialProofPage: View {
 // MARK: - Onboarding Paywall (Last step)
 struct OnboardingPaywallView: View {
     let onComplete: () -> Void
-    var subscriptionService = SubscriptionService.shared
+    @ObservedObject var subscriptionService = SubscriptionService.shared
 
     @State private var selectedPlan: PaywallView.PlanType = .weekly
     @State private var isProcessing = false
@@ -734,10 +845,10 @@ struct OnboardingPaywallView: View {
                         .multilineTextAlignment(.center)
 
                     VStack(alignment: .leading, spacing: AppTheme.Spacing.sm) {
-                        featureRow("🔥", "Unlimited math solutions")
-                        featureRow("📋", "AI-powered step-by-step explanation")
-                        featureRow("🤖", "Ask AI, learn by understanding")
-                        featureRow("📚", "All history saved")
+                        featureRow("\u{1F525}", "Unlimited math solutions")
+                        featureRow("\u{1F4CB}", "AI-powered step-by-step explanation")
+                        featureRow("\u{1F916}", "Ask AI, learn by understanding")
+                        featureRow("\u{1F4DA}", "All history saved")
                     }
                     .padding(AppTheme.Spacing.md)
                     .cardStyle()
@@ -806,15 +917,14 @@ struct OnboardingPaywallView: View {
                 HStack(spacing: AppTheme.Spacing.sm) {
                     Button(String(localized: "Restore")) { restorePurchase() }
                         .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
-                    Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
+                    Text("\u{2022}").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
                     Button(String(localized: "Privacy")) { showPrivacy = true }
                         .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
-                    Text("•").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
+                    Text("\u{2022}").foregroundStyle(AppTheme.Colors.textTertiary).font(.system(size: 11))
                     Button(String(localized: "Terms")) { showTerms = true }
                         .font(.system(size: 11)).foregroundStyle(AppTheme.Colors.textTertiary)
                 }
 
-                // Skip option
                 Button {
                     onComplete()
                 } label: {

@@ -20,7 +20,7 @@ struct ImageTransferable: Transferable {
 }
 
 struct CameraView: View {
-    @State private var vm = CameraViewModel()
+    @StateObject private var vm = CameraViewModel()
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var capturedImage: UIImage?
     @State private var imageToCrop: UIImage?
@@ -70,8 +70,8 @@ struct CameraView: View {
                 }
             }
         }
-        .onChange(of: showCrop) { oldVal, newVal in
-            if oldVal == true && newVal == false && shouldSolveAfterCrop {
+        .onChange(of: showCrop) { [showCrop] newVal in
+            if showCrop == true && newVal == false && shouldSolveAfterCrop {
                 shouldSolveAfterCrop = false
                 Task {
                     try? await Task.sleep(for: .milliseconds(400))
@@ -95,7 +95,7 @@ struct CameraView: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView()
         }
-        .onChange(of: selectedPhotoItem) { _, item in
+        .onChange(of: selectedPhotoItem) { item in
             guard let item else { return }
             // Check if user can solve before loading photo
             guard usage.canSolve else {
@@ -180,6 +180,7 @@ struct CameraView: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Circle())
                 }
+                .accessibilityLabel("Solution history")
 
                 Spacer()
 
@@ -192,6 +193,8 @@ struct CameraView: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Circle())
                 }
+                .accessibilityLabel("Toggle flash")
+                .accessibilityHint("Double tap to turn flash \(vm.isFlashOn ? "off" : "on")")
 
                 // Settings button
                 Button { showSettings = true } label: {
@@ -202,6 +205,7 @@ struct CameraView: View {
                         .background(.ultraThinMaterial)
                         .clipShape(Circle())
                 }
+                .accessibilityLabel("Settings")
             }
             .padding(.horizontal, AppTheme.Spacing.md)
         }
@@ -226,6 +230,8 @@ struct CameraView: View {
                             .foregroundStyle(.white.opacity(0.6))
                     }
                 }
+                .accessibilityLabel("Choose from gallery")
+                .accessibilityHint("Double tap to pick a photo from your library")
 
                 Spacer()
 
@@ -263,6 +269,8 @@ struct CameraView: View {
                 }
                 .scaleEffect(isCapturing ? 0.92 : 1.0)
                 .animation(.spring(response: 0.2), value: isCapturing)
+                .accessibilityLabel("Take photo")
+                .accessibilityHint("Double tap to take a photo of the math problem")
 
                 Spacer()
 

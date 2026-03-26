@@ -17,15 +17,15 @@ struct CameraPreviewView: UIViewRepresentable {
 final class PreviewUIView: UIView {
     override class var layerClass: AnyClass { AVCaptureVideoPreviewLayer.self }
 
-    var previewLayer: AVCaptureVideoPreviewLayer {
-        layer as! AVCaptureVideoPreviewLayer
+    var previewLayer: AVCaptureVideoPreviewLayer? {
+        layer as? AVCaptureVideoPreviewLayer
     }
 
     var session: AVCaptureSession? {
-        get { previewLayer.session }
+        get { previewLayer?.session }
         set {
-            previewLayer.session = newValue
-            previewLayer.videoGravity = .resizeAspectFill
+            previewLayer?.session = newValue
+            previewLayer?.videoGravity = .resizeAspectFill
         }
     }
 }

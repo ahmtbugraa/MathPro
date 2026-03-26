@@ -59,26 +59,45 @@ enum AppTheme {
     }
 }
 
-// MARK: - View Modifiers
-extension View {
-    func primaryButton() -> some View {
-        self
+// MARK: - Button Styles
+struct PrimaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
             .font(AppTheme.Fonts.headline)
             .foregroundStyle(.black)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(AppTheme.Colors.primary)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.xl))
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .opacity(configuration.isPressed ? 0.9 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
     }
+}
 
-    func secondaryButton() -> some View {
-        self
+struct SecondaryButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
             .font(AppTheme.Fonts.headline)
             .foregroundStyle(AppTheme.Colors.primary)
             .frame(maxWidth: .infinity)
             .frame(height: 56)
             .background(AppTheme.Colors.primarySoft)
             .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.xl))
+            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .opacity(configuration.isPressed ? 0.9 : 1.0)
+            .animation(.easeInOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+// MARK: - View Modifiers
+extension View {
+    func primaryButton() -> some View {
+        self.buttonStyle(PrimaryButtonStyle())
+    }
+
+    func secondaryButton() -> some View {
+        self.buttonStyle(SecondaryButtonStyle())
     }
 
     func cardStyle() -> some View {

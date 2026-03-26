@@ -2,11 +2,10 @@
 //  ContentView.swift
 //  MathPro
 //
-//  Created by Ahmet Buğra  on 16.03.2026.
+//  Created by Ahmet Bugra  on 16.03.2026.
 //
 
 import SwiftUI
-import SwiftData
 
 struct ContentView: View {
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
@@ -24,5 +23,5 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: SolveRecord.self, inMemory: true)
+        .environmentObject(SolveStore.shared)
 }

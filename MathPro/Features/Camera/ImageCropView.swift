@@ -7,7 +7,7 @@ struct ImageCropView: View {
     let onCancel: () -> Void
 
     // Crop rect in image-space coordinates (normalized 0…1)
-    @State private var cropRect = CGRect(x: 0.1, y: 0.2, width: 0.8, height: 0.4)
+    @State private var cropRect = CGRect(x: 0.05, y: 0.05, width: 0.9, height: 0.9)
 
     // Gesture tracking
     @State private var activeEdge: Edge? = nil
@@ -17,12 +17,18 @@ struct ImageCropView: View {
     // Image display geometry
     @State private var imageFrame: CGRect = .zero
 
-    private let minCropSize: CGFloat = 0.12  // minimum 12% of image dimension
+    // Hint animation
+    @State private var showHint = true
+
+    private let minCropSize: CGFloat = 0.08  // minimum 8% — small enough for single question
     private let handleSize: CGFloat = 44
-    private let edgeThreshold: CGFloat = 30
+    private let edgeThreshold: CGFloat = 36
+    private let defaultCropRect = CGRect(x: 0.05, y: 0.05, width: 0.9, height: 0.9)
 
     enum Edge {
-        case topLeft, topRight, bottomLeft, bottomRight, body
+        case topLeft, topRight, bottomLeft, bottomRight
+        case top, bottom, left, right
+        case body
     }
 
     var body: some View {
@@ -50,13 +56,27 @@ struct ImageCropView: View {
 
                         // Crop border + handles
                         cropBorder(fitted: fitted, containerSize: geo.size)
+
+                        // Hint text
+                        if showHint {
+                            hintLabel(fitted: fitted, containerSize: geo.size)
+                        }
                     }
                     .onAppear {
                         imageFrame = fitted
+                        // Hide hint after 3 seconds
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            withAnimation(.easeOut(duration: 0.5)) {
+                                showHint = false
+                            }
+                        }
                     }
                     .gesture(
                         DragGesture(minimumDistance: 1)
                             .onChanged { value in
+                                if showHint {
+                                    withAnimation { showHint = false }
+                                }
                                 handleDrag(value: value, fitted: fitted, containerSize: geo.size)
                             }
                             .onEnded { _ in
@@ -72,6 +92,21 @@ struct ImageCropView: View {
         .statusBarHidden()
     }
 
+    // MARK: - Hint Label
+    private func hintLabel(fitted: CGRect, containerSize: CGSize) -> some View {
+        let screenCrop = cropToScreen(fitted: fitted, containerSize: containerSize)
+
+        return Text("Select the question to solve")
+            .font(AppTheme.Fonts.callout)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .background(.black.opacity(0.7))
+            .clipShape(Capsule())
+            .position(x: screenCrop.midX, y: screenCrop.midY)
+            .transition(.opacity)
+    }
+
     // MARK: - Top Bar
     private var topBar: some View {
         HStack {
@@ -84,6 +119,7 @@ struct ImageCropView: View {
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
             }
+            .accessibilityLabel("Cancel crop")
 
             Spacer()
 
@@ -96,7 +132,7 @@ struct ImageCropView: View {
             // Reset crop
             Button {
                 withAnimation(.spring(response: 0.3)) {
-                    cropRect = CGRect(x: 0.1, y: 0.2, width: 0.8, height: 0.4)
+                    cropRect = defaultCropRect
                 }
             } label: {
                 Image(systemName: "arrow.counterclockwise")
@@ -104,6 +140,7 @@ struct ImageCropView: View {
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
             }
+            .accessibilityLabel("Reset crop area")
         }
         .padding(.horizontal, AppTheme.Spacing.sm)
         .padding(.top, AppTheme.Spacing.sm)
@@ -124,6 +161,8 @@ struct ImageCropView: View {
                     .background(AppTheme.Colors.primarySoft)
                     .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.xl))
             }
+            .accessibilityLabel("Use full image")
+            .accessibilityHint("Double tap to solve without cropping")
 
             // Confirm crop
             Button {
@@ -143,6 +182,8 @@ struct ImageCropView: View {
                 .background(AppTheme.Colors.primary)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.xl))
             }
+            .accessibilityLabel("Crop and solve")
+            .accessibilityHint("Double tap to crop the selected area and solve")
         }
         .padding(.horizontal, AppTheme.Spacing.md)
         .padding(.vertical, AppTheme.Spacing.md)
@@ -170,7 +211,7 @@ struct ImageCropView: View {
         .compositingGroup()
     }
 
-    // MARK: - Crop Border + Corner Handles
+    // MARK: - Crop Border + Handles
     private func cropBorder(fitted: CGRect, containerSize: CGSize) -> some View {
         let screenCrop = cropToScreen(fitted: fitted, containerSize: containerSize)
 
@@ -197,20 +238,78 @@ struct ImageCropView: View {
             }
             .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
 
-            // Corner handles
-            cornerHandle(at: CGPoint(x: screenCrop.minX, y: screenCrop.minY))
-            cornerHandle(at: CGPoint(x: screenCrop.maxX, y: screenCrop.minY))
-            cornerHandle(at: CGPoint(x: screenCrop.minX, y: screenCrop.maxY))
-            cornerHandle(at: CGPoint(x: screenCrop.maxX, y: screenCrop.maxY))
+            // Corner handles (L-shaped brackets)
+            cornerBracket(at: screenCrop, corner: .topLeft)
+            cornerBracket(at: screenCrop, corner: .topRight)
+            cornerBracket(at: screenCrop, corner: .bottomLeft)
+            cornerBracket(at: screenCrop, corner: .bottomRight)
+
+            // Edge handles (small bars on each edge midpoint)
+            edgeHandle(
+                at: CGPoint(x: screenCrop.midX, y: screenCrop.minY),
+                horizontal: true
+            )
+            edgeHandle(
+                at: CGPoint(x: screenCrop.midX, y: screenCrop.maxY),
+                horizontal: true
+            )
+            edgeHandle(
+                at: CGPoint(x: screenCrop.minX, y: screenCrop.midY),
+                horizontal: false
+            )
+            edgeHandle(
+                at: CGPoint(x: screenCrop.maxX, y: screenCrop.midY),
+                horizontal: false
+            )
         }
         .allowsHitTesting(false)
     }
 
-    private func cornerHandle(at point: CGPoint) -> some View {
-        Circle()
+    /// L-shaped corner bracket
+    private func cornerBracket(at rect: CGRect, corner: Edge) -> some View {
+        let bracketLen: CGFloat = 20
+        let lineWidth: CGFloat = 3.5
+
+        let point: CGPoint
+        let xDir: CGFloat
+        let yDir: CGFloat
+
+        switch corner {
+        case .topLeft:
+            point = CGPoint(x: rect.minX, y: rect.minY)
+            xDir = 1; yDir = 1
+        case .topRight:
+            point = CGPoint(x: rect.maxX, y: rect.minY)
+            xDir = -1; yDir = 1
+        case .bottomLeft:
+            point = CGPoint(x: rect.minX, y: rect.maxY)
+            xDir = 1; yDir = -1
+        case .bottomRight:
+            point = CGPoint(x: rect.maxX, y: rect.maxY)
+            xDir = -1; yDir = -1
+        default:
+            point = .zero; xDir = 0; yDir = 0
+        }
+
+        return Path { path in
+            // Horizontal arm
+            path.move(to: point)
+            path.addLine(to: CGPoint(x: point.x + bracketLen * xDir, y: point.y))
+            // Vertical arm
+            path.move(to: point)
+            path.addLine(to: CGPoint(x: point.x, y: point.y + bracketLen * yDir))
+        }
+        .stroke(AppTheme.Colors.primary, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+    }
+
+    /// Small bar handle at edge midpoints
+    private func edgeHandle(at point: CGPoint, horizontal: Bool) -> some View {
+        Capsule()
             .fill(AppTheme.Colors.primary)
-            .frame(width: 16, height: 16)
-            .shadow(color: .black.opacity(0.3), radius: 3, x: 0, y: 1)
+            .frame(
+                width: horizontal ? 32 : 4,
+                height: horizontal ? 4 : 32
+            )
             .position(x: point.x, y: point.y)
     }
 
@@ -229,10 +328,22 @@ struct ImageCropView: View {
             let nearLeft   = abs(location.x - screenCrop.minX) < edgeThreshold
             let nearRight  = abs(location.x - screenCrop.maxX) < edgeThreshold
 
-            if nearTop && nearLeft        { activeEdge = .topLeft }
-            else if nearTop && nearRight  { activeEdge = .topRight }
-            else if nearBottom && nearLeft { activeEdge = .bottomLeft }
+            let inHorizontal = location.x > screenCrop.minX - edgeThreshold &&
+                               location.x < screenCrop.maxX + edgeThreshold
+            let inVertical   = location.y > screenCrop.minY - edgeThreshold &&
+                               location.y < screenCrop.maxY + edgeThreshold
+
+            // Corners first (higher priority)
+            if nearTop && nearLeft         { activeEdge = .topLeft }
+            else if nearTop && nearRight   { activeEdge = .topRight }
+            else if nearBottom && nearLeft  { activeEdge = .bottomLeft }
             else if nearBottom && nearRight { activeEdge = .bottomRight }
+            // Then edges
+            else if nearTop && inHorizontal    { activeEdge = .top }
+            else if nearBottom && inHorizontal { activeEdge = .bottom }
+            else if nearLeft && inVertical     { activeEdge = .left }
+            else if nearRight && inVertical    { activeEdge = .right }
+            // Then body drag
             else if screenCrop.contains(location) { activeEdge = .body }
             else { return }
         }
@@ -262,6 +373,20 @@ struct ImageCropView: View {
         case .bottomRight:
             newRect.size.width  = clamp(initialCropRect.width + dx, min: minCropSize, max: 1 - initialCropRect.minX)
             newRect.size.height = clamp(initialCropRect.height + dy, min: minCropSize, max: 1 - initialCropRect.minY)
+
+        case .top:
+            newRect.origin.y    = clamp(initialCropRect.minY + dy, min: 0, max: initialCropRect.maxY - minCropSize)
+            newRect.size.height = initialCropRect.maxY - newRect.origin.y
+
+        case .bottom:
+            newRect.size.height = clamp(initialCropRect.height + dy, min: minCropSize, max: 1 - initialCropRect.minY)
+
+        case .left:
+            newRect.origin.x   = clamp(initialCropRect.minX + dx, min: 0, max: initialCropRect.maxX - minCropSize)
+            newRect.size.width = initialCropRect.maxX - newRect.origin.x
+
+        case .right:
+            newRect.size.width = clamp(initialCropRect.width + dx, min: minCropSize, max: 1 - initialCropRect.minX)
 
         case .body:
             newRect.origin.x = clamp(initialCropRect.minX + dx, min: 0, max: 1 - initialCropRect.width)
@@ -296,7 +421,10 @@ struct ImageCropView: View {
 
     // MARK: - Crop Image
     private func cropImage() -> UIImage {
-        let cgImage = image.cgImage!
+        // First normalize the image orientation so pixel data matches what the user sees
+        let normalized = normalizeOrientation(image)
+
+        guard let cgImage = normalized.cgImage else { return image }
         let imgW = CGFloat(cgImage.width)
         let imgH = CGFloat(cgImage.height)
 
@@ -308,9 +436,20 @@ struct ImageCropView: View {
         )
 
         if let cropped = cgImage.cropping(to: pixelRect) {
-            return UIImage(cgImage: cropped, scale: image.scale, orientation: image.imageOrientation)
+            return UIImage(cgImage: cropped, scale: normalized.scale, orientation: .up)
         }
         return image
+    }
+
+    /// Re-draw the image with orientation applied so CGImage pixels match visual layout.
+    private func normalizeOrientation(_ img: UIImage) -> UIImage {
+        guard img.imageOrientation != .up else { return img }
+        let size = img.size
+        UIGraphicsBeginImageContextWithOptions(size, false, img.scale)
+        img.draw(in: CGRect(origin: .zero, size: size))
+        let normalized = UIGraphicsGetImageFromCurrentImageContext() ?? img
+        UIGraphicsEndImageContext()
+        return normalized
     }
 
     // MARK: - Helpers

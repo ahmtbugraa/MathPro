@@ -1,13 +1,11 @@
 import SwiftUI
-import SwiftData
 import StoreKit
 
 struct SettingsView: View {
     @AppStorage("isPremium")       private var isPremium = false
     @AppStorage("educationLevel")  private var educationLevel: String = EducationLevel.high.rawValue
 
-    @Environment(\.modelContext) private var modelContext
-    @Query private var records: [SolveRecord]
+    @EnvironmentObject private var solveStore: SolveStore
 
     @State private var showClearConfirm = false
     @State private var showPaywall = false
@@ -96,7 +94,7 @@ struct SettingsView: View {
                 .foregroundStyle(AppTheme.Colors.textTertiary)
 
             HStack {
-                statItem(value: "\(records.count)", label: String(localized: "Total Solves"))
+                statItem(value: "\(solveStore.records.count)", label: String(localized: "Total Solves"))
                 Divider().frame(height: 40).background(AppTheme.Colors.divider)
                 statItem(
                     value: isPremium ? "Premium" : "Free",
@@ -185,7 +183,7 @@ struct SettingsView: View {
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
                 settingsRow(icon: "square.and.arrow.up", color: .blue,                     title: "Share with Friends") {
                     let text = String(localized: "share_watermark")
-                    let url = URL(string: "https://apps.apple.com/app/mathpro/id6651818007")!
+                    guard let url = URL(string: "https://apps.apple.com/app/mathpro/id6651818007") else { return }
                     let av = UIActivityViewController(activityItems: [text, url], applicationActivities: nil)
                     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let root = scene.windows.first?.rootViewController {
@@ -220,7 +218,7 @@ struct SettingsView: View {
                         .font(AppTheme.Fonts.callout)
                         .foregroundStyle(AppTheme.Colors.error)
                     Spacer()
-                    Text(String(format: NSLocalizedString("%d records", comment: ""), records.count))
+                    Text(String(format: NSLocalizedString("%d records", comment: ""), solveStore.records.count))
                         .font(AppTheme.Fonts.caption)
                         .foregroundStyle(AppTheme.Colors.textTertiary)
                 }
@@ -229,7 +227,7 @@ struct SettingsView: View {
             }
             .confirmationDialog("All history will be deleted", isPresented: $showClearConfirm, titleVisibility: .visible) {
                 Button("Delete", role: .destructive) {
-                    records.forEach { modelContext.delete($0) }
+                    solveStore.deleteAll()
                 }
             }
         }
@@ -261,5 +259,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
-        .modelContainer(for: SolveRecord.self, inMemory: true)
+        .environmentObject(SolveStore.shared)
 }

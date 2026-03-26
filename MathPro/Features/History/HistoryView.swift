@@ -1,17 +1,14 @@
 import SwiftUI
-import SwiftData
 
 struct HistoryView: View {
-    @Query(sort: \SolveRecord.createdAt, order: .reverse)
-    private var records: [SolveRecord]
+    @EnvironmentObject private var solveStore: SolveStore
 
-    @Environment(\.modelContext) private var modelContext
     @State private var selectedRecord: SolveRecord?
     @State private var searchText = ""
 
     private var filtered: [SolveRecord] {
-        guard !searchText.isEmpty else { return records }
-        return records.filter {
+        guard !searchText.isEmpty else { return solveStore.records }
+        return solveStore.records.filter {
             $0.problemText.localizedCaseInsensitiveContains(searchText) ||
             $0.subject.localizedCaseInsensitiveContains(searchText)
         }
@@ -22,7 +19,7 @@ struct HistoryView: View {
             ZStack {
                 AppTheme.Colors.background.ignoresSafeArea()
 
-                if records.isEmpty {
+                if solveStore.records.isEmpty {
                     emptyState
                 } else {
                     recordList
@@ -69,7 +66,7 @@ struct HistoryView: View {
                     .buttonStyle(.plain)
                     .contextMenu {
                         Button(role: .destructive) {
-                            modelContext.delete(record)
+                            solveStore.delete(record)
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
@@ -134,5 +131,5 @@ struct HistoryRowView: View {
 
 #Preview {
     HistoryView()
-        .modelContainer(for: SolveRecord.self, inMemory: true)
+        .environmentObject(SolveStore.shared)
 }

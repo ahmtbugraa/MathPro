@@ -1,20 +1,20 @@
 import Foundation
+import Combine
 import SwiftUI
 import RevenueCat
 
 // MARK: - SubscriptionService
-@Observable
-final class SubscriptionService: NSObject, PurchasesDelegate {
+final class SubscriptionService: NSObject, ObservableObject, PurchasesDelegate {
     static let shared = SubscriptionService()
 
-    var isPremium = false
-    var isLoading = false
-    var errorMessage: String?
+    @Published var isPremium = false
+    @Published var isLoading = false
+    @Published var errorMessage: String?
 
     // Current offerings from RevenueCat
-    var currentOffering: Offering?
-    var weeklyPackage: Package?
-    var annualPackage: Package?
+    @Published var currentOffering: Offering?
+    @Published var weeklyPackage: Package?
+    @Published var annualPackage: Package?
 
     private override init() {
         super.init()
@@ -50,9 +50,8 @@ final class SubscriptionService: NSObject, PurchasesDelegate {
 
     // MARK: - Purchase
     func purchase(package: Package) async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        defer { isLoading = false }
+        await MainActor.run { isLoading = true; errorMessage = nil }
+        defer { Task { @MainActor in isLoading = false } }
 
         do {
             let result = try await Purchases.shared.purchase(package: package)
@@ -76,9 +75,8 @@ final class SubscriptionService: NSObject, PurchasesDelegate {
 
     // MARK: - Restore
     func restore() async -> Bool {
-        isLoading = true
-        errorMessage = nil
-        defer { isLoading = false }
+        await MainActor.run { isLoading = true; errorMessage = nil }
+        defer { Task { @MainActor in isLoading = false } }
 
         do {
             let customerInfo = try await Purchases.shared.restorePurchases()
@@ -114,7 +112,8 @@ final class SubscriptionService: NSObject, PurchasesDelegate {
 
     // MARK: - PurchasesDelegate
     nonisolated func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
-        let premium = customerInfo.entitlements[Config.entitlementID]?.isActive == true
+        let entitlement = "Premium"
+        let premium = customerInfo.entitlements[entitlement]?.isActive == true
         Task { @MainActor in
             SubscriptionService.shared.isPremium = premium
             UsageService.shared.setpremium(premium)

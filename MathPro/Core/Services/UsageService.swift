@@ -1,18 +1,18 @@
 import Foundation
+import Combine
 import SwiftUI
 
 /// Manages daily solve limits and tracks API cost.
-@Observable
-final class UsageService {
+final class UsageService: ObservableObject {
     static let shared = UsageService()
 
     // MARK: - Persisted State
-    @ObservationIgnored @AppStorage("dailySolveCount")    private var _dailyCount: Int = 0
-    @ObservationIgnored @AppStorage("lastSolveDate")      private var _lastDate: String = ""
-    @ObservationIgnored @AppStorage("totalSolveCount")    private var _totalCount: Int = 0
-    @ObservationIgnored @AppStorage("isPremium")          private var _isPremium: Bool = false
-    @ObservationIgnored @AppStorage("weeklyAPICost")      private var _weeklyCost: Double = 0
-    @ObservationIgnored @AppStorage("costWeekStart")      private var _costWeekStart: String = ""
+    @AppStorage("dailySolveCount")    private var _dailyCount: Int = 0
+    @AppStorage("lastSolveDate")      private var _lastDate: String = ""
+    @AppStorage("totalSolveCount")    private var _totalCount: Int = 0
+    @AppStorage("isPremium")          private var _isPremium: Bool = false
+    @AppStorage("weeklyAPICost")      private var _weeklyCost: Double = 0
+    @AppStorage("costWeekStart")      private var _costWeekStart: String = ""
 
     private init() {}
 
@@ -49,11 +49,12 @@ final class UsageService {
         resetIfNewDay()
         _dailyCount += 1
         _totalCount += 1
-        trackCost(0.004)  // ~$0.004 per solve
+        objectWillChange.send()
     }
 
     func setpremium(_ value: Bool) {
         _isPremium = value
+        objectWillChange.send()
     }
 
     var shouldShowReview: Bool {

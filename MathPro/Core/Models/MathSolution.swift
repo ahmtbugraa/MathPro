@@ -1,6 +1,6 @@
 import Foundation
+import Combine
 import SwiftUI
-import SwiftData
 
 // MARK: - Domain Model
 struct MathSolution: Identifiable {
@@ -74,9 +74,8 @@ enum MathSubject: String, Codable, CaseIterable {
     }
 }
 
-// MARK: - SwiftData Persistence Model
-@Model
-final class SolveRecord: Identifiable {
+// MARK: - Persistence Model (JSON file-based, iOS 16+)
+final class SolveRecord: Identifiable, Codable {
     var id: UUID
     var problemText: String
     var subject: String
@@ -102,5 +101,55 @@ final class SolveRecord: Identifiable {
 
     var mathSubject: MathSubject {
         MathSubject(rawValue: subject) ?? .other
+    }
+}
+
+// MARK: - SolveStore (replaces SwiftData)
+final class SolveStore: ObservableObject {
+    static let shared = SolveStore()
+
+    @Published private(set) var records: [SolveRecord] = []
+
+    private let fileURL: URL = {
+        let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return docs.appendingPathComponent("solve_history.json")
+    }()
+
+    private init() {
+        load()
+    }
+
+    func insert(_ record: SolveRecord) {
+        records.insert(record, at: 0)
+        save()
+    }
+
+    func delete(_ record: SolveRecord) {
+        records.removeAll { $0.id == record.id }
+        save()
+    }
+
+    func deleteAll() {
+        records.removeAll()
+        save()
+    }
+
+    private func load() {
+        guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
+        do {
+            let data = try Data(contentsOf: fileURL)
+            records = try JSONDecoder().decode([SolveRecord].self, from: data)
+        } catch {
+            records = []
+        }
+    }
+
+    private func save() {
+        do {
+            let data = try JSONEncoder().encode(records)
+            try data.write(to: fileURL, options: .atomic)
+        } catch {
+            // Silent fail — non-critical
+        }
     }
 }

@@ -20,6 +20,8 @@ struct StepCardView: View {
             // Content column
             contentColumn
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Step \(step.stepNumber): \(step.title). \(step.explanation)")
         .opacity(appeared ? 1 : 0)
         .offset(y: appeared ? 0 : 12)
         .onAppear {

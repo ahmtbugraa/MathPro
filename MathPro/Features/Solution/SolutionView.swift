@@ -1,11 +1,10 @@
 import SwiftUI
-import SwiftData
 import StoreKit
 
 struct SolutionView: View {
     let image: UIImage
 
-    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject private var solveStore: SolveStore
     @Environment(\.dismiss)      private var dismiss
     @Environment(\.requestReview) private var requestReview
 
@@ -43,6 +42,7 @@ struct SolutionView: View {
                         Image(systemName: "xmark.circle.fill")
                             .foregroundStyle(AppTheme.Colors.textSecondary)
                     }
+                    .accessibilityLabel("Close solution")
                 }
                 ToolbarItem(placement: .primaryAction) {
                     if solution != nil {
@@ -52,11 +52,13 @@ struct SolutionView: View {
                                 Image(systemName: "square.and.arrow.up")
                                     .foregroundStyle(AppTheme.Colors.textSecondary)
                             }
+                            .accessibilityLabel("Share solution")
                             // Bookmark
                             Button { saveToHistory() } label: {
                                 Image(systemName: isSaved ? "bookmark.fill" : "bookmark")
                                     .foregroundStyle(isSaved ? AppTheme.Colors.primary : AppTheme.Colors.textSecondary)
                             }
+                            .accessibilityLabel(isSaved ? "Saved" : "Save to history")
                         }
                     }
                 }
@@ -95,6 +97,7 @@ struct SolutionView: View {
             Button("Try Again") { solveTask = nil; startSolving() }
                 .primaryButton()
                 .padding(.horizontal, AppTheme.Spacing.xl)
+                .accessibilityLabel("Try again")
         }
     }
 
@@ -165,8 +168,8 @@ struct SolutionView: View {
         HStack(spacing: 12) {
             Image(uiImage: image)
                 .resizable()
-                .scaledToFill()
-                .frame(width: 64, height: 64)
+                .scaledToFit()
+                .frame(maxWidth: 80, maxHeight: 80)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 .overlay(
                     RoundedRectangle(cornerRadius: 10)
@@ -232,6 +235,8 @@ struct SolutionView: View {
                         )
                 )
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Answer: \(sol.answer)")
     }
 
     // MARK: - Action Buttons
@@ -340,6 +345,8 @@ struct SolutionView: View {
                 .font(.system(size: 11, weight: .bold, design: .monospaced))
                 .foregroundStyle(confidenceColor(confidence))
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Confidence \(Int(confidence * 100)) percent")
     }
 
     private func confidenceColor(_ c: Double) -> Color {
@@ -370,7 +377,10 @@ struct SolutionView: View {
             let result = try await aiService.solve(image: image)
             solution = result
             isLoading = false
-            usage.recordSolve()
+            // Only count as a solve if confidence is reasonable (don't waste free trial on bad photos)
+            if result.confidence >= 0.5 {
+                usage.recordSolve()
+            }
             autoSave()
             if usage.shouldShowReview {
                 try? await Task.sleep(for: .seconds(1.5))
@@ -389,14 +399,14 @@ struct SolutionView: View {
     private func autoSave() {
         guard let sol = solution else { return }
         let record = SolveRecord(from: sol, imageData: image.jpegData(compressionQuality: 0.5))
-        modelContext.insert(record)
+        solveStore.insert(record)
         isSaved = true
     }
 
     private func saveToHistory() {
         guard let sol = solution, !isSaved else { return }
         let record = SolveRecord(from: sol, imageData: image.jpegData(compressionQuality: 0.5))
-        modelContext.insert(record)
+        solveStore.insert(record)
         isSaved = true
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
@@ -412,6 +422,156 @@ struct SolutionView: View {
         }
     }
 
+}
+
+// MARK: - LaTeX to Plain Text Helper
+private func cleanLatexForDisplay(_ latex: String) -> String {
+    var s = latex
+
+    // \text{...} / \mathrm{...} / \mathbf{...} → just the text
+    s = s.replacingOccurrences(of: #"\\(?:text|mathrm|mathbf|mathit|operatorname)\{([^}]*)\}"#,
+                                with: "$1", options: .regularExpression)
+
+    // \sqrt[n]{x} → ⁿ√(x) — must come before \sqrt{x}
+    s = s.replacingOccurrences(of: #"\\sqrt\[3\]\{([^}]*)\}"#, with: "³√($1)", options: .regularExpression)
+    s = s.replacingOccurrences(of: #"\\sqrt\[(\d+)\]\{([^}]*)\}"#, with: "$1√($2)", options: .regularExpression)
+
+    // \frac{a}{b} → (a)/(b) — handle nested by repeating
+    for _ in 0..<5 {
+        guard let fracRange = s.range(of: #"\\frac\{"#, options: .regularExpression) else { break }
+        let afterFrac = s[fracRange.upperBound...]
+        if let numEnd = findMatchingBrace(in: String(afterFrac)) {
+            let numerator = String(afterFrac[afterFrac.startIndex..<afterFrac.index(afterFrac.startIndex, offsetBy: numEnd)])
+            let afterNum = afterFrac[afterFrac.index(afterFrac.startIndex, offsetBy: numEnd + 1)...]
+            if afterNum.first == "{", let denEnd = findMatchingBrace(in: String(afterNum.dropFirst())) {
+                let denominator = String(afterNum[afterNum.index(afterNum.startIndex, offsetBy: 1)..<afterNum.index(afterNum.startIndex, offsetBy: 1 + denEnd)])
+                let endIdx = afterNum.index(afterNum.startIndex, offsetBy: 1 + denEnd + 1)
+                let fullRange = fracRange.lowerBound..<endIdx
+                // Simple fractions without parens, complex ones with parens
+                let needsNumParen = numerator.count > 1 && numerator.contains(where: { "+-".contains($0) })
+                let needsDenParen = denominator.count > 1 && denominator.contains(where: { "+-".contains($0) })
+                let numStr = needsNumParen ? "(\(numerator))" : numerator
+                let denStr = needsDenParen ? "(\(denominator))" : denominator
+                s.replaceSubrange(fullRange, with: "\(numStr)/\(denStr)")
+            } else { break }
+        } else { break }
+    }
+
+    // \sqrt{x} → √(x)
+    s = s.replacingOccurrences(of: #"\\sqrt\{([^}]*)\}"#, with: "√($1)", options: .regularExpression)
+
+    // \int_{a}^{b} → ∫ₐᵇ — integral with limits
+    s = s.replacingOccurrences(of: #"\\int"#, with: "∫", options: .regularExpression)
+
+    // \lim → lim, \log → log, \ln → ln, \sin → sin, etc.
+    let mathFuncs = ["lim", "log", "ln", "sin", "cos", "tan", "sec", "csc", "cot",
+                     "arcsin", "arccos", "arctan", "max", "min", "sup", "inf", "det"]
+    for fn in mathFuncs {
+        s = s.replacingOccurrences(of: "\\\(fn)", with: fn)
+    }
+
+    // Spacing commands: \, \; \: \! \quad \qquad → space
+    s = s.replacingOccurrences(of: #"\\[,;:!]"#, with: " ", options: .regularExpression)
+    s = s.replacingOccurrences(of: #"\\(?:quad|qquad|hspace\{[^}]*\}|kern[^a-z])"#, with: " ", options: .regularExpression)
+
+    // Symbol replacements
+    let symbols: [(String, String)] = [
+        (#"\Rightarrow"#, " → "), (#"\rightarrow"#, " → "), (#"\Leftarrow"#, " ← "),
+        (#"\Leftrightarrow"#, " ↔ "), (#"\implies"#, " → "), (#"\to"#, " → "),
+        (#"\times"#, "×"), (#"\div"#, "÷"), (#"\pm"#, "±"), (#"\mp"#, "∓"),
+        (#"\leq"#, "≤"), (#"\geq"#, "≥"), (#"\neq"#, "≠"), (#"\ne"#, "≠"),
+        (#"\cdot"#, "·"), (#"\pi"#, "π"), (#"\infty"#, "∞"),
+        (#"\alpha"#, "α"), (#"\beta"#, "β"), (#"\gamma"#, "γ"),
+        (#"\theta"#, "θ"), (#"\lambda"#, "λ"), (#"\mu"#, "μ"),
+        (#"\sigma"#, "σ"), (#"\phi"#, "φ"), (#"\omega"#, "ω"),
+        (#"\Delta"#, "Δ"), (#"\delta"#, "δ"), (#"\epsilon"#, "ε"),
+        (#"\sum"#, "Σ"), (#"\prod"#, "Π"), (#"\partial"#, "∂"),
+        (#"\approx"#, "≈"), (#"\equiv"#, "≡"), (#"\sim"#, "~"),
+        (#"\in"#, "∈"), (#"\notin"#, "∉"), (#"\subset"#, "⊂"),
+        (#"\cup"#, "∪"), (#"\cap"#, "∩"), (#"\forall"#, "∀"), (#"\exists"#, "∃"),
+        (#"\left("#, "("), (#"\right)"#, ")"),
+        (#"\left["#, "["), (#"\right]"#, "]"),
+        (#"\left\{"#, "{"), (#"\right\}"#, "}"),
+        (#"\left|"#, "|"), (#"\right|"#, "|"),
+        (#"\Big("#, "("), (#"\Big)"#, ")"),
+        (#"\bigg("#, "("), (#"\bigg)"#, ")"),
+        (#"\biggl("#, "("), (#"\biggr)"#, ")"),
+        (#"\{"#, "{"), (#"\}"#, "}"),
+    ]
+    for (latexCmd, plain) in symbols {
+        s = s.replacingOccurrences(of: latexCmd, with: plain)
+    }
+
+    // Superscript: ^{...}
+    let superscriptDigits: [Character: Character] = [
+        "0": "\u{2070}", "1": "\u{00B9}", "2": "\u{00B2}", "3": "\u{00B3}",
+        "4": "\u{2074}", "5": "\u{2075}", "6": "\u{2076}", "7": "\u{2077}",
+        "8": "\u{2078}", "9": "\u{2079}", "n": "\u{207F}",
+        "+": "\u{207A}", "-": "\u{207B}"
+    ]
+    while let range = s.range(of: #"\^\{([^}]*)\}"#, options: .regularExpression) {
+        let inner = s[range].replacingOccurrences(of: #"\^\{"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: "}", with: "")
+        if inner.allSatisfy({ superscriptDigits.keys.contains($0) }) {
+            s.replaceSubrange(range, with: String(inner.map { superscriptDigits[$0] ?? $0 }))
+        } else {
+            s.replaceSubrange(range, with: "^(\(inner))")
+        }
+    }
+    // Simple ^n
+    while let range = s.range(of: #"\^([0-9n])"#, options: .regularExpression) {
+        let ch = s[s.index(range.lowerBound, offsetBy: 1)]
+        if let sup = superscriptDigits[ch] {
+            s.replaceSubrange(range, with: String(sup))
+        } else { break }
+    }
+
+    // Subscript: _{...}
+    let subscriptDigits: [Character: Character] = [
+        "0": "\u{2080}", "1": "\u{2081}", "2": "\u{2082}", "3": "\u{2083}",
+        "4": "\u{2084}", "5": "\u{2085}", "6": "\u{2086}", "7": "\u{2087}",
+        "8": "\u{2088}", "9": "\u{2089}",
+        "+": "\u{208A}", "-": "\u{208B}"
+    ]
+    while let range = s.range(of: #"_\{([^}]*)\}"#, options: .regularExpression) {
+        let inner = s[range].replacingOccurrences(of: #"_\{"#, with: "", options: .regularExpression)
+            .replacingOccurrences(of: "}", with: "")
+        if inner.allSatisfy({ subscriptDigits.keys.contains($0) }) {
+            s.replaceSubrange(range, with: String(inner.map { subscriptDigits[$0] ?? $0 }))
+        } else {
+            s.replaceSubrange(range, with: "_(\(inner))")
+        }
+    }
+    // Simple _n
+    while let range = s.range(of: #"_([0-9])"#, options: .regularExpression) {
+        let ch = s[s.index(range.lowerBound, offsetBy: 1)]
+        if let sub = subscriptDigits[ch] {
+            s.replaceSubrange(range, with: String(sub))
+        } else { break }
+    }
+
+    // Remove remaining backslash commands
+    s = s.replacingOccurrences(of: #"\\[a-zA-Z]+"#, with: "", options: .regularExpression)
+
+    // Remove stray braces that are left over
+    s = s.replacingOccurrences(of: #"(?<![\\])\{([^}]*)\}"#, with: "$1", options: .regularExpression)
+
+    // Clean up extra whitespace and trailing/leading spaces
+    s = s.replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+        .trimmingCharacters(in: .whitespaces)
+
+    return s
+}
+
+/// Find the index of the matching closing brace for a string that starts right after an opening brace
+private func findMatchingBrace(in str: String) -> Int? {
+    var depth = 1
+    for (i, ch) in str.enumerated() {
+        if ch == "{" { depth += 1 }
+        else if ch == "}" { depth -= 1 }
+        if depth == 0 { return i }
+    }
+    return nil
 }
 
 // MARK: - Shareable Solution View (for ImageRenderer)
@@ -447,7 +607,7 @@ struct ShareableView: View {
             HStack {
                 Image(systemName: "checkmark.seal.fill")
                     .foregroundStyle(Color(red: 0.13, green: 0.77, blue: 0.37))
-                Text(solution.answer)
+                Text(cleanLatexForDisplay(solution.answer))
                     .font(.system(size: 24, weight: .bold, design: .rounded))
                     .foregroundStyle(Color(red: 0.13, green: 0.77, blue: 0.37))
             }
@@ -471,7 +631,7 @@ struct ShareableView: View {
                             .font(.system(size: 14, weight: .semibold))
                             .foregroundStyle(.white)
                         if let expr = step.expression, !expr.isEmpty {
-                            Text(expr)
+                            Text(cleanLatexForDisplay(expr))
                                 .font(.system(size: 13, design: .monospaced))
                                 .foregroundStyle(Color(red: 0.13, green: 0.77, blue: 0.37))
                         }
@@ -532,7 +692,7 @@ struct SolvingLoadingView: View {
             Image(uiImage: image)
                 .resizable()
                 .scaledToFit()
-                .frame(maxHeight: 120)
+                .frame(maxHeight: 200)
                 .clipShape(RoundedRectangle(cornerRadius: AppTheme.Radius.md))
                 .overlay(
                     RoundedRectangle(cornerRadius: AppTheme.Radius.md)
@@ -555,7 +715,6 @@ struct SolvingLoadingView: View {
                 Image(systemName: steps[currentStep].icon)
                     .font(.title2)
                     .foregroundStyle(AppTheme.Colors.primary)
-                    .contentTransition(.symbolEffect(.replace))
             }
 
             VStack(spacing: AppTheme.Spacing.sm) {

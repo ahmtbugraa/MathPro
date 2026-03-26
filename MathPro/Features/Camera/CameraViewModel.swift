@@ -1,15 +1,15 @@
 import AVFoundation
+import Combine
 import UIKit
 import SwiftUI
 
-@Observable
-final class CameraViewModel: NSObject {
+final class CameraViewModel: NSObject, ObservableObject {
 
     // MARK: - State
-    var capturedImage: UIImage?
-    var isFlashOn       = false
-    var cameraError: String?
-    var isAuthorized    = false
+    @Published var capturedImage: UIImage?
+    @Published var isFlashOn       = false
+    @Published var cameraError: String?
+    @Published var isAuthorized    = false
 
     // MARK: - AVFoundation
     let session = AVCaptureSession()
@@ -57,14 +57,16 @@ final class CameraViewModel: NSObject {
         if session.canAddOutput(photoOutput) { session.addOutput(photoOutput) }
         session.commitConfiguration()
 
-        Task.detached { [weak self] in
-            self?.session.startRunning()
+        let captureSession = session
+        Task.detached {
+            captureSession.startRunning()
         }
     }
 
     func stopSession() {
-        Task.detached { [weak self] in
-            self?.session.stopRunning()
+        let captureSession = session
+        Task.detached {
+            captureSession.stopRunning()
         }
     }
 

@@ -21,7 +21,7 @@ struct PrivacyPolicyView: View {
                         sectionBody("""
                         MathPro collects minimal data to provide its core functionality:
 
-                        • **Photos**: When you take or select a photo, it is processed to solve the math problem. Photos are sent to our AI provider (Qwen/DashScope) for analysis and are not stored on our servers.
+                        • **Photos**: When you take or select a photo, it is processed to solve the math problem. Photos are sent to our AI provider for analysis and are not stored on our servers.
                         • **Usage Data**: We track basic usage metrics (number of solves) locally on your device to manage free trial limits.
                         • **Purchase Information**: If you subscribe to Premium, purchase data is handled by Apple and RevenueCat. We do not have access to your payment details.
                         • **Education Level**: Your selected education level is stored locally on your device to customize AI responses.
@@ -44,7 +44,7 @@ struct PrivacyPolicyView: View {
 
                         sectionTitle("4. Third-Party Services")
                         sectionBody("""
-                        • **Qwen AI (Alibaba Cloud)**: Processes math problem images. Subject to Alibaba Cloud's privacy policy.
+                        • **AI Provider**: Processes math problem images. Subject to the provider's privacy policy.
                         • **RevenueCat**: Manages subscriptions. Subject to RevenueCat's privacy policy.
                         • **Apple**: Handles all payments through the App Store.
                         """)

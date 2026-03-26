@@ -4,7 +4,7 @@ import RevenueCat
 struct PaywallView: View {
     @Environment(\.dismiss) private var dismiss
 
-    private var subscriptionService = SubscriptionService.shared
+    @ObservedObject private var subscriptionService = SubscriptionService.shared
 
     @State private var selectedPlan: PlanType = .annual
     @State private var isProcessing = false
@@ -60,6 +60,7 @@ struct PaywallView: View {
                         .font(.title2)
                         .foregroundStyle(AppTheme.Colors.textSecondary)
                 }
+                .accessibilityLabel("Close")
             }
             .padding(.horizontal, AppTheme.Spacing.md)
             .padding(.top, AppTheme.Spacing.md)
@@ -211,6 +212,8 @@ struct PaywallView: View {
                     )
             )
         }
+        .accessibilityLabel("\(title), \(price)")
+        .accessibilityHint(selectedPlan == type ? "Selected" : "Double tap to select this plan")
     }
 
     // MARK: - CTA
@@ -233,6 +236,7 @@ struct PaywallView: View {
             }
             .primaryButton()
             .disabled(isProcessing)
+            .accessibilityLabel("Subscribe")
 
             Text("Cancel anytime from Settings")
                 .font(AppTheme.Fonts.caption)
@@ -247,6 +251,7 @@ struct PaywallView: View {
                 Button(String(localized: "Restore Purchase")) { restorePurchase() }
                     .font(AppTheme.Fonts.caption)
                     .foregroundStyle(AppTheme.Colors.textSecondary)
+                    .accessibilityLabel("Restore purchases")
                 Text("•").foregroundStyle(AppTheme.Colors.textTertiary)
                 Button(String(localized: "Privacy Policy")) { showPrivacy = true }
                     .font(AppTheme.Fonts.caption)

@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import AIProxy
 
 // MARK: - Errors
 enum AIError: LocalizedError {
@@ -8,7 +9,6 @@ enum AIError: LocalizedError {
     case invalidResponse
     case parseError(String)
     case apiError(String)
-    case dailyLimitReached
 
     var errorDescription: String? {
         switch self {
@@ -17,43 +17,11 @@ enum AIError: LocalizedError {
         case .invalidResponse:        return String(localized: "Invalid response from server.")
         case .parseError(let msg):    return String(localized: "Response could not be parsed:") + " \(msg)"
         case .apiError(let msg):      return String(localized: "API error:") + " \(msg)"
-        case .dailyLimitReached:      return String(localized: "daily_limit_reached_error")
         }
     }
 }
 
-// MARK: - Qwen OpenAI-Compatible Response DTOs
-struct QwenResponse: Decodable {
-    let choices: [Choice]
-    let error: QwenError?
-    let usage: TokenUsage?
-
-    struct Choice: Decodable {
-        let message: Message
-    }
-
-    struct Message: Decodable {
-        let content: String?
-        let reasoning_content: String?
-
-        var resolvedContent: String {
-            if let c = content, !c.isEmpty { return c }
-            return reasoning_content ?? ""
-        }
-    }
-
-    struct QwenError: Decodable {
-        let message: String?
-        let code: String?
-    }
-
-    struct TokenUsage: Decodable {
-        let prompt_tokens: Int?
-        let completion_tokens: Int?
-        let total_tokens: Int?
-    }
-}
-
+// MARK: - JSON DTO
 private struct SolutionDTO: Decodable {
     let problem: String
     let subject: String
@@ -75,134 +43,109 @@ private actor SolutionCache {
     private var cache: [String: MathSolution] = [:]
     private let maxEntries = 20
 
-    func get(_ key: String) -> MathSolution? {
-        cache[key]
-    }
+    func get(_ key: String) -> MathSolution? { cache[key] }
 
     func set(_ key: String, solution: MathSolution) {
         if cache.count >= maxEntries {
-            if let firstKey = cache.keys.first {
-                cache.removeValue(forKey: firstKey)
-            }
+            if let firstKey = cache.keys.first { cache.removeValue(forKey: firstKey) }
         }
         cache[key] = solution
     }
 }
 
-// MARK: - Service
+// MARK: - AIProxy Service
 struct AIService: Sendable {
-    private let ocr = OCRService()
 
-    // MARK: - Solve (Vision Model)
+    // AIProxy OpenAI-compatible service
+    private let openAIService = AIProxy.openAIService(
+        partialKey: "v2|e3e5ff8c|mBJHTwYlsc8vvhFA",
+        serviceURL: "https://api.aiproxy.com/960ca237/ca44da3d"
+    )
+
+    // MARK: - Solve
 
     func solve(image: UIImage) async throws -> MathSolution {
         let resized = resizeIfNeeded(image)
 
-        guard let imageData = resized.jpegData(compressionQuality: Config.jpegQuality) else {
+        guard let imageData = resized.jpegData(compressionQuality: 0.8) else {
             throw AIError.invalidImage
         }
 
-        // OCR for context + cache key
-        let ocrText = (try? await ocr.recognizeText(in: resized)) ?? ""
-
-        // Check cache (same OCR text = same problem → free!)
-        let cacheKey = ocrText.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !cacheKey.isEmpty, let cached = await SolutionCache.shared.get(cacheKey) {
-            return cached
-        }
-
         let base64 = imageData.base64EncodedString()
+        guard let imageURL = URL(string: "data:image/jpeg;base64,\(base64)") else {
+            throw AIError.invalidImage
+        }
         let lang = languageName()
         let level = EducationLevel.saved
 
-        // System prompt with education level context
+        // Language instruction
+        let langInstruction = lang == "English" ? "" : """
+
+        LANGUAGE: You MUST write ALL text fields (problem, answer, title, explanation) in \(lang). \
+        This is mandatory. The ONLY exception is the "subject" field which must be in English. \
+        Do NOT write in English. Write in \(lang).
+        """
+
         let systemPrompt = """
-        Expert math tutor. Solve the math problem in the image step by step.
-        The student is \(level.promptDescription)
+        You are an expert math tutor. Solve the math problem in the image step by step.
+        The student is \(level.promptDescription)\(langInstruction)
 
         RULES:
-        - Read carefully. Double-check arithmetic. Verify final answer.
-        - ALL text in \(lang). Subject field always in English.
+        - ALWAYS attempt to solve the problem, even if the image is partially cropped or blurry. Use visible information to infer the full problem.
+        - Read the problem VERY carefully. Double-check ALL arithmetic. Verify the final answer by substituting back.
+        - If the problem has multiple choice options, verify your answer matches one of them.
+        - NEVER say "image is incomplete" or "cannot solve". Always try your best to solve with available information.
         - NEVER use $ signs anywhere in JSON values. No LaTeX delimiters.
-        - "problem": describe in plain text. Use words like "x squared" not "x^2".
+        - "problem": SHORT description in plain text (max 80 chars).
         - "expression": pure LaTeX without $ signs (e.g. "\\frac{1}{2}" not "$\\frac{1}{2}$").
-        - "explanation"/"title"/"answer": plain text only, NO LaTeX, NO $ signs.
+        - "explanation"/"title"/"answer": plain text only, NO LaTeX, NO $ signs. Keep concise.
         - Adapt explanation complexity to the student's level.
-        - Concise steps, max 6. Include verification.
+        - Concise steps, max 5. Each step explanation max 2 sentences.
+        - CRITICAL: Response must be COMPLETE valid JSON. Do NOT output anything except JSON.
+
+        ANSWER VERIFICATION (MANDATORY):
+        After you finish all steps, look at the FINAL numerical/algebraic result in your LAST step.
+        The "answer" field MUST be EXACTLY that final result. Do NOT write a different number.
+        If your last step says the result is 20, the answer MUST be "20", NOT "18" or anything else.
+        If the problem has multiple choice options, your answer must match one of the options.
+        TRIPLE-CHECK: steps result == answer field. If they don't match, FIX the answer field.
 
         JSON only:
         {"problem":"...","subject":"Algebra|Arithmetic|Geometry|Trigonometry|Calculus|Statistics|Linear Algebra|Word Problem|Other","answer":"...","confidence":0.95,"steps":[{"stepNumber":1,"title":"...","explanation":"...","expression":"..."}]}
         """
 
-        var userContent: [[String: Any]] = [
-            ["type": "image_url", "image_url": ["url": "data:image/jpeg;base64,\(base64)"]]
-        ]
-
-        let userText = ocrText.isEmpty
+        let solveInstruction = lang == "English"
             ? "Solve. JSON only."
-            : "OCR: \(ocrText.prefix(300))\nSolve. JSON only."
+            : "Solve. JSON only. Remember: ALL text in \(lang)."
 
-        userContent.append(["type": "text", "text": userText])
+        let requestBody = OpenAIChatCompletionRequestBody(
+            model: "gpt-5.4-2026-03-05",
+            messages: [
+                .system(content: .text(systemPrompt)),
+                .user(content: .parts([
+                    .imageURL(imageURL, detail: .auto),
+                    .text(solveInstruction)
+                ]))
+            ],
+            maxCompletionTokens: 4000,
+            temperature: 0.1
+        )
 
-        let body: [String: Any] = [
-            "model": Config.qwenSolveModel,
-            "max_tokens": Config.solveMaxTokens,
-            "enable_thinking": false,
-            "messages": [
-                ["role": "system", "content": systemPrompt],
-                ["role": "user", "content": userContent]
-            ]
-        ]
-
-        let rawText = try await makeRequest(body: body, timeout: 60)
-        let solution = try parseSolution(from: rawText)
-
-        // Cache result
-        if !cacheKey.isEmpty {
-            await SolutionCache.shared.set(cacheKey, solution: solution)
+        let response: OpenAIChatCompletionResponseBody
+        do {
+            response = try await openAIService.chatCompletionRequest(
+                body: requestBody,
+                secondsToWait: 60
+            )
+        } catch {
+            throw AIError.networkError(error.localizedDescription)
         }
 
-        return solution
-    }
-
-    // MARK: - Shared Request
-
-    private func makeRequest(body: [String: Any], timeout: TimeInterval) async throws -> String {
-        var request = URLRequest(url: Config.qwenAPIURL)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(Config.qwenAPIKey)", forHTTPHeaderField: "Authorization")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: body)
-        request.timeoutInterval = timeout
-
-        let (data, response) = try await URLSession.shared.data(for: request)
-
-        guard let http = response as? HTTPURLResponse else {
+        guard let rawText = response.choices.first?.message.content, !rawText.isEmpty else {
             throw AIError.invalidResponse
         }
 
-        guard http.statusCode == 200 else {
-            let msg = String(data: data, encoding: .utf8) ?? "Unknown"
-            throw AIError.apiError("HTTP \(http.statusCode): \(msg)")
-        }
-
-        let qwenResponse: QwenResponse
-        do {
-            qwenResponse = try JSONDecoder().decode(QwenResponse.self, from: data)
-        } catch {
-            let raw = String(data: data, encoding: .utf8) ?? "unreadable"
-            throw AIError.parseError("Decode failed: \(error.localizedDescription)\nRaw: \(raw.prefix(500))")
-        }
-
-        if let apiErr = qwenResponse.error {
-            throw AIError.apiError(apiErr.message ?? apiErr.code ?? "Unknown")
-        }
-
-        guard let rawText = qwenResponse.choices.first?.message.resolvedContent, !rawText.isEmpty else {
-            throw AIError.parseError("Empty response")
-        }
-
-        return rawText
+        return try parseSolution(from: rawText)
     }
 
     // MARK: - Parse Solution
@@ -218,11 +161,28 @@ struct AIService: Sendable {
             return buildSolution(from: dto)
         }
 
-        // Fallback: try to extract what we can from partial/malformed JSON
-        guard let dict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] else {
-            throw AIError.parseError(String(localized: "Response could not be parsed:") + " " + String(jsonString.prefix(200)))
+        // Fallback 1: JSONSerialization
+        if let dict = try? JSONSerialization.jsonObject(with: jsonData) as? [String: Any] {
+            return buildFromDict(dict)
         }
 
+        // Fallback 2: regex extraction
+        return try regexFallback(from: jsonString)
+    }
+
+    private func buildSolution(from dto: SolutionDTO) -> MathSolution {
+        let steps = dto.steps.map { s in
+            SolutionStep(stepNumber: s.stepNumber, title: s.title, explanation: s.explanation, expression: s.expression)
+        }
+        let answer = verifiedAnswer(claimed: dto.answer, steps: steps)
+        return MathSolution(
+            id: UUID(), problem: dto.problem, answer: answer, steps: steps,
+            subject: MathSubject(rawValue: dto.subject) ?? .other,
+            createdAt: Date(), confidence: dto.confidence ?? 0.9
+        )
+    }
+
+    private func buildFromDict(_ dict: [String: Any]) -> MathSolution {
         let problem = dict["problem"] as? String ?? ""
         let answer = dict["answer"] as? String ?? "?"
         let subject = dict["subject"] as? String ?? "Other"
@@ -239,72 +199,124 @@ struct AIService: Sendable {
                 ))
             }
         }
-
-        // Even if steps are empty or partial, return what we have
         if steps.isEmpty {
+            steps = [SolutionStep(stepNumber: 1, title: String(localized: "Answer"), explanation: answer, expression: nil)]
+        }
+        let finalAnswer = verifiedAnswer(claimed: answer, steps: steps)
+        return MathSolution(
+            id: UUID(), problem: problem, answer: finalAnswer, steps: steps,
+            subject: MathSubject(rawValue: subject) ?? .other,
+            createdAt: Date(), confidence: confidence
+        )
+    }
+
+    private func regexFallback(from text: String) throws -> MathSolution {
+        func extract(_ key: String) -> String? {
+            let pattern = "\"\(key)\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\""
+            guard let regex = try? NSRegularExpression(pattern: pattern),
+                  let match = regex.firstMatch(in: text, range: NSRange(text.startIndex..., in: text)),
+                  let range = Range(match.range(at: 1), in: text) else { return nil }
+            return String(text[range])
+        }
+
+        let problem = extract("problem") ?? ""
+        let answer = extract("answer") ?? ""
+        let subject = extract("subject") ?? "Other"
+
+        guard !answer.isEmpty || !problem.isEmpty else {
+            throw AIError.parseError(String(localized: "Response could not be parsed:") + " " + String(text.prefix(200)))
+        }
+
+        var steps: [SolutionStep] = []
+        let stepPattern = "\\{[^}]*\"stepNumber\"\\s*:\\s*(\\d+)[^}]*\"title\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"[^}]*\"explanation\"\\s*:\\s*\"((?:[^\"\\\\]|\\\\.)*)\"[^}]*\\}"
+        if let stepRegex = try? NSRegularExpression(pattern: stepPattern) {
+            let matches = stepRegex.matches(in: text, range: NSRange(text.startIndex..., in: text))
+            for match in matches {
+                let num = Int(text[Range(match.range(at: 1), in: text)!]) ?? (steps.count + 1)
+                let title = String(text[Range(match.range(at: 2), in: text)!])
+                let explanation = String(text[Range(match.range(at: 3), in: text)!])
+                steps.append(SolutionStep(stepNumber: num, title: title, explanation: explanation, expression: nil))
+            }
+        }
+        if steps.isEmpty && !answer.isEmpty {
             steps = [SolutionStep(stepNumber: 1, title: String(localized: "Answer"), explanation: answer, expression: nil)]
         }
 
         return MathSolution(
-            id: UUID(),
-            problem: problem,
-            answer: answer,
-            steps: steps,
+            id: UUID(), problem: problem, answer: answer.isEmpty ? "?" : answer, steps: steps,
             subject: MathSubject(rawValue: subject) ?? .other,
-            createdAt: Date(),
-            confidence: confidence
+            createdAt: Date(), confidence: 0.7
         )
     }
 
-    private func buildSolution(from dto: SolutionDTO) -> MathSolution {
-        let steps = dto.steps.map { s in
-            SolutionStep(
-                stepNumber: s.stepNumber,
-                title: s.title,
-                explanation: s.explanation,
-                expression: s.expression
-            )
+    // MARK: - Answer Verification
+
+    /// Compare the claimed answer with what the last step actually computed.
+    /// If the last step's expression contains a clear final result (after "="),
+    /// and it differs from the claimed answer, prefer the step's result.
+    private func verifiedAnswer(claimed: String, steps: [SolutionStep]) -> String {
+        guard let lastStep = steps.last else { return claimed }
+
+        // Try to extract the final result from the last step's expression
+        // e.g. "x_1 x_2 = \\frac{2(-7)-3}{2} = -\\frac{17}{2}" → "-\\frac{17}{2}"
+        let sources = [lastStep.expression, lastStep.explanation].compactMap { $0 }
+
+        for source in sources {
+            // Find the last "=" and take everything after it
+            guard let lastEquals = source.range(of: "=", options: .backwards) else { continue }
+            let afterEquals = source[lastEquals.upperBound...]
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+            guard !afterEquals.isEmpty else { continue }
+
+            // Clean both for comparison: strip LaTeX, whitespace
+            let cleanClaimed = normalizeForComparison(claimed)
+            let cleanStep = normalizeForComparison(afterEquals)
+
+            // If they already match, return claimed as-is
+            if cleanClaimed == cleanStep { return claimed }
+
+            // If claimed is empty or clearly different, prefer the step result
+            if !cleanStep.isEmpty && cleanClaimed != cleanStep {
+                // Return the raw step result (will be displayed/cleaned later)
+                return String(afterEquals)
+            }
         }
 
-        return MathSolution(
-            id: UUID(),
-            problem: dto.problem,
-            answer: dto.answer,
-            steps: steps,
-            subject: MathSubject(rawValue: dto.subject) ?? .other,
-            createdAt: Date(),
-            confidence: dto.confidence ?? 0.9
-        )
+        return claimed
+    }
+
+    /// Normalize a math expression for comparison by stripping LaTeX commands and whitespace.
+    private func normalizeForComparison(_ text: String) -> String {
+        var s = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        // Remove common LaTeX
+        s = s.replacingOccurrences(of: "\\frac", with: "")
+        s = s.replacingOccurrences(of: "\\sqrt", with: "sqrt")
+        s = s.replacingOccurrences(of: "\\left", with: "")
+        s = s.replacingOccurrences(of: "\\right", with: "")
+        s = s.replacingOccurrences(of: "\\", with: "")
+        s = s.replacingOccurrences(of: " ", with: "")
+        s = s.replacingOccurrences(of: "{", with: "")
+        s = s.replacingOccurrences(of: "}", with: "")
+        return s.lowercased()
     }
 
     // MARK: - Helpers
 
     private func resizeIfNeeded(_ image: UIImage) -> UIImage {
         let size = image.size
-        let maxDim = Config.maxImageDimension
-        guard size.width > maxDim || size.height > maxDim else {
-            return image
-        }
-
-        let scale: CGFloat
-        if size.width > size.height {
-            scale = maxDim / size.width
-        } else {
-            scale = maxDim / size.height
-        }
-
+        let maxDim: CGFloat = 768
+        guard size.width > maxDim || size.height > maxDim else { return image }
+        let scale = size.width > size.height ? maxDim / size.width : maxDim / size.height
         let newSize = CGSize(width: size.width * scale, height: size.height * scale)
         let renderer = UIGraphicsImageRenderer(size: newSize)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: newSize))
-        }
+        return renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: newSize)) }
     }
 
     private func languageName() -> String {
         let code = Locale.current.language.languageCode?.identifier ?? "en"
         return switch code {
         case "tr": "Turkish"
-        case "en": "English"
         case "de": "German"
         case "fr": "French"
         case "es": "Spanish"
@@ -323,148 +335,30 @@ struct AIService: Sendable {
         var result = text.trimmingCharacters(in: .whitespacesAndNewlines)
         // Remove <think> blocks
         if let thinkEnd = result.range(of: "</think>") {
-            result = String(result[thinkEnd.upperBound...])
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+            result = String(result[thinkEnd.upperBound...]).trimmingCharacters(in: .whitespacesAndNewlines)
         }
         // Remove markdown code fences
         if result.hasPrefix("```json") { result = String(result.dropFirst(7)) }
         if result.hasPrefix("```")     { result = String(result.dropFirst(3)) }
         if result.hasSuffix("```")     { result = String(result.dropLast(3)) }
         result = result.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // Fix unescaped backslashes in JSON string values (LaTeX like \frac, \geq, etc.)
-        // Only fix inside JSON strings — between quotes
-        result = fixBackslashesInJSON(result)
-
-        // Remove $ signs from within string values (AI sometimes wraps LaTeX in $...$)
+        // Remove $ signs from string values
         result = removeDollarSigns(result)
-
-        // Repair truncated JSON (when max_tokens cuts off mid-response)
+        // Repair truncated JSON
         result = repairTruncatedJSON(result)
-
         return result
     }
 
-    /// Fix unescaped backslashes in JSON string values.
-    /// JSON only allows: \", \\, \/, \b, \f, \n, \r, \t, \uXXXX
-    /// LaTeX like \frac, \geq, \sqrt produce invalid \f, \g, \s — we double-escape them.
-    private func fixBackslashesInJSON(_ json: String) -> String {
-        var chars = Array(json.unicodeScalars)
-        var output: [UnicodeScalar] = []
-        let validEscapes: Set<UnicodeScalar> = ["\"", "\\", "/", "b", "f", "n", "r", "t", "u"]
-        var inString = false
-        var i = 0
-
-        while i < chars.count {
-            let c = chars[i]
-
-            if c == "\"" && (i == 0 || chars[i - 1] != "\\") {
-                inString.toggle()
-                output.append(c)
-                i += 1
-                continue
-            }
-
-            if inString && c == "\\" {
-                // Look ahead
-                if i + 1 < chars.count {
-                    let next = chars[i + 1]
-                    if next == "\\" || validEscapes.contains(next) {
-                        // Already valid — but check if \f is actually \frac (LaTeX, not form-feed)
-                        if next == "f" && i + 2 < chars.count && chars[i + 2] != "\"" && chars[i + 2] != "\\" && chars[i + 2] != "," && chars[i + 2] != "}" {
-                            // Likely LaTeX \frac, \forall, etc. — double escape
-                            output.append("\\")
-                            output.append("\\")
-                            i += 1
-                            continue
-                        }
-                        if next == "b" && i + 2 < chars.count {
-                            let afterB = chars[i + 2]
-                            // \begin, \binom etc. vs actual \b backspace
-                            if afterB.properties.isAlphabetic {
-                                output.append("\\")
-                                output.append("\\")
-                                i += 1
-                                continue
-                            }
-                        }
-                        if next == "n" && i + 2 < chars.count {
-                            let afterN = chars[i + 2]
-                            // \neq, \not etc. vs actual \n newline — if followed by a letter, it's LaTeX
-                            if afterN.properties.isAlphabetic && afterN != "\"" {
-                                output.append("\\")
-                                output.append("\\")
-                                i += 1
-                                continue
-                            }
-                        }
-                        if next == "r" && i + 2 < chars.count {
-                            let afterR = chars[i + 2]
-                            if afterR.properties.isAlphabetic {
-                                output.append("\\")
-                                output.append("\\")
-                                i += 1
-                                continue
-                            }
-                        }
-                        if next == "t" && i + 2 < chars.count {
-                            let afterT = chars[i + 2]
-                            // \theta, \times vs \t tab
-                            if afterT.properties.isAlphabetic {
-                                output.append("\\")
-                                output.append("\\")
-                                i += 1
-                                continue
-                            }
-                        }
-                        // Valid escape sequence
-                        output.append(c)
-                        i += 1
-                        continue
-                    } else {
-                        // Invalid escape like \g, \s, \p, \a, \c, \d, \e, \l, \m, \q, \x, \w, etc.
-                        // Double-escape: \ → \\
-                        output.append("\\")
-                        output.append("\\")
-                        i += 1
-                        continue
-                    }
-                }
-            }
-
-            output.append(c)
-            i += 1
-        }
-
-        return String(String.UnicodeScalarView(output))
-    }
-
-    /// Attempt to repair truncated JSON (when max_tokens cuts off the response)
     private func repairTruncatedJSON(_ json: String) -> String {
         var result = json
-
-        // If it already parses, return as-is
         if let data = result.data(using: .utf8),
-           (try? JSONSerialization.jsonObject(with: data)) != nil {
-            return result
-        }
+           (try? JSONSerialization.jsonObject(with: data)) != nil { return result }
 
-        // Try closing open strings, arrays, objects
-        // Count unmatched brackets
         var inString = false
-        var braces = 0
-        var brackets = 0
-        var lastCharWasBackslash = false
-
+        var braces = 0, brackets = 0, lastWasBackslash = false
         for ch in result {
-            if lastCharWasBackslash {
-                lastCharWasBackslash = false
-                continue
-            }
-            if ch == "\\" {
-                lastCharWasBackslash = true
-                continue
-            }
+            if lastWasBackslash { lastWasBackslash = false; continue }
+            if ch == "\\" { lastWasBackslash = true; continue }
             if ch == "\"" { inString.toggle(); continue }
             if inString { continue }
             if ch == "{" { braces += 1 }
@@ -472,44 +366,26 @@ struct AIService: Sendable {
             if ch == "[" { brackets += 1 }
             if ch == "]" { brackets -= 1 }
         }
-
-        // If we're inside a string, close it
         if inString { result += "\"" }
-
-        // Remove trailing comma if present
         let trimmed = result.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.hasSuffix(",") {
-            result = String(trimmed.dropLast())
-        }
-
-        // Close open brackets and braces
+        if trimmed.hasSuffix(",") { result = String(trimmed.dropLast()) }
         for _ in 0..<brackets { result += "]" }
         for _ in 0..<braces { result += "}" }
-
         return result
     }
 
-    /// Remove $ signs from JSON string values (LaTeX delimiters the AI inserts)
     private func removeDollarSigns(_ json: String) -> String {
-        var chars = Array(json)
+        let chars = Array(json)
         var output: [Character] = []
         var inString = false
         var i = 0
-
         while i < chars.count {
             let c = chars[i]
-            if c == "\"" && (i == 0 || chars[i - 1] != "\\") {
-                inString.toggle()
-            }
-            // Skip $ signs inside JSON strings
-            if inString && c == "$" {
-                i += 1
-                continue
-            }
+            if c == "\"" && (i == 0 || chars[i - 1] != "\\") { inString.toggle() }
+            if inString && c == "$" { i += 1; continue }
             output.append(c)
             i += 1
         }
-
         return String(output)
     }
 }
