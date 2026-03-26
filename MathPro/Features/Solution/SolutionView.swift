@@ -75,7 +75,7 @@ struct SolutionView: View {
             Button(String(localized: "Go Premium")) { showPaywall = true }
             Button("OK", role: .cancel) { dismiss() }
         } message: {
-            Text(String(localized: "Your free trial solve has been used. Upgrade to Premium for unlimited solving."))
+            Text(String(localized: "A Premium subscription is required to solve math problems. Subscribe now for unlimited solving."))
         }
         .preferredColorScheme(.dark)
     }
@@ -378,10 +378,8 @@ struct SolutionView: View {
             let result = try await aiService.solve(image: image)
             solution = result
             isLoading = false
-            // Only count as a solve if confidence is reasonable (don't waste free trial on bad photos)
-            if result.confidence >= 0.5 {
-                usage.recordSolve()
-            }
+            // Count as a solve for daily limit tracking
+            usage.recordSolve()
             autoSave()
             if usage.shouldShowReview {
                 try? await Task.sleep(for: .seconds(1.5))
@@ -766,7 +764,7 @@ struct SolvingLoadingView: View {
             pulseScale = 0.96
         }
 
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+        let animTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             Task { @MainActor in
                 elapsedSeconds += 1
 
@@ -779,9 +777,11 @@ struct SolvingLoadingView: View {
                         currentStep = newStep
                     }
                 }
-
-                if elapsedSeconds > 120 { timer.invalidate() }
             }
+        }
+        // Auto-stop after 120 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 120) {
+            animTimer.invalidate()
         }
     }
 }

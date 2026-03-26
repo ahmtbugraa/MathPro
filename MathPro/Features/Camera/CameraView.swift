@@ -238,7 +238,7 @@ struct CameraView: View {
                 // Capture button (center, larger)
                 Button {
                     guard !isCapturing else { return }
-                    // Check if user can solve (premium or free trial not used)
+                    // Check if user has active subscription
                     guard usage.canSolve else {
                         showPaywall = true
                         return

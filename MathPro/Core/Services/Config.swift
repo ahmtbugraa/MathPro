@@ -62,7 +62,7 @@ enum EducationLevel: String, CaseIterable, Identifiable {
 
 enum Config {
     // MARK: - App Limits
-    static let freeTrialSolveLimit    = 1       // Free users: 1 solve total (trial), then paywall
+    static let freeTrialSolveLimit    = 0       // Free users: no free solves, subscription required
     static let premiumDailySolveLimit = 50      // Premium: 50 solves/day
 
     // MARK: - RevenueCat

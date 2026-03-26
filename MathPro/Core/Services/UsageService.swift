@@ -30,8 +30,7 @@ final class UsageService: ObservableObject {
             resetIfNewDay()
             return max(0, Config.premiumDailySolveLimit - _dailyCount)
         } else {
-            // Free users: 1 total trial solve
-            return max(0, Config.freeTrialSolveLimit - _totalCount)
+            return 0 // Free users cannot solve — subscription required
         }
     }
 
@@ -39,8 +38,7 @@ final class UsageService: ObservableObject {
         if _isPremium {
             return remaining > 0
         } else {
-            // Free: only if haven't used the 1 free trial
-            return _totalCount < Config.freeTrialSolveLimit
+            return false // Free users cannot solve — subscription required
         }
     }
 

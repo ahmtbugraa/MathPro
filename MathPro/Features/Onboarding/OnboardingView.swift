@@ -915,11 +915,13 @@ struct OnboardingPaywallView: View {
                 .padding(.horizontal, AppTheme.Spacing.xl)
                 .accessibilityLabel(isProcessing ? "Processing" : "Subscribe")
 
-                HStack(spacing: 5) {
-                    Image(systemName: "checkmark.shield.fill").font(.caption).foregroundStyle(AppTheme.Colors.primary)
-                    Text("No payment now. Cancel anytime.")
-                        .font(AppTheme.Fonts.caption).foregroundStyle(AppTheme.Colors.textSecondary)
-                }
+                // Apple-required subscription disclosure
+                Text("Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless canceled at least 24 hours before the end of the current period. Manage subscriptions in Apple ID Account Settings.")
+                    .font(.system(size: 10))
+                    .foregroundStyle(AppTheme.Colors.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, AppTheme.Spacing.lg)
 
                 HStack(spacing: AppTheme.Spacing.sm) {
                     Button(String(localized: "Restore")) { restorePurchase() }
@@ -935,7 +937,7 @@ struct OnboardingPaywallView: View {
                 Button {
                     onComplete()
                 } label: {
-                    Text(String(localized: "Continue with free plan"))
+                    Text(String(localized: "Maybe later"))
                         .font(.system(size: 12))
                         .foregroundStyle(AppTheme.Colors.textTertiary)
                         .underline()

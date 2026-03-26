@@ -218,6 +218,16 @@ struct PaywallView: View {
 
     // MARK: - CTA
     private var ctaSection: some View {
+        ctaSectionContent
+    }
+
+    @ViewBuilder
+    private var ctaSectionContent: some View {
+        let pkg = selectedPlan == .weekly
+            ? subscriptionService.weeklyPackage
+            : subscriptionService.annualPackage
+        let hasFreeTrial = pkg?.hasFreeTrial == true && selectedPlan == .weekly
+
         VStack(spacing: AppTheme.Spacing.sm) {
             Button {
                 purchase()
@@ -225,22 +235,33 @@ struct PaywallView: View {
                 if isProcessing {
                     ProgressView().tint(.black)
                 } else {
-                    let pkg = selectedPlan == .weekly
-                        ? subscriptionService.weeklyPackage
-                        : subscriptionService.annualPackage
-                    let hasFreeTrial = pkg?.hasFreeTrial == true && selectedPlan == .weekly
-                    Text(hasFreeTrial
-                         ? String(localized: "Try for Free")
-                         : String(localized: "Subscribe Now"))
+                    let btnText: String = hasFreeTrial
+                        ? String(localized: "Try for Free")
+                        : String(localized: "Subscribe Now")
+                    Text(btnText)
                 }
             }
             .primaryButton()
             .disabled(isProcessing)
             .accessibilityLabel("Subscribe")
 
-            Text("Cancel anytime from Settings")
-                .font(AppTheme.Fonts.caption)
-                .foregroundStyle(AppTheme.Colors.textSecondary)
+            // Apple-required subscription terms near the CTA button
+            VStack(spacing: 4) {
+                if let pkg, hasFreeTrial, let trialText = pkg.trialDurationText {
+                    let detail = trialText + ". " + String(localized: "Then") + " " + pkg.localizedPrice + pkg.localizedPeriod + "."
+                    Text(detail)
+                        .font(.system(size: 11))
+                        .foregroundStyle(AppTheme.Colors.textSecondary)
+                }
+
+                Text("Payment will be charged to your Apple ID account at confirmation of purchase. Subscription automatically renews unless canceled at least 24 hours before the end of the current period. You can manage and cancel your subscription in your Apple ID Account Settings.")
+                    .font(.system(size: 10))
+                    .foregroundStyle(AppTheme.Colors.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, AppTheme.Spacing.sm)
+            }
+            .padding(.top, 4)
         }
     }
 
