@@ -1,0 +1,1 @@
+ENEM,vestibular,algebra,equacao,geometria,calculo,camera,foto,exercicio,formula,prova,estudar,AI
