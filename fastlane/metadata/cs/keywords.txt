@@ -1,1 +1,1 @@
-algebra,rovnice,geometrie,kalkulacka,kamera,ukol,maturita,vzorec,studium,foto,pocty,zkouska
+algebra,rovnice,geometrie,kalkulačka,kamera,úkol,maturita,vzorec,studium,foto,počty,zkouška

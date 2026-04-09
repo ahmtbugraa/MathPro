@@ -1,1 +1,1 @@
-algebra,ecuacion,geometria,calculo,camara,foto,examen,prepa,UNAM,tutor,ayuda,ejercicio,formula,AI
+álgebra,ecuación,geometría,cálculo,cámara,foto,examen,prepa,UNAM,tutor,ayuda,ejercicio,fórmula,AI

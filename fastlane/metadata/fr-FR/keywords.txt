@@ -1,1 +1,1 @@
-BAC,brevet,exercice,algebre,calcul,equation,geometrie,lycee,college,camera,photo,resoudre,aide,AI
+BAC,brevet,exercice,algèbre,calcul,équation,géométrie,lycée,collège,caméra,photo,résoudre,aide,AI

@@ -1,1 +1,1 @@
-algebra,equacao,geometria,calculo,camera,foto,exercicio,formula,exame,estudar,explicacoes,TPC,AI
+álgebra,equação,geometria,cálculo,câmera,foto,exercício,fórmula,exame,estudar,explicações,TPC,AI

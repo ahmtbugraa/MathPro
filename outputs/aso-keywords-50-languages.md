@@ -166,9 +166,9 @@ Apple App Store Connect supports **40 localizations** (not 50). The last 10 lang
 ---
 
 ## 19. Turkish (tr)
-- **Title:** MathPro - Matematik Cozucu
-- **Subtitle:** Adim Adim Cozum & Odev Yardimi
-- **Keywords:** YKS,TYT,AYT,denklem,geometri,cebir,kamera,foto,sinav,formul,ders,calisma,LGS,universite
+- **Title:** MathPro - Matematik Çözücü
+- **Subtitle:** Adım Adım Çözüm & Ödev Yardımı
+- **Keywords:** YKS,TYT,AYT,denklem,geometri,cebir,kamera,foto,sınav,formül,ders,çalışma,LGS,üniversite
 - **Notes:** "YKS" (university entrance system), "TYT" (basic proficiency test), "AYT" (field proficiency test) are THE exam keywords Turkish students search. "LGS" is the high school entrance exam. "Odev" = homework. Competitor: FastMath developer is Turkish ("Dakyuz Yazilim"). "Ders" = lesson. "Sinav" = exam.
 
 ---

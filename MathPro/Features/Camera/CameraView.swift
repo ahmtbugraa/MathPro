@@ -31,8 +31,16 @@ struct CameraView: View {
     @State private var showHistory = false
     @State private var showSettings = false
     @State private var showPaywall = false
+    @State private var showDataDisclosure = false
+    @State private var pendingAction: PendingCameraAction?
+    @AppStorage("hasAcceptedDataDisclosure") private var hasAcceptedDataDisclosure = false
 
     private let usage = UsageService.shared
+
+    enum PendingCameraAction {
+        case capture
+        case gallery
+    }
 
     var body: some View {
         ZStack {
@@ -97,26 +105,30 @@ struct CameraView: View {
         }
         .onChange(of: selectedPhotoItem, perform: { item in
             guard let item else { return }
-            // Check if user can solve before loading photo
             guard usage.canSolve else {
                 selectedPhotoItem = nil
                 showPaywall = true
                 return
             }
-            Task {
-                // Try loading as UIImage transferable first (handles HEIC, RAW, etc.)
-                if let image = try? await item.loadTransferable(type: ImageTransferable.self) {
-                    imageToCrop = image.uiImage
-                    showCrop = true
-                } else if let data = try? await item.loadTransferable(type: Data.self),
-                          let image = UIImage(data: data) {
-                    // Fallback: load as raw data
-                    imageToCrop = image
-                    showCrop = true
-                }
+            guard hasAcceptedDataDisclosure else {
                 selectedPhotoItem = nil
+                pendingAction = .gallery
+                showDataDisclosure = true
+                return
             }
+            loadAndCrop(item: item)
         })
+        .alert(String(localized: "data_disclosure_title"), isPresented: $showDataDisclosure) {
+            Button(String(localized: "data_disclosure_accept")) {
+                hasAcceptedDataDisclosure = true
+                executePendingAction()
+            }
+            Button(String(localized: "data_disclosure_decline"), role: .cancel) {
+                pendingAction = nil
+            }
+        } message: {
+            Text(String(localized: "data_disclosure_message"))
+        }
     }
 
     // MARK: - Camera Content (Full Screen)
@@ -238,18 +250,16 @@ struct CameraView: View {
                 // Capture button (center, larger)
                 Button {
                     guard !isCapturing else { return }
-                    // Check if user has active subscription
                     guard usage.canSolve else {
                         showPaywall = true
                         return
                     }
-                    isCapturing = true
-                    vm.capturePhoto { image in
-                        isCapturing = false
-                        guard let image else { return }
-                        imageToCrop = image
-                        showCrop = true
+                    guard hasAcceptedDataDisclosure else {
+                        pendingAction = .capture
+                        showDataDisclosure = true
+                        return
                     }
+                    performCapture()
                 } label: {
                     ZStack {
                         Circle()
@@ -290,6 +300,45 @@ struct CameraView: View {
             )
             .ignoresSafeArea(edges: .bottom)
         )
+    }
+
+    // MARK: - Actions
+
+    private func performCapture() {
+        isCapturing = true
+        vm.capturePhoto { image in
+            isCapturing = false
+            guard let image else { return }
+            imageToCrop = image
+            showCrop = true
+        }
+    }
+
+    private func loadAndCrop(item: PhotosPickerItem) {
+        Task {
+            if let image = try? await item.loadTransferable(type: ImageTransferable.self) {
+                imageToCrop = image.uiImage
+                showCrop = true
+            } else if let data = try? await item.loadTransferable(type: Data.self),
+                      let image = UIImage(data: data) {
+                imageToCrop = image
+                showCrop = true
+            }
+            selectedPhotoItem = nil
+        }
+    }
+
+    private func executePendingAction() {
+        switch pendingAction {
+        case .capture:
+            performCapture()
+        case .gallery:
+            // Gallery requires re-selection since PhotosPickerItem was cleared
+            break
+        case .none:
+            break
+        }
+        pendingAction = nil
     }
 
     // MARK: - Permission Denied

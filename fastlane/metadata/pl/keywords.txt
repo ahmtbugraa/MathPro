@@ -1,1 +1,1 @@
-algebra,rownanie,geometria,kalkulator,kamera,zadanie,matura,wzor,nauka,zdjecie,rachunek,egzamin
+algebra,równanie,geometria,kalkulator,kamera,zadanie,matura,wzór,nauka,zdjęcie,rachunek,egzamin

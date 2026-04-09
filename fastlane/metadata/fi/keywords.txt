@@ -1,1 +1,1 @@
-algebra,yhtalot,geometria,laskin,kamera,lasky,ylioppilaskoe,kaava,opiskelu,kuva,matematiikka
+algebra,yhtälöt,geometria,laskin,kamera,läksyt,ylioppilaskoe,kaava,opiskelu,kuva,matematiikka

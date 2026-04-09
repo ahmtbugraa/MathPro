@@ -673,40 +673,40 @@ AI數學解題器使用先進的人工智慧，從照片中掃描、辨識並解
 سياسة الخصوصية: {PRIVACY_URL}
 شروط الاستخدام: {TERMS_URL}""",
 
-    "tr": f"""Herhangi bir matematik problemini aninda coz — sadece bir fotograf cek!
+    "tr": f"""Herhangi bir matematik problemini anında çöz — sadece bir fotoğraf çek!
 
-AI Matematik Cozucu, gelismis yapay zeka kullanarak fotograftan matematik problemlerini tarar, tanir ve cozer. Ister ders kitabi sorusu, ister el yazisi denklem, ister odev — kamerani dogrult ve saniyelerde detayli adim adim cozum al.
+AI Matematik Çözücü, gelişmiş yapay zekâ kullanarak fotoğraftan matematik problemlerini tarar, tanır ve çözer. İster ders kitabı sorusu, ister el yazısı denklem, ister ödev — kameranı doğrult ve saniyelerde detaylı adım adım çözüm al.
 
-NELER YAPABiLiRSiN:
-- Herhangi bir matematik probleminin fotografini cek veya galerinden yukle
-- Cozemek istedigin problemi kirp ve sec
-- AI destekli aninda cozumler al, tam adim adim aciklamalarla
-- Cozulmus tum problemlerini aranabilir gecmiste incele
-- Cozumleri guzel gorseller olarak paylas
+NELER YAPABİLİRSİN:
+- Herhangi bir matematik probleminin fotoğrafını çek veya galerinden yükle
+- Çözmek istediğin problemi kırp ve seç
+- AI destekli anında çözümler al, tam adım adım açıklamalarla
+- Çözülmüş tüm problemlerini aranabilir geçmişte incele
+- Çözümleri güzel görseller olarak paylaş
 
-KAPSANAN MATEMATiK KONULARI:
+KAPSANAN MATEMATİK KONULARI:
 - Aritmetik ve Temel Matematik
 - Cebir ve Lineer Cebir
 - Geometri ve Trigonometri
-- Kalkulus ve Diferansiyel Denklemler
-- Istatistik ve Olasilik
-- Sozel Problemler
+- Kalkülüs ve Diferansiyel Denklemler
+- İstatistik ve Olasılık
+- Sözel Problemler
 
-SEViYENE UYUM SAGLAR:
-Egitim seviyeni sec — Ilkokul, Ortaokul, Lise veya Universite — ve yapay zeka aciklamalarini seviyene gore uyarlar. Kucuk ogrenciler icin basit dil, ileri duzey ogrenciler icin detayli ispatlar.
+SEVİYENE UYUM SAĞLAR:
+Eğitim seviyeni seç — İlkokul, Ortaokul, Lise veya Üniversite — ve yapay zekâ açıklamalarını seviyene göre uyarlar. Küçük öğrenciler için basit dil, ileri düzey öğrenciler için detaylı ispatlar.
 
-YKS, TYT, AYT ve LGS hazirliginda sana yardimci olur!
+YKS, TYT, AYT ve LGS hazırlığında sana yardımcı olur!
 
-ABONELiK BiLGiLERi:
-Bazi ozellikler tam erisim icin aktif bir abonelik gerektirir.
-- Abonelik secenekleri: Haftalik ve Yillik planlar mevcuttur
-- Odeme, satin alma onayinda Apple Kimliginiz hesabinizdan tahsil edilir
-- Abonelik, mevcut donem bitmeden en az 24 saat once iptal edilmedikce otomatik olarak yenilenir
-- Hesabinizdan mevcut donemin bitiminden 24 saat once yenileme ucreti tahsil edilir
-- Aboneliklerinizi satin alma sonrasinda Apple Kimliginiz Hesap Ayarlarindan yonetebilir ve iptal edebilirsiniz
+ABONELİK BİLGİLERİ:
+Bazı özellikler tam erişim için aktif bir abonelik gerektirir.
+- Abonelik seçenekleri: Haftalık ve Yıllık planlar mevcuttur
+- Ödeme, satın alma onayında Apple Kimliğiniz hesabınızdan tahsil edilir
+- Abonelik, mevcut dönem bitmeden en az 24 saat önce iptal edilmedikçe otomatik olarak yenilenir
+- Hesabınızdan mevcut dönemin bitiminden 24 saat önce yenileme ücreti tahsil edilir
+- Aboneliklerinizi satın alma sonrasında Apple Kimliğiniz Hesap Ayarlarından yönetebilir ve iptal edebilirsiniz
 
-Gizlilik Politikasi: {PRIVACY_URL}
-Kullanim Kosullari: {TERMS_URL}""",
+Gizlilik Politikası: {PRIVACY_URL}
+Kullanım Koşulları: {TERMS_URL}""",
 
     "ru": f"""Решите любую задачу по математике мгновенно — просто сделайте фото!
 
@@ -1423,7 +1423,7 @@ PROMO_TEXTS = {
     "zh-Hans": "拍照即可解题，AI智能分步解答。从小学到高考，你的专属数学辅导老师！",
     "zh-Hant": "拍照即可解題，AI智慧分步解答。從國中到學測，你的專屬數學輔導老師！",
     "ar-SA": "صور اي مسألة رياضيات واحصل على حلول فورية خطوة بخطوة بالذكاء الاصطناعي. من الابتدائية الى الجامعة!",
-    "tr": "Matematik problemini fotografla, AI aninda adim adim cozum uretsin. Ilkokuldan YKS'ye kadar — senin kisisel matematik ogretmenin!",
+    "tr": "Matematik problemini fotoğrafla, AI anında adım adım çözüm üretsin. İlkokuldan YKS'ye kadar — senin kişisel matematik öğretmenin!",
     "ru": "Сфотографируйте любую задачу по математике и получите пошаговое решение с помощью ИИ. От школы до ЕГЭ — ваш персональный репетитор!",
     "hi": "Kisi bhi math problem ki photo lo aur AI se turant step-by-step solution pao. School se JEE tak — aapka personal math tutor!",
     "he": "צלמו כל בעיית מתמטיקה וקבלו פתרון מיידי צעד אחר צעד בעזרת AI. מחטיבה ועד בגרות — המורה הפרטי שלכם!",

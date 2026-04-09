@@ -1,1 +1,1 @@
-algebra,egyenlet,geometria,szamologep,kamera,hazitanulas,erettsegi,keplet,tanulas,foto,matek
+algebra,egyenlet,geometria,számológép,kamera,házi tanulás,érettségi,képlet,tanulás,fotó,matek

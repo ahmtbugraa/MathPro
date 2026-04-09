@@ -70,17 +70,17 @@ LOCALES = {
     "en-US": {
         "name": "AI Math Solver - Photo Scanner",  # 30 chars | Symbolab "AI Math Solver" + Mathway "scanner"
         "subtitle": "Step-by-Step Homework Helper",  # 27 chars | Photomath "step-by-step" + Mathway "homework"
-        "keywords": "MathPro,problem,calculator,equation,algebra,calculus,geometry,tutor,camera,learn,practice,study,answer,trigonometry",
+        "keywords": "MathPro,problem,calculator,equation,algebra,calculus,geometry,tutor,camera,learn,practice,answer",
         "promoText": "Snap a photo of any math problem and get instant AI-powered step-by-step solutions. From algebra to calculus — your personal math tutor is here!",
     },
     "en-GB": {
-        "name": "AI Maths Solver - Photo Scanner",  # 31 → trim
+        "name": "AI Maths Solver - Photo Scan",  # 28
         "subtitle": "Step-by-Step Homework Helper",
         "keywords": "MathPro,problem,calculator,GCSE,A-level,revision,equation,algebra,calculus,tutor,camera,learn,answer",
         "promoText": "Snap a photo of any maths problem and get instant AI-powered step-by-step solutions. From GCSE to A-level — your personal maths tutor is here!",
     },
     "en-AU": {
-        "name": "AI Maths Solver - Photo Scanner",
+        "name": "AI Maths Solver - Photo Scan",
         "subtitle": "Step-by-Step Homework Helper",
         "keywords": "MathPro,problem,calculator,HSC,VCE,ATAR,equation,algebra,calculus,tutor,camera,learn,answer",
         "promoText": "Snap a photo of any maths problem and get instant AI-powered step-by-step solutions. From Year 7 to university — your personal maths tutor!",
@@ -88,61 +88,61 @@ LOCALES = {
     "en-CA": {
         "name": "AI Math Solver - Photo Scanner",
         "subtitle": "Step-by-Step Homework Helper",
-        "keywords": "MathPro,problem,calculator,equation,algebra,calculus,geometry,tutor,camera,learn,practice,study,answer",
+        "keywords": "MathPro,problem,calculator,equation,algebra,calculus,geometry,tutor,camera,learn,practice,answer",
         "promoText": "Snap a photo of any math problem and get instant AI-powered step-by-step solutions. From algebra to calculus — your personal math tutor is here!",
     },
     "fr-FR": {
         "name": "Solveur Maths IA - Photo Scan",  # 29
-        "subtitle": "Solutions Pas-a-Pas & Devoirs",  # 29
-        "keywords": "MathPro,exercice,BAC,brevet,algebre,equation,geometrie,calcul,lycee,college,resoudre,aide,formule,camera",
-        "promoText": "Prenez en photo un probleme de maths et obtenez des solutions detaillees etape par etape grace a l'IA. Du college au BAC, votre tuteur personnel!",
+        "subtitle": "Solutions Pas-à-Pas & Devoirs",  # 29
+        "keywords": "MathPro,exercice,BAC,brevet,algèbre,équation,géométrie,calcul,lycée,collège,résoudre,aide,formule",
+        "promoText": "Prenez en photo un problème de maths et obtenez des solutions détaillées étape par étape grâce à l'IA. Du collège au BAC, votre tuteur personnel!",
     },
     "fr-CA": {
         "name": "Solveur Maths IA - Photo Scan",
-        "subtitle": "Solutions Pas-a-Pas & Devoirs",
-        "keywords": "MathPro,exercice,algebre,equation,geometrie,calcul,secondaire,cegep,resoudre,aide,formule,camera,tuteur",
-        "promoText": "Prenez en photo un probleme de maths et obtenez des solutions detaillees etape par etape grace a l'IA. Du secondaire au CEGEP, votre tuteur!",
+        "subtitle": "Solutions Pas-à-Pas & Devoirs",
+        "keywords": "MathPro,exercice,algèbre,équation,géométrie,calcul,secondaire,cégep,résoudre,aide,formule,tuteur",
+        "promoText": "Prenez en photo un problème de maths et obtenez des solutions détaillées étape par étape grâce à l'IA. Du secondaire au CÉGEP, votre tuteur!",
     },
     "de-DE": {
-        "name": "KI Mathe Loser - Foto Scanner",  # 29
-        "subtitle": "Schritt-fur-Schritt Losungen",  # 28
-        "keywords": "MathPro,Abitur,Aufgaben,Gleichung,Algebra,Rechner,Hausaufgaben,Geometrie,Nachhilfe,Formel,lernen,Klausur",
-        "promoText": "Fotografiere jede Matheaufgabe und erhalte sofort KI-gestutzte Schritt-fur-Schritt-Losungen. Vom Gymnasium bis zum Abitur — dein Mathe-Nachhilfelehrer!",
+        "name": "KI Mathe Löser - Foto Scanner",  # 29
+        "subtitle": "Schritt-für-Schritt Lösungen",  # 28
+        "keywords": "MathPro,Abitur,Aufgaben,Gleichung,Algebra,Rechner,Hausaufgaben,Geometrie,Nachhilfe,Formel,lernen",
+        "promoText": "Fotografiere jede Matheaufgabe und erhalte sofort KI-gestützte Schritt-für-Schritt-Lösungen. Vom Gymnasium bis zum Abitur — dein Mathe-Nachhilfelehrer!",
     },
     "es-ES": {
-        "name": "Resolver Mates IA - Escaner",  # 27
+        "name": "Resolver Mates IA - Escáner",  # 27
         "subtitle": "Soluciones Paso a Paso Tareas",  # 29
-        "keywords": "MathPro,algebra,ecuacion,geometria,calculo,foto,examen,selectividad,tutor,ayuda,ejercicio,formula,camara",
-        "promoText": "Haz una foto de cualquier problema de mates y obtiene soluciones paso a paso con IA. De la ESO a Selectividad, tu tutor de matematicas personal!",
+        "keywords": "MathPro,álgebra,ecuación,geometría,cálculo,foto,examen,selectividad,tutor,ayuda,ejercicio,fórmula",
+        "promoText": "Haz una foto de cualquier problema de mates y obtén soluciones paso a paso con IA. De la ESO a Selectividad, tu tutor de matemáticas personal!",
     },
     "es-MX": {
-        "name": "Resolver Mates IA - Escaner",
+        "name": "Resolver Mates IA - Escáner",
         "subtitle": "Paso a Paso Tareas y Ayuda",  # 26
-        "keywords": "MathPro,algebra,ecuacion,geometria,calculo,foto,examen,prepa,UNAM,tutor,ejercicio,formula,camara",
-        "promoText": "Toma una foto de cualquier problema de mates y obtiene soluciones paso a paso con IA. De la prepa a la universidad, tu tutor personal!",
+        "keywords": "MathPro,álgebra,ecuación,geometría,cálculo,foto,examen,prepa,UNAM,tutor,ejercicio,fórmula,cámara",
+        "promoText": "Toma una foto de cualquier problema de mates y obtén soluciones paso a paso con IA. De la prepa a la universidad, tu tutor personal!",
     },
     "pt-BR": {
-        "name": "Resolver Matematica IA - Foto",  # 29
-        "subtitle": "Solucoes Passo a Passo Dever",  # 28
-        "keywords": "MathPro,ENEM,vestibular,algebra,equacao,geometria,calculo,exercicio,formula,prova,estudar,camera,calculadora",
-        "promoText": "Tire uma foto de qualquer problema de matematica e receba solucoes passo a passo com IA. Do ensino medio ao ENEM — seu tutor pessoal!",
+        "name": "Resolver Matemática IA - Foto",  # 29
+        "subtitle": "Soluções Passo a Passo Dever",  # 28
+        "keywords": "MathPro,ENEM,vestibular,álgebra,equação,geometria,cálculo,exercício,fórmula,prova,estudar,câmera",
+        "promoText": "Tire uma foto de qualquer problema de matemática e receba soluções passo a passo com IA. Do ensino médio ao ENEM — seu tutor pessoal!",
     },
     "pt-PT": {
-        "name": "Resolver Matematica IA - Foto",
-        "subtitle": "Solucoes Passo a Passo",  # 22
-        "keywords": "MathPro,algebra,equacao,geometria,calculo,exercicio,formula,exame,estudar,explicacoes,TPC,camera,calculadora",
-        "promoText": "Tire uma foto de qualquer problema de matematica e receba solucoes passo a passo com IA. Do secundario ao exame — o seu explicador pessoal!",
+        "name": "Resolver Matemática IA - Foto",
+        "subtitle": "Soluções Passo a Passo",  # 22
+        "keywords": "MathPro,álgebra,equação,geometria,cálculo,exercício,fórmula,exame,estudar,explicações,TPC,câmera",
+        "promoText": "Tire uma foto de qualquer problema de matemática e receba soluções passo a passo com IA. Do secundário ao exame — o seu explicador pessoal!",
     },
     "it": {
         "name": "Risolutore Mate IA - Scanner",  # 28
         "subtitle": "Soluzioni Passo Dopo Passo",  # 26
-        "keywords": "MathPro,algebra,equazione,geometria,calcolo,foto,compiti,esercizio,maturita,formula,studio,aiuto,camera",
-        "promoText": "Scatta una foto di qualsiasi problema di matematica e ottieni soluzioni passo dopo passo con l'IA. Dalla scuola alla maturita — il tuo tutor!",
+        "keywords": "MathPro,algebra,equazione,geometria,calcolo,foto,compiti,esercizio,maturità,formula,studio,aiuto",
+        "promoText": "Scatta una foto di qualsiasi problema di matematica e ottieni soluzioni passo dopo passo con l'IA. Dalla scuola alla maturità — il tuo tutor!",
     },
     "nl-NL": {
         "name": "AI Wiskunde Oplosser - Scanner",  # 30
         "subtitle": "Stap-voor-Stap Oplossingen",  # 26
-        "keywords": "MathPro,algebra,vergelijking,meetkunde,rekenen,foto,huiswerk,eindexamen,formule,studeren,VWO,HAVO,camera",
+        "keywords": "MathPro,algebra,vergelijking,meetkunde,rekenen,foto,huiswerk,eindexamen,formule,studeren,VWO,HAVO",
         "promoText": "Maak een foto van elk wiskundeprobleem en krijg direct AI-gestuurde stap-voor-stap oplossingen. Van HAVO tot VWO — jouw persoonlijke bijles!",
     },
     "ja": {
@@ -176,10 +176,10 @@ LOCALES = {
         "promoText": "صور اي مسألة رياضيات واحصل على حلول فورية خطوة بخطوة بالذكاء الاصطناعي. من الابتدائية الى الجامعة!",
     },
     "tr": {
-        "name": "AI Matematik Cozucu - Tarayici",  # 30
-        "subtitle": "Adim Adim Cozum & Odev Yardim",  # 29
-        "keywords": "MathPro,YKS,TYT,AYT,denklem,geometri,cebir,foto,sinav,formul,ders,calisma,LGS,universite,hesap",
-        "promoText": "Matematik problemini fotografla, AI aninda adim adim cozum uretsin. Ilkokuldan YKS'ye kadar — senin kisisel matematik ogretmenin!",
+        "name": "AI Matematik Çözücü - Tarayıcı",  # 30
+        "subtitle": "Adım Adım Çözüm & Ödev Yardım",  # 29
+        "keywords": "MathPro,YKS,TYT,AYT,denklem,geometri,cebir,foto,sınav,formül,ders,çalışma,LGS,üniversite,hesap",
+        "promoText": "Matematik problemini fotoğrafla, AI anında adım adım çözüm üretsin. İlkokuldan YKS'ye kadar — senin kişisel matematik öğretmenin!",
     },
     "ru": {
         "name": "AI Решатель Математики Скан",  # ~27
@@ -200,39 +200,39 @@ LOCALES = {
         "promoText": "צלמו כל בעיית מתמטיקה וקבלו פתרון מיידי צעד אחר צעד בעזרת AI. מחטיבה ועד בגרות — המורה הפרטי שלכם!",
     },
     "hr": {
-        "name": "AI Rjesavac Matematike - Sken",  # 29
-        "subtitle": "Rjesenja Korak po Korak",  # 23
-        "keywords": "MathPro,algebra,jednadzba,geometrija,kalkulator,zadaca,matura,formula,ucenje,foto,racun,ispit,kamera",
-        "promoText": "Fotografirajte matematicki problem i dobijte AI rjesenja korak po korak. Od osnovne do mature — vas osobni tutor!",
+        "name": "AI Rješavač Matematike - Sken",  # 29
+        "subtitle": "Rješenja Korak po Korak",  # 23
+        "keywords": "MathPro,algebra,jednadžba,geometrija,kalkulator,zadaća,matura,formula,učenje,foto,račun,ispit,kamera",
+        "promoText": "Fotografirajte matematički problem i dobijte AI rješenja korak po korak. Od osnovne do mature — vaš osobni tutor!",
     },
     "cs": {
-        "name": "AI Resite Matematiky - Skener",  # 29
-        "subtitle": "Reseni Krok za Krokem",  # 21
-        "keywords": "MathPro,algebra,rovnice,geometrie,kalkulacka,ukol,maturita,vzorec,studium,foto,pocty,zkouska,kamera",
-        "promoText": "Vyfoťte jakýkoliv matematicky priklad a ziskejte AI reseni krok za krokem. Od zakladky po maturitu — vas osobni doučovatel!",
+        "name": "AI Řešte Matematiku - Skener",  # 29
+        "subtitle": "Řešení Krok za Krokem",  # 21
+        "keywords": "MathPro,algebra,rovnice,geometrie,kalkulačka,úkol,maturita,vzorec,studium,foto,počty,zkouška,kamera",
+        "promoText": "Vyfoťte jakýkoliv matematický příklad a získejte AI řešení krok za krokem. Od základky po maturitu — váš osobní doučovatel!",
     },
     "da": {
-        "name": "AI Matematik Loser - Skanner",  # 28
-        "subtitle": "Trin-for-Trin Losninger",  # 23
-        "keywords": "MathPro,algebra,ligning,geometri,lommeregner,lektier,eksamen,formel,studie,foto,beregning,HF,STX,kamera",
-        "promoText": "Tag et foto af ethvert matematikproblem og fa AI-drevne losninger trin for trin. Fra folkeskole til gymnasium — din personlige tutor!",
+        "name": "AI Matematik Løser - Skanner",  # 28
+        "subtitle": "Trin-for-Trin Løsninger",  # 23
+        "keywords": "MathPro,algebra,ligning,geometri,lommeregner,lektier,eksamen,formel,studie,foto,beregning,HF,STX",
+        "promoText": "Tag et foto af ethvert matematikproblem og få AI-drevne løsninger trin for trin. Fra folkeskole til gymnasium — din personlige tutor!",
     },
     "fi": {
-        "name": "AI Matikan Ratkaisija - Skanneri",  # 31 → needs trim
+        "name": "AI Matikan Ratkaisija - Skann",  # 29
         "subtitle": "Vaihe Vaiheelta Ratkaisut",  # 25
-        "keywords": "MathPro,algebra,yhtalot,geometria,laskin,lasky,ylioppilaskoe,kaava,opiskelu,kuva,matematiikka,kamera",
-        "promoText": "Ota kuva mista tahansa matikkaongelmasta ja saat AI-ratkaisun vaihe vaiheelta. Peruskoulusta ylioppilaaseen — oma matikkaopettajasi!",
+        "keywords": "MathPro,algebra,yhtälöt,geometria,laskin,läksyt,ylioppilaskoe,kaava,opiskelu,kuva,matematiikka",
+        "promoText": "Ota kuva mistä tahansa matikkaongelmasta ja saat AI-ratkaisun vaihe vaiheelta. Peruskoulusta ylioppilaaseen — oma matikkaopettajasi!",
     },
     "el": {
         "name": "AI Λύτης Μαθηματικών Σαρωτής",  # ~18
         "subtitle": "Λύσεις Βήμα προς Βήμα",  # ~14
-        "keywords": "MathPro,άλγεβρα,εξίσωση,γεωμετρία,αριθμομηχανή,Πανελλήνιες,τύπος,μελέτη,φωτο,λύκειο,ασκηση,κάμερα",
+        "keywords": "MathPro,άλγεβρα,εξίσωση,γεωμετρία,αριθμομηχανή,Πανελλήνιες,τύπος,μελέτη,φωτο,λύκειο,άσκηση,κάμερα",
         "promoText": "Φωτογραφίστε οποιοδήποτε μαθηματικό πρόβλημα και λάβετε λύσεις βήμα προς βήμα με AI. Από το γυμνάσιο ως τις Πανελλήνιες!",
     },
     "hu": {
-        "name": "AI Matek Megoldo - Szkenner",  # 27
-        "subtitle": "Lepesrol Lepesre Megoldasok",  # 27
-        "keywords": "MathPro,algebra,egyenlet,geometria,szamologep,hazitanulas,erettsegi,keplet,tanulas,foto,kamera",
+        "name": "AI Matek Megoldó - Szkenner",  # 27
+        "subtitle": "Lépésről Lépésre Megoldások",  # 27
+        "keywords": "MathPro,algebra,egyenlet,geometria,számológép,házi tanulás,érettségi,képlet,tanulás,fotó,kamera",
         "promoText": "Fotózd le bármely matekfeladatot és kapj AI-alapú megoldást lépésről lépésre. Általánostól az érettségiig — személyes tanárod!",
     },
     "id": {
@@ -244,38 +244,38 @@ LOCALES = {
     "ms": {
         "name": "AI Penyelesai Matematik - Scan",  # 30
         "subtitle": "Penyelesaian Langkah demi",  # 24
-        "keywords": "MathPro,algebra,persamaan,geometri,kalkulator,kerja rumah,SPM,formula,belajar,foto,soalan,UPSR,kamera",
+        "keywords": "MathPro,algebra,persamaan,geometri,kalkulator,kerja rumah,SPM,formula,belajar,foto,soalan,UPSR",
         "promoText": "Ambil gambar sebarang masalah matematik dan dapatkan penyelesaian langkah demi langkah dengan AI. Dari UPSR ke SPM — tutor peribadi anda!",
     },
     "no": {
-        "name": "AI Matte Loser - Foto Skanner",  # 29
-        "subtitle": "Steg-for-Steg Losninger",  # 23
+        "name": "AI Matte Løser - Foto Skanner",  # 29
+        "subtitle": "Steg-for-Steg Løsninger",  # 23
         "keywords": "MathPro,algebra,likning,geometri,kalkulator,lekser,eksamen,formel,studie,matte,beregning,VGS,kamera",
-        "promoText": "Ta bilde av et hvilket som helst matteproblem og fa AI-drevne losninger steg for steg. Fra ungdomsskole til VGS — din personlige tutor!",
+        "promoText": "Ta bilde av et hvilket som helst matteproblem og få AI-drevne løsninger steg for steg. Fra ungdomsskole til VGS — din personlige tutor!",
     },
     "pl": {
-        "name": "AI Rozwiaz Matematyke - Skan",  # 28
-        "subtitle": "Rozwiazania Krok po Kroku",  # 25
-        "keywords": "MathPro,algebra,rownanie,geometria,kalkulator,zadanie,matura,wzor,nauka,zdjecie,rachunek,egzamin,kamera",
-        "promoText": "Zrob zdjecie dowolnego zadania z matematyki i uzyskaj rozwiazania AI krok po kroku. Od podstawowki do matury — Twoj osobisty korepetytor!",
+        "name": "AI Rozwiąż Matematykę - Skan",  # 28
+        "subtitle": "Rozwiązania Krok po Kroku",  # 25
+        "keywords": "MathPro,algebra,równanie,geometria,kalkulator,zadanie,matura,wzór,nauka,zdjęcie,rachunek,egzamin",
+        "promoText": "Zrób zdjęcie dowolnego zadania z matematyki i uzyskaj rozwiązania AI krok po kroku. Od podstawówki do matury — Twój osobisty korepetytor!",
     },
     "ro": {
         "name": "AI Rezolvator Mate - Scanner",  # 28
-        "subtitle": "Solutii Pas cu Pas",  # 18
-        "keywords": "MathPro,algebra,ecuatie,geometrie,calculator,tema,BAC,formula,studiu,foto,exercitiu,examen,camera",
-        "promoText": "Fotografiaza orice problema de matematica si obtii solutii pas cu pas cu AI. De la generala pana la BAC — tutorele tau personal!",
+        "subtitle": "Soluții Pas cu Pas",  # 18
+        "keywords": "MathPro,algebra,ecuație,geometrie,calculator,temă,BAC,formulă,studiu,foto,exercițiu,examen,cameră",
+        "promoText": "Fotografiază orice problemă de matematică și obții soluții pas cu pas cu AI. De la generală până la BAC — tutorele tău personal!",
     },
     "sk": {
-        "name": "AI Riesitel Matematiky - Sken",  # 29
-        "subtitle": "Riesenia Krok za Krokom",  # 23
-        "keywords": "MathPro,algebra,rovnica,geometria,kalkulacka,uloha,maturita,vzorec,studium,foto,pocty,skuska,kamera",
+        "name": "AI Riešiteľ Matematiky - Sken",  # 29
+        "subtitle": "Riešenia Krok za Krokom",  # 23
+        "keywords": "MathPro,algebra,rovnica,geometria,kalkulačka,úloha,maturita,vzorec,štúdium,foto,počty,skúška,kamera",
         "promoText": "Odfoťte akýkoľvek matematický príklad a získajte AI riešenia krok za krokom. Od základky po maturitu — váš osobný doučovateľ!",
     },
     "sv": {
-        "name": "AI Matte Losare - Foto Skanner",  # 30
-        "subtitle": "Steg-for-Steg Losningar",  # 23
-        "keywords": "MathPro,algebra,ekvation,geometri,kalkylator,laxor,prov,formel,studera,matte,berakning,NP,kamera",
-        "promoText": "Ta en bild pa vilket matteproblem som helst och fa AI-drivna losningar steg for steg. Fran hogstadiet till NP — din personliga mattelektor!",
+        "name": "AI Matte Lösare - Foto Skanner",  # 30
+        "subtitle": "Steg-för-Steg Lösningar",  # 23
+        "keywords": "MathPro,algebra,ekvation,geometri,kalkylator,läxor,prov,formel,studera,matte,beräkning,NP,kamera",
+        "promoText": "Ta en bild på vilket matteproblem som helst och få AI-drivna lösningar steg för steg. Från högstadiet till NP — din personliga mattelektor!",
     },
     "th": {
         "name": "AI แก้โจทย์เลข - สแกนรูป",
@@ -290,15 +290,15 @@ LOCALES = {
         "promoText": "Сфотографуйте будь-яку задачу з математики та отримайте покрокове розвʼязання з AI. Від школи до НМТ — ваш персональний репетитор!",
     },
     "vi": {
-        "name": "AI Giai Toan - May Quet Anh",  # 27
-        "subtitle": "Giai Chi Tiet Tung Buoc",  # 23
-        "keywords": "MathPro,dai so,phuong trinh,hinh hoc,may tinh,bai tap,thi,cong thuc,hoc,THPT,lop,camera,anh",
-        "promoText": "Chup anh bat ky bai toan nao va nhan loi giai chi tiet tung buoc tu AI. Tu cap 2 den THPT — gia su rieng cua ban!",
+        "name": "AI Giải Toán - Máy Quét Ảnh",  # 27
+        "subtitle": "Giải Chi Tiết Từng Bước",  # 23
+        "keywords": "MathPro,đại số,phương trình,hình học,máy tính,bài tập,thi,công thức,học,THPT,lớp,camera,ảnh",
+        "promoText": "Chụp ảnh bất kỳ bài toán nào và nhận lời giải chi tiết từng bước từ AI. Từ cấp 2 đến THPT — gia sư riêng của bạn!",
     },
     "ca": {
-        "name": "AI Resol Matematiques - Scan",  # 28
+        "name": "AI Resol Matemàtiques - Scan",  # 28
         "subtitle": "Solucions Pas a Pas",  # 19
-        "keywords": "MathPro,algebra,equacio,geometria,calculadora,deures,selectivitat,formula,estudi,foto,exercici,PAU,camera",
+        "keywords": "MathPro,algebra,equació,geometria,calculadora,deures,selectivitat,fórmula,estudi,foto,exercici,PAU",
         "promoText": "Fes una foto de qualsevol problema de mates i obtingues solucions pas a pas amb IA. De l'ESO a la Selectivitat — el teu tutor personal!",
     },
 }
@@ -345,40 +345,40 @@ Some features require an active subscription to unlock full access.
 Privacy Policy: {privacy}
 Terms of Use: {terms}""".format(privacy=PRIVACY_URL, terms=TERMS_URL),
 
-    "tr": """Herhangi bir matematik problemini aninda coz — sadece bir fotograf cek!
+    "tr": """Herhangi bir matematik problemini anında çöz — sadece bir fotoğraf çek!
 
-AI Matematik Cozucu, gelismis yapay zeka kullanarak fotograftan matematik problemlerini tarar, tanir ve cozer. Ister ders kitabi sorusu, ister el yazisi denklem, ister odev — kamerani dogrult ve saniyelerde detayli adim adim cozum al.
+AI Matematik Çözücü, gelişmiş yapay zekâ kullanarak fotoğraftan matematik problemlerini tarar, tanır ve çözer. İster ders kitabı sorusu, ister el yazısı denklem, ister ödev — kameranı doğrult ve saniyelerde detaylı adım adım çözüm al.
 
-NELER YAPABiLiRSiN:
-- Herhangi bir matematik probleminin fotografini cek veya galerinden yukle
-- Cozemek istedigin problemi kirp ve sec
-- AI destekli aninda cozumler al, tam adim adim aciklamalarla
-- Cozulmus tum problemlerini aranabilir gecmiste incele
-- Cozumleri guzel gorseller olarak paylas
+NELER YAPABİLİRSİN:
+- Herhangi bir matematik probleminin fotoğrafını çek veya galerinden yükle
+- Çözmek istediğin problemi kırp ve seç
+- AI destekli anında çözümler al, tam adım adım açıklamalarla
+- Çözülmüş tüm problemlerini aranabilir geçmişte incele
+- Çözümleri güzel görseller olarak paylaş
 
-KAPSANAN MATEMATiK KONULARI:
+KAPSANAN MATEMATİK KONULARI:
 - Aritmetik ve Temel Matematik
 - Cebir ve Lineer Cebir
 - Geometri ve Trigonometri
-- Kalkulus ve Diferansiyel Denklemler
-- Istatistik ve Olasilik
-- Sozel Problemler
+- Kalkülüs ve Diferansiyel Denklemler
+- İstatistik ve Olasılık
+- Sözel Problemler
 
-SEViYENE UYUM SAGLAR:
-Egitim seviyeni sec — Ilkokul, Ortaokul, Lise veya Universite — ve yapay zeka aciklamalarini seviyene gore uyarlar. Kucuk ogrenciler icin basit dil, ileri duzey ogrenciler icin detayli ispatlar.
+SEVİYENE UYUM SAĞLAR:
+Eğitim seviyeni seç — İlkokul, Ortaokul, Lise veya Üniversite — ve yapay zekâ açıklamalarını seviyene göre uyarlar. Küçük öğrenciler için basit dil, ileri düzey öğrenciler için detaylı ispatlar.
 
-YKS, TYT, AYT ve LGS hazirliginda sana yardimci olur!
+YKS, TYT, AYT ve LGS hazırlığında sana yardımcı olur!
 
-ABONELiK BiLGiLERi:
-Bazi ozellikler tam erisim icin aktif bir abonelik gerektirir.
-- Abonelik secenekleri: Haftalik ve Yillik planlar mevcuttur
-- Odeme, satin alma onayinda Apple Kimliginiz hesabinizdan tahsil edilir
-- Abonelik, mevcut donem bitmeden en az 24 saat once iptal edilmedikce otomatik olarak yenilenir
-- Hesabinizdan mevcut donemin bitiminden 24 saat once yenileme ucreti tahsil edilir
-- Aboneliklerinizi satin alma sonrasinda Apple Kimliginiz Hesap Ayarlarindan yonetebilir ve iptal edebilirsiniz
+ABONELİK BİLGİLERİ:
+Bazı özellikler tam erişim için aktif bir abonelik gerektirir.
+- Abonelik seçenekleri: Haftalık ve Yıllık planlar mevcuttur
+- Ödeme, satın alma onayında Apple Kimliğiniz hesabınızdan tahsil edilir
+- Abonelik, mevcut dönem bitmeden en az 24 saat önce iptal edilmedikçe otomatik olarak yenilenir
+- Hesabınızdan mevcut dönemin bitiminden 24 saat önce yenileme ücreti tahsil edilir
+- Aboneliklerinizi satın alma sonrasında Apple Kimliğiniz Hesap Ayarlarından yönetebilir ve iptal edebilirsiniz
 
-Gizlilik Politikasi: {privacy}
-Kullanim Kosullari: {terms}""".format(privacy=PRIVACY_URL, terms=TERMS_URL),
+Gizlilik Politikası: {privacy}
+Kullanım Koşulları: {terms}""".format(privacy=PRIVACY_URL, terms=TERMS_URL),
 }
 
 # For non-EN/TR locales, use English description as fallback

@@ -1,1 +1,1 @@
-algebra,jednadzba,geometrija,kalkulator,kamera,zadaca,matura,formula,ucenje,foto,racun,ispit
+algebra,jednadžba,geometrija,kalkulator,kamera,zadaća,matura,formula,učenje,foto,račun,ispit

@@ -1,1 +1,1 @@
-algebra,equacio,geometria,calculadora,camera,deures,selectivitat,formula,estudi,foto,exercici,PAU
+algebra,equació,geometria,calculadora,càmera,deures,selectivitat,fórmula,estudi,foto,exercici,PAU
