@@ -183,7 +183,7 @@ struct SettingsView: View {
                 Divider().padding(.leading, 52).background(AppTheme.Colors.divider)
                 settingsRow(icon: "square.and.arrow.up", color: .blue,                     title: "Share with Friends") {
                     let text = String(localized: "share_watermark")
-                    guard let url = URL(string: "https://apps.apple.com/app/mathpro/id6651818007") else { return }
+                    guard let url = URL(string: "https://apps.apple.com/app/mathpro/id6760795201") else { return }
                     let av = UIActivityViewController(activityItems: [text, url], applicationActivities: nil)
                     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                        let root = scene.windows.first?.rootViewController {

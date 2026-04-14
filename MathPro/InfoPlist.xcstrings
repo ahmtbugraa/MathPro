@@ -1,1557 +1,1556 @@
 {
-  "sourceLanguage": "en",
-  "strings": {
-    "CFBundleDisplayName": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+  "sourceLanguage" : "en",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "az": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ca": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-AU": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-GB": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-IN": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-IN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-MX": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-US": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fr-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "gu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ha": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "jv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "kn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ku": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "mr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "su": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sw": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ta": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "te": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ug": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "xh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         }
       }
     },
-    "CFBundleName": {
-      "comment": "Bundle name",
-      "extractionState": "extracted_with_value",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+    "CFBundleName" : {
+      "comment" : "Bundle name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "az": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ca": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-AU": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-GB": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "en-IN": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "en-IN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-MX": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "es-US": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "es-US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "fr-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "gu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ha": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "jv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "kn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ku": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "mr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "su": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "sw": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ta": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "te": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ug": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "xh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         },
-        "zu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "MathPro"
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MathPro"
           }
         }
       }
     },
-    "NSCameraUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "يلزم الوصول إلى الكاميرا لتصوير المسائل الرياضية."
+    "NSCameraUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يلزم الوصول إلى الكاميرا لتصوير المسائل الرياضية."
           }
         },
-        "az": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Riyaziyyat məsələlərini şəkilə almaq üçün kameraya giriş lazımdır."
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riyaziyyat məsələlərini şəkilə almaq üçün kameraya giriş lazımdır."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Необходим е достъп до камерата за заснемане на математически задачи."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Необходим е достъп до камерата за заснемане на математически задачи."
           }
         },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "গণিতের সমস্যা ছবি তোলার জন্য ক্যামেরা অ্যাক্সেস প্রয়োজন।"
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "গণিতের সমস্যা ছবি তোলার জন্য ক্যামেরা অ্যাক্সেস প্রয়োজন।"
           }
         },
-        "ca": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cal accés a la càmera per fotografiar problemes matemàtics."
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cal accés a la càmera per fotografiar problemes matemàtics."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pro fotografování matematických úloh je nutný přístup k fotoaparátu."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pro fotografování matematických úloh je nutný přístup k fotoaparátu."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kameraadgang er nødvendig for at fotografere matematikopgaver."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraadgang er nødvendig for at fotografere matematikopgaver."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kamerazugriff wird benötigt, um Matheaufgaben zu fotografieren."
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kamerazugriff wird benötigt, um Matheaufgaben zu fotografieren."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Απαιτείται πρόσβαση στην κάμερα για τη λήψη φωτογραφιών μαθηματικών προβλημάτων."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Απαιτείται πρόσβαση στην κάμερα για τη λήψη φωτογραφιών μαθηματικών προβλημάτων."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Camera access is needed to photograph math problems."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is needed to photograph math problems."
           }
         },
-        "en-AU": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Camera access is needed to photograph maths problems."
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is needed to photograph maths problems."
           }
         },
-        "en-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Camera access is needed to photograph math problems."
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is needed to photograph math problems."
           }
         },
-        "en-GB": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Camera access is needed to photograph maths problems."
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is needed to photograph maths problems."
           }
         },
-        "en-IN": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Camera access is needed to photograph maths problems."
+        "en-IN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Camera access is needed to photograph maths problems."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
           }
         },
-        "es-MX": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
           }
         },
-        "es-US": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
+        "es-US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se necesita acceso a la cámara para fotografiar problemas matemáticos."
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "برای عکس‌برداری از مسائل ریاضی به دسترسی دوربین نیاز است."
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "برای عکس‌برداری از مسائل ریاضی به دسترسی دوربین نیاز است."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kameran käyttöoikeus tarvitaan matemaattisten tehtävien kuvaamiseen."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameran käyttöoikeus tarvitaan matemaattisten tehtävien kuvaamiseen."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kailangan ang access sa camera para makuhanan ng litrato ang mga math problem."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kailangan ang access sa camera para makuhanan ng litrato ang mga math problem."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'accès à la caméra est nécessaire pour photographier les problèmes mathématiques."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accès à la caméra est nécessaire pour photographier les problèmes mathématiques."
           }
         },
-        "fr-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'accès à la caméra est nécessaire pour photographier les problèmes mathématiques."
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accès à la caméra est nécessaire pour photographier les problèmes mathématiques."
           }
         },
-        "gu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ગણિતની સમસ્યાઓનો ફોટો લેવા માટે કેમેરા ઍક્સેસ જરૂરી છે."
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ગણિતની સમસ્યાઓનો ફોટો લેવા માટે કેમેરા ઍક્સેસ જરૂરી છે."
           }
         },
-        "ha": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ana buƙatar samun damar kyamara don ɗaukar hoton matsalolin lissafi."
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ana buƙatar samun damar kyamara don ɗaukar hoton matsalolin lissafi."
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "נדרשת גישה למצלמה כדי לצלם בעיות מתמטיות."
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "נדרשת גישה למצלמה כדי לצלם בעיות מתמטיות."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "गणित की समस्याओं की फोटो लेने के लिए कैमरा एक्सेस आवश्यक है।"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "गणित की समस्याओं की फोटो लेने के लिए कैमरा एक्सेस आवश्यक है।"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pristup kameri potreban je za fotografiranje matematičkih zadataka."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pristup kameri potreban je za fotografiranje matematičkih zadataka."
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A matematikai feladatok lefényképezéséhez kamera-hozzáférés szükséges."
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A matematikai feladatok lefényképezéséhez kamera-hozzáférés szükséges."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses kamera diperlukan untuk memotret soal matematika."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses kamera diperlukan untuk memotret soal matematika."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "L'accesso alla fotocamera è necessario per fotografare i problemi di matematica."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'accesso alla fotocamera è necessario per fotografare i problemi di matematica."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "数学の問題を撮影するためにカメラへのアクセスが必要です。"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "数学の問題を撮影するためにカメラへのアクセスが必要です。"
           }
         },
-        "jv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses kamera dibutuhake kanggo motret soal matematika."
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses kamera dibutuhake kanggo motret soal matematika."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Математика есептерін суретке түсіру үшін камераға рұқсат қажет."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Математика есептерін суретке түсіру үшін камераға рұқсат қажет."
           }
         },
-        "kn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ಗಣಿತ ಸಮಸ್ಯೆಗಳನ್ನು ಫೋಟೋ ತೆಗೆಯಲು ಕ್ಯಾಮೆರಾ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ."
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ಗಣಿತ ಸಮಸ್ಯೆಗಳನ್ನು ಫೋಟೋ ತೆಗೆಯಲು ಕ್ಯಾಮೆರಾ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "수학 문제를 촬영하려면 카메라 접근 권한이 필요합니다."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "수학 문제를 촬영하려면 카메라 접근 권한이 필요합니다."
           }
         },
-        "ku": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ji bo wênekişandina pirsgirêkên matematîkê destûra kamerayê pêwîst e."
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ji bo wênekişandina pirsgirêkên matematîkê destûra kamerayê pêwîst e."
           }
         },
-        "mr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "गणिताच्या प्रश्नांचे फोटो काढण्यासाठी कॅमेरा प्रवेश आवश्यक आहे."
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "गणिताच्या प्रश्नांचे फोटो काढण्यासाठी कॅमेरा प्रवेश आवश्यक आहे."
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Akses kamera diperlukan untuk mengambil gambar soalan matematik."
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Akses kamera diperlukan untuk mengambil gambar soalan matematik."
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kameratilgang er nødvendig for å fotografere matteoppgaver."
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameratilgang er nødvendig for å fotografere matteoppgaver."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cameratoegang is nodig om wiskundeproblemen te fotograferen."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cameratoegang is nodig om wiskundeproblemen te fotograferen."
           }
         },
-        "pa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ਗਣਿਤ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦੀ ਫੋਟੋ ਲੈਣ ਲਈ ਕੈਮਰਾ ਐਕਸੈਸ ਲੋੜੀਂਦੀ ਹੈ।"
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਗਣਿਤ ਦੀਆਂ ਸਮੱਸਿਆਵਾਂ ਦੀ ਫੋਟੋ ਲੈਣ ਲਈ ਕੈਮਰਾ ਐਕਸੈਸ ਲੋੜੀਂਦੀ ਹੈ।"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dostęp do aparatu jest potrzebny do sfotografowania zadań matematycznych."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dostęp do aparatu jest potrzebny do sfotografowania zadań matematycznych."
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "O acesso à câmera é necessário para fotografar problemas de matemática."
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O acesso à câmera é necessário para fotografar problemas de matemática."
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "O acesso à câmara é necessário para fotografar problemas de matemática."
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O acesso à câmara é necessário para fotografar problemas de matemática."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesul la cameră este necesar pentru a fotografia probleme de matematică."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesul la cameră este necesar pentru a fotografia probleme de matematică."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Доступ к камере необходим для фотографирования математических задач."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ к камере необходим для фотографирования математических задач."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prístup k fotoaparátu je potrebný na fotografovanie matematických úloh."
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prístup k fotoaparátu je potrebný na fotografovanie matematických úloh."
           }
         },
-        "su": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aksés kaméra diperlukeun pikeun motrét soal matematika."
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aksés kaméra diperlukeun pikeun motrét soal matematika."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kameraåtkomst behövs för att fotografera matteproblem."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kameraåtkomst behövs för att fotografera matteproblem."
           }
         },
-        "sw": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ruhusa ya kamera inahitajika kupiga picha za matatizo ya hesabu."
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruhusa ya kamera inahitajika kupiga picha za matatizo ya hesabu."
           }
         },
-        "ta": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "கணிதப் பிரச்சினைகளை புகைப்படம் எடுக்க கேமரா அணுகல் தேவை."
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "கணிதப் பிரச்சினைகளை புகைப்படம் எடுக்க கேமரா அணுகல் தேவை."
           }
         },
-        "te": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "గణిత సమస్యలను ఫోటో తీయడానికి కెమెరా యాక్సెస్ అవసరం."
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "గణిత సమస్యలను ఫోటో తీయడానికి కెమెరా యాక్సెస్ అవసరం."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "จำเป็นต้องเข้าถึงกล้องเพื่อถ่ายรูปโจทย์คณิตศาสตร์"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จำเป็นต้องเข้าถึงกล้องเพื่อถ่ายรูปโจทย์คณิตศาสตร์"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Matematik problemlerini fotoğraflamak için kamera erişimine ihtiyaç var."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matematik problemlerini fotoğraflamak için kamera erişimine ihtiyaç var."
           }
         },
-        "ug": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ماتېماتىكا مەسىلىلىرىنى سۈرەتكە ئېلىش ئۈچۈن كامېراغا ئېرىشىش كېرەك."
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ماتېماتىكا مەسىلىلىرىنى سۈرەتكە ئېلىش ئۈچۈن كامېراغا ئېرىشىش كېرەك."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Доступ до камери потрібен для фотографування математичних задач."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Доступ до камери потрібен для фотографування математичних задач."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ریاضی کے مسائل کی تصویر لینے کے لیے کیمرے تک رسائی درکار ہے۔"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ریاضی کے مسائل کی تصویر لینے کے لیے کیمرے تک رسائی درکار ہے۔"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cần quyền truy cập camera để chụp ảnh bài toán."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cần quyền truy cập camera để chụp ảnh bài toán."
           }
         },
-        "xh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ukufikelela kwekhamra kuyafuneka ukufota iingxaki zezibalo."
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukufikelela kwekhamra kuyafuneka ukufota iingxaki zezibalo."
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需要相机权限来拍摄数学题目。"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要相机权限来拍摄数学题目。"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需要相機權限來拍攝數學題目。"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要相機權限來拍攝數學題目。"
           }
         },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "需要相機權限來拍攝數學題目。"
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要相機權限來拍攝數學題目。"
           }
         },
-        "zu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ukufinyelela kwekhamela kuyadingeka ukuthwebula izinkinga zezibalo."
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukufinyelela kwekhamela kuyadingeka ukuthwebula izinkinga zezibalo."
           }
         }
       }
     },
-    "NSPhotoLibraryUsageDescription": {
-      "extractionState": "manual",
-      "localizations": {
-        "ar": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اختر مسألة رياضية من مكتبة الصور الخاصة بك."
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختر مسألة رياضية من مكتبة الصور الخاصة بك."
           }
         },
-        "az": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Foto kitabxananızdan riyaziyyat məsələsi seçin."
+        "az" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto kitabxananızdan riyaziyyat məsələsi seçin."
           }
         },
-        "bg": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Изберете математическа задача от вашата фотобиблиотека."
+        "bg" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Изберете математическа задача от вашата фотобиблиотека."
           }
         },
-        "bn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "আপনার ফটো লাইব্রেরি থেকে একটি গণিত সমস্যা বেছে নিন।"
+        "bn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "আপনার ফটো লাইব্রেরি থেকে একটি গণিত সমস্যা বেছে নিন।"
           }
         },
-        "ca": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Trieu un problema matemàtic de la vostra biblioteca de fotos."
+        "ca" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trieu un problema matemàtic de la vostra biblioteca de fotos."
           }
         },
-        "cs": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vyberte matematickou úlohu z vaší knihovny fotografií."
+        "cs" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte matematickou úlohu z vaší knihovny fotografií."
           }
         },
-        "da": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vælg et matematikproblem fra dit fotobibliotek."
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vælg et matematikproblem fra dit fotobibliotek."
           }
         },
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wählen Sie eine Matheaufgabe aus Ihrer Fotobibliothek."
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wählen Sie eine Matheaufgabe aus Ihrer Fotobibliothek."
           }
         },
-        "el": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Επιλέξτε ένα μαθηματικό πρόβλημα από τη βιβλιοθήκη φωτογραφιών σας."
+        "el" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Επιλέξτε ένα μαθηματικό πρόβλημα από τη βιβλιοθήκη φωτογραφιών σας."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a math problem from your photo library."
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a math problem from your photo library."
           }
         },
-        "en-AU": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a maths problem from your photo library."
+        "en-AU" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a maths problem from your photo library."
           }
         },
-        "en-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a math problem from your photo library."
+        "en-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a math problem from your photo library."
           }
         },
-        "en-GB": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a maths problem from your photo library."
+        "en-GB" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a maths problem from your photo library."
           }
         },
-        "en-IN": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a maths problem from your photo library."
+        "en-IN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a maths problem from your photo library."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige un problema matemático de tu biblioteca de fotos."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un problema matemático de tu biblioteca de fotos."
           }
         },
-        "es-419": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige un problema matemático de tu biblioteca de fotos."
+        "es-419" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un problema matemático de tu biblioteca de fotos."
           }
         },
-        "es-MX": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige un problema matemático de tu biblioteca de fotos."
+        "es-MX" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un problema matemático de tu biblioteca de fotos."
           }
         },
-        "es-US": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige un problema matemático de tu biblioteca de fotos."
+        "es-US" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige un problema matemático de tu biblioteca de fotos."
           }
         },
-        "fa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "یک مسئله ریاضی از کتابخانه عکس خود انتخاب کنید."
+        "fa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "یک مسئله ریاضی از کتابخانه عکس خود انتخاب کنید."
           }
         },
-        "fi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Valitse matemaattinen tehtävä valokuvakirjastostasi."
+        "fi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Valitse matemaattinen tehtävä valokuvakirjastostasi."
           }
         },
-        "fil": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pumili ng math problem mula sa iyong photo library."
+        "fil" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pumili ng math problem mula sa iyong photo library."
           }
         },
-        "fr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un problème mathématique dans votre photothèque."
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un problème mathématique dans votre photothèque."
           }
         },
-        "fr-CA": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choisissez un problème mathématique dans votre photothèque."
+        "fr-CA" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choisissez un problème mathématique dans votre photothèque."
           }
         },
-        "gu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "તમારી ફોટો લાઇબ્રેરીમાંથી ગણિતની સમસ્યા પસંદ કરો."
+        "gu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "તમારી ફોટો લાઇબ્રેરીમાંથી ગણિતની સમસ્યા પસંદ કરો."
           }
         },
-        "ha": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zaɓi matsalar lissafi daga ɗakin ajiyar hotonku."
+        "ha" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zaɓi matsalar lissafi daga ɗakin ajiyar hotonku."
           }
         },
-        "he": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "בחר בעיה מתמטית מספריית התמונות שלך."
+        "he" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "בחר בעיה מתמטית מספריית התמונות שלך."
           }
         },
-        "hi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "अपनी फोटो लाइब्रेरी से एक गणित की समस्या चुनें।"
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपनी फोटो लाइब्रेरी से एक गणित की समस्या चुनें।"
           }
         },
-        "hr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Odaberite matematički zadatak iz vaše foto knjižnice."
+        "hr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Odaberite matematički zadatak iz vaše foto knjižnice."
           }
         },
-        "hu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Válasszon matematikai feladatot a fotókönyvtárából."
+        "hu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Válasszon matematikai feladatot a fotókönyvtárából."
           }
         },
-        "id": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pilih soal matematika dari perpustakaan foto Anda."
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih soal matematika dari perpustakaan foto Anda."
           }
         },
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli un problema di matematica dalla tua libreria foto."
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scegli un problema di matematica dalla tua libreria foto."
           }
         },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "フォトライブラリから数学の問題を選択してください。"
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フォトライブラリから数学の問題を選択してください。"
           }
         },
-        "jv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pilih soal matematika saka perpustakaan foto sampeyan."
+        "jv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih soal matematika saka perpustakaan foto sampeyan."
           }
         },
-        "kk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Фото кітапханаңыздан математика есебін таңдаңыз."
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Фото кітапханаңыздан математика есебін таңдаңыз."
           }
         },
-        "kn": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ನಿಮ್ಮ ಫೋಟೋ ಲೈಬ್ರರಿಯಿಂದ ಗಣಿತ ಸಮಸ್ಯೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
+        "kn" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ನಿಮ್ಮ ಫೋಟೋ ಲೈಬ್ರರಿಯಿಂದ ಗಣಿತ ಸಮಸ್ಯೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ."
           }
         },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "사진 보관함에서 수학 문제를 선택하세요."
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 보관함에서 수학 문제를 선택하세요."
           }
         },
-        "ku": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ji pirtûkxaneya wêneyên xwe pirsgirêkek matematîkê hilbijêrin."
+        "ku" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ji pirtûkxaneya wêneyên xwe pirsgirêkek matematîkê hilbijêrin."
           }
         },
-        "mr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "तुमच्या फोटो लायब्ररीतून गणिताचा प्रश्न निवडा."
+        "mr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "तुमच्या फोटो लायब्ररीतून गणिताचा प्रश्न निवडा."
           }
         },
-        "ms": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pilih soalan matematik dari pustaka foto anda."
+        "ms" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih soalan matematik dari pustaka foto anda."
           }
         },
-        "nb": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Velg en matteoppgave fra fotobiblioteket ditt."
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Velg en matteoppgave fra fotobiblioteket ditt."
           }
         },
-        "nl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kies een wiskundeprobleem uit uw fotobibliotheek."
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kies een wiskundeprobleem uit uw fotobibliotheek."
           }
         },
-        "pa": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ਆਪਣੀ ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਗਣਿਤ ਦੀ ਸਮੱਸਿਆ ਚੁਣੋ।"
+        "pa" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ਆਪਣੀ ਫੋਟੋ ਲਾਇਬ੍ਰੇਰੀ ਤੋਂ ਗਣਿਤ ਦੀ ਸਮੱਸਿਆ ਚੁਣੋ।"
           }
         },
-        "pl": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Wybierz zadanie matematyczne z biblioteki zdjęć."
+        "pl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wybierz zadanie matematyczne z biblioteki zdjęć."
           }
         },
-        "pt-BR": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escolha um problema de matemática da sua biblioteca de fotos."
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um problema de matemática da sua biblioteca de fotos."
           }
         },
-        "pt-PT": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escolha um problema de matemática da sua biblioteca de fotos."
+        "pt-PT" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escolha um problema de matemática da sua biblioteca de fotos."
           }
         },
-        "ro": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alegeți o problemă de matematică din biblioteca foto."
+        "ro" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alegeți o problemă de matematică din biblioteca foto."
           }
         },
-        "ru": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Выберите математическую задачу из вашей фотобиблиотеки."
+        "ru" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Выберите математическую задачу из вашей фотобиблиотеки."
           }
         },
-        "sk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vyberte matematickú úlohu z vašej knižnice fotografií."
+        "sk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vyberte matematickú úlohu z vašej knižnice fotografií."
           }
         },
-        "su": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pilih soal matematika ti perpustakaan poto anjeun."
+        "su" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilih soal matematika ti perpustakaan poto anjeun."
           }
         },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Välj ett matteproblem från ditt fotobibliotek."
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Välj ett matteproblem från ditt fotobibliotek."
           }
         },
-        "sw": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chagua tatizo la hesabu kutoka maktaba yako ya picha."
+        "sw" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chagua tatizo la hesabu kutoka maktaba yako ya picha."
           }
         },
-        "ta": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "உங்கள் புகைப்பட நூலகத்திலிருந்து கணிதப் பிரச்சினையைத் தேர்ந்தெடுக்கவும்."
+        "ta" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "உங்கள் புகைப்பட நூலகத்திலிருந்து கணிதப் பிரச்சினையைத் தேர்ந்தெடுக்கவும்."
           }
         },
-        "te": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "మీ ఫోటో లైబ్రరీ నుండి గణిత సమస్యను ఎంచుకోండి."
+        "te" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "మీ ఫోటో లైబ్రరీ నుండి గణిత సమస్యను ఎంచుకోండి."
           }
         },
-        "th": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "เลือกโจทย์คณิตศาสตร์จากคลังรูปภาพของคุณ"
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เลือกโจทย์คณิตศาสตร์จากคลังรูปภาพของคุณ"
           }
         },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Galerinizden matematik problemi seçmek için."
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Galerinizden matematik problemi seçmek için."
           }
         },
-        "ug": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "رەسىم كىتابخانىڭىزدىن ماتېماتىكا مەسىلىسىنى تاللاڭ."
+        "ug" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "رەسىم كىتابخانىڭىزدىن ماتېماتىكا مەسىلىسىنى تاللاڭ."
           }
         },
-        "uk": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Оберіть математичну задачу з вашої фотобібліотеки."
+        "uk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Оберіть математичну задачу з вашої фотобібліотеки."
           }
         },
-        "ur": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "اپنی فوٹو لائبریری سے ریاضی کا مسئلہ منتخب کریں۔"
+        "ur" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اپنی فوٹو لائبریری سے ریاضی کا مسئلہ منتخب کریں۔"
           }
         },
-        "vi": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chọn một bài toán từ thư viện ảnh của bạn."
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn một bài toán từ thư viện ảnh của bạn."
           }
         },
-        "xh": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khetha ingxaki yezibalo kwithala lakho lemifanekiso."
+        "xh" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khetha ingxaki yezibalo kwithala lakho lemifanekiso."
           }
         },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "从您的照片图库中选择数学题目。"
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从您的照片图库中选择数学题目。"
           }
         },
-        "zh-Hant": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "從您的照片圖庫中選擇數學題目。"
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從您的照片圖庫中選擇數學題目。"
           }
         },
-        "zh-HK": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "從您的照片圖庫中選擇數學題目。"
+        "zh-HK" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從您的照片圖庫中選擇數學題目。"
           }
         },
-        "zu": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Khetha inkinga yezibalo kumtapo wakho wezithombe."
+        "zu" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khetha inkinga yezibalo kumtapo wakho wezithombe."
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }
